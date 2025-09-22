@@ -1,5 +1,5 @@
-using UnityEngine;
 using System;  
+using UnityEngine;
 
 public class GameEvents : MonoBehaviour
 {
@@ -15,15 +15,18 @@ public class GameEvents : MonoBehaviour
     public static void PlayerEnteredCombat(Transform enemy)
     {
         OnPlayerEnterCombat?.Invoke(enemy);
+        Debug.Log("GameEvents: on player entered combat with " + enemy.name);
     }
 
     public static void PlayerExitedCombat()
     {
         OnPlayerExitCombat?.Invoke();
+        Debug.Log("GameEvents: player exited combat");
     }
 
     public static void PlayerAttack(Transform target)
     {
         OnPlayerAttack?.Invoke(target);
+        Debug.Log("GameEvents: player attack" + target.name);
     }
 }

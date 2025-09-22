@@ -10,8 +10,6 @@ public class FloorManager : MonoBehaviour
     public List<GameObject> enemyPrefabsForThisFloor; 
     public List<Transform> enemySpawnPoints;
 
-    private GameObject player;
-
     void Start()
     {
         SpawnPlayer();
@@ -20,10 +18,10 @@ public class FloorManager : MonoBehaviour
 
     void SpawnPlayer()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
 
         // player persists across floors, check if it already exists 
-        if (player == null)
+        if (player != null)
         {
             player.transform.position = playerSpawnPoint.position;
             player.transform.rotation = playerSpawnPoint.rotation;

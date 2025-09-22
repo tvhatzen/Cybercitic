@@ -33,6 +33,6 @@ public class CombatManager : MonoBehaviour
 
     void Start(){
         // instantiate player
-        Instantiate(Resources.Load("Player"), new Vector3(0, 0, 0), Quaternion.identity);
+        //Instantiate(Resources.Load("Player"), new Vector3(0, 0, 0), Quaternion.identity);
     }
 }

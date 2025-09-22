@@ -3,15 +3,15 @@ using UnityEngine.InputSystem;
 using UnityEngine.Windows;
 using System;
 
-public class InputManager : MonoBehaviour, Input.IPlayerActions
+public class InputManager : MonoBehaviour, InputSystem_Actions.IPlayerActions
 {
-    private Input input;
+    private InputSystem_Actions input;
     void Awake()
     {
         try
         {
-            input = new Input();
-            input.player.SetCallbacks(this);
+            input = new InputSystem_Actions();
+            input.Player.SetCallbacks(this);
         }
         catch (Exception exception)
         {
@@ -23,30 +23,62 @@ public class InputManager : MonoBehaviour, Input.IPlayerActions
     public event Action skill2InputEvent;
     public event Action skill3InputEvent;
 
-    void Input.IPlayerActions.OnSkill1(InputAction.CallbackContext context)
+    void InputSystem_Actions.IPlayerActions.OnSkill1(InputAction.CallbackContext context)
     {
-        if (context.started) skill1InputEvent?.Invoke();
+        if (context.started)
+        {
+            skill1InputEvent?.Invoke();
+            Debug.Log("Skill 1 started");
+        }
     }
 
-    void Input.IPlayerActions.OnSkill2(InputAction.CallbackContext context)
+    void InputSystem_Actions.IPlayerActions.OnSkill2(InputAction.CallbackContext context)
     {
-        if (context.started) skill2InputEvent?.Invoke();
+        if (context.started)
+        {
+            skill2InputEvent?.Invoke();
+            Debug.Log("Skill 2 started");
+        }
     }
 
-    void Input.IPlayerActions.OnSkill3(InputAction.CallbackContext context)
+    void InputSystem_Actions.IPlayerActions.OnSkill3(InputAction.CallbackContext context)
     {
-        if (context.started) skill3InputEvent?.Invoke();
+        if (context.started)
+        {
+            skill3InputEvent?.Invoke();
+            Debug.Log("Skill 3 started");
+        }
     }
 
     void OnEnable()
     {
         if (input != null)
-            input.player.Enable();
+            input.Player.Enable();
     }
 
     void OnDestroy()
     {
         if (input != null)
-            input.player.Disable();
+            input.Player.Disable();
+    }
+
+    public void OnMove(InputAction.CallbackContext context)
+    {
+        Debug.Log("On Move");
+    }
+
+    public void OnAttack(InputAction.CallbackContext context)
+    {
+        Debug.Log("On Attack");
+    }
+
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        Debug.Log("On Interact");
+    }
+
+    public void OnSelect(InputAction.CallbackContext context)
+    {
+        throw new NotImplementedException();
     }
 }

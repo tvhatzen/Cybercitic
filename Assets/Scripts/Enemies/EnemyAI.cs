@@ -2,15 +2,19 @@ using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    private void Awake()
     {
-        
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    // Update is called once per frame
-    void Update()
+void Attack()
     {
-        
+
+    }
+
+    void Die()
+    {
+
     }
 }

@@ -39,11 +39,11 @@ public class PlayerController : MonoBehaviour
                 // enter combat
                 inCombat = true;
                 currentEnemy = hits[0].transform;
-                GameEvents.PlayerEnteredCombat(currentEnemy);
+                GameEvents.PlayerEnteredCombat(currentEnemy); 
             }
 
             // attack automatically
-            GameEvents.PlayerAttack(currentEnemy);
+            GameEvents.PlayerAttack(currentEnemy); // apply attack cooldown here
         }
         else
         {
