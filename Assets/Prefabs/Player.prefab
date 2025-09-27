@@ -10,10 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 5781737063218651057}
   - component: {fileID: 4475478415844549348}
+  - component: {fileID: 7323873510990202161}
   - component: {fileID: -5762853995267359531}
   - component: {fileID: 5669860155023522084}
   - component: {fileID: 5544270215821477331}
-  - component: {fileID: 7323873510990202161}
+  - component: {fileID: 5912712985965815511}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -91,6 +92,27 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!65 &7323873510990202161
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1431616184263147312}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.16, y: 0.16, z: 0.2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &-5762853995267359531
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -106,7 +128,7 @@ MonoBehaviour:
   moveSpeed: 3
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   combatCheckRadius: 2
 --- !u!114 &5669860155023522084
 MonoBehaviour:
@@ -132,24 +154,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f81d7b24ad65bd42a530d2d8e77fcb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!65 &7323873510990202161
-BoxCollider:
+--- !u!114 &5912712985965815511
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1431616184263147312}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.16, y: 0.16, z: 0.2}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18c9816d3d648ed438d2301878985472, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHealth: 0
+  maxHealth: 100
+  damagePerHit: 10

@@ -2,11 +2,11 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
-public class PlayerInstance : MonoBehaviour
+public class PlayerInstance : SingletonBase<GameManager>
 {
     private static PlayerInstance instance;
 
-    void Awake()
+    protected override void Awake()
     {
         if (instance != null && instance != this)
         {

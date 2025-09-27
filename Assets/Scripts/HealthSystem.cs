@@ -1,25 +1,41 @@
 using UnityEngine;
+using System;
 
 public class HealthSystem : MonoBehaviour
 {
     [SerializeField] private int currentHealth;
-    [SerializeField] private int maxHealth;
+    [SerializeField] private int maxHealth = 100;
+    [SerializeField] private int damagePerHit = 10;
 
-    [SerializeField] private int damage;
+    public int CurrentHealth => currentHealth;
+    public int DamagePerHit => damagePerHit;
 
-
-    private void Initialize()
+    public event Action<HealthSystem> OnDeath; // notify when this entity dies
+    public static event Action<GameObject> OnAnyDeath; // global death flag for any death
+    public event Action<int> OnHealthChanged; // notify UI elements
+    
+    private void Awake()
     {
-        
+        currentHealth = maxHealth; // set health
     }
 
-    void TakeDamage(GameObject entity)
+    public void TakeDamage(int amount)
     {
+        currentHealth -= amount;
+        Debug.Log(name + " takes " + amount + " damage. HP: " + currentHealth);
+        OnHealthChanged?.Invoke(currentHealth);
 
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
     }
 
-    void Die(GameObject entity)
+    private void Die()
     {
-
+        Debug.Log(name + " died!");
+        GameEvents.EntityDied(this);
+        OnAnyDeath?.Invoke(gameObject); 
+        Destroy(gameObject); // Do death animation eventually
     }
 }

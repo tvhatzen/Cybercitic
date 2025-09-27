@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
-public class FloorManager : MonoBehaviour
+public class FloorManager : SingletonBase<FloorManager>
 {
     [Header("Player")]
     public Transform playerSpawnPoint;
@@ -10,8 +11,14 @@ public class FloorManager : MonoBehaviour
     public List<GameObject> enemyPrefabsForThisFloor; 
     public List<Transform> enemySpawnPoints;
 
+    // event to tell others when an enemy appears
+    public static event Action<GameObject> OnEnemySpawned;
+
     void Start()
     {
+        // start in gameplay (for now)
+        UIManager.Instance.ShowScreen(UIManager.MenuScreen.Gameplay);
+
         SpawnPlayer();
         SpawnEnemies();
     }
@@ -27,21 +34,22 @@ public class FloorManager : MonoBehaviour
             player.transform.rotation = playerSpawnPoint.rotation;
         }
         else
-        {
             Debug.LogError("Player Instance not found.");
-        }
     }
 
     void SpawnEnemies()
     {
-        foreach (Transform point in enemySpawnPoints)
+        for (int i = 0; i < enemySpawnPoints.Count; i++)
         {
-            // spawn assigned enemy prefab
-            int index = enemySpawnPoints.IndexOf(point);
-            if (index < enemyPrefabsForThisFloor.Count)
+            if (i < enemyPrefabsForThisFloor.Count)
             {
-                GameObject prefab = enemyPrefabsForThisFloor[index];
-                Instantiate(prefab, point.position, point.rotation);
+                GameObject prefab = enemyPrefabsForThisFloor[i];
+                Transform point = enemySpawnPoints[i];
+
+                var enemy = Instantiate(prefab, point.position, point.rotation);
+                
+                // fire event for each enemy
+                OnEnemySpawned?.Invoke(enemy);
             }
         }
     }

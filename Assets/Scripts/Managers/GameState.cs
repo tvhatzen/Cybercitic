@@ -7,6 +7,12 @@ public class PlayerStsteMachine : MonoBehaviour
     // manager for state machine
     // turn menus on/off for different states the player decides
 
+    [Header("References")]
+    [SerializeField] private UIManager uiManager;
+    [SerializeField] private FloorManager floorManager;
+    [SerializeField] private AudioManager audioManager;
+
+
     public enum GameState
     {
         MainMenu_state,

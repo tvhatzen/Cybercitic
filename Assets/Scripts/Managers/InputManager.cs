@@ -12,6 +12,7 @@ public class InputManager : MonoBehaviour, InputSystem_Actions.IPlayerActions
         {
             input = new InputSystem_Actions();
             input.Player.SetCallbacks(this);
+            input.Player.Enable();
         }
         catch (Exception exception)
         {
@@ -19,20 +20,33 @@ public class InputManager : MonoBehaviour, InputSystem_Actions.IPlayerActions
         }
     }
 
+
     public event Action skill1InputEvent;
     public event Action skill2InputEvent;
     public event Action skill3InputEvent;
+    public event Action interactInputEvent;
 
-    void InputSystem_Actions.IPlayerActions.OnSkill1(InputAction.CallbackContext context)
+    public event Action<InputAction.CallbackContext> Skill1InputEvent;
+    public event Action<InputAction.CallbackContext> Skill2InputEvent;
+    public event Action<InputAction.CallbackContext> Skill3InputEvent;
+    public event Action<InputAction.CallbackContext> InteractInputEvent;
+
+    #region Callbacks
+
+    public void OnSkill1(InputAction.CallbackContext context)
     {
         if (context.started)
         {
             skill1InputEvent?.Invoke();
             Debug.Log("Skill 1 started");
         }
+        if (context.performed)
+        {
+         // pass skill usage logic    
+        }
     }
 
-    void InputSystem_Actions.IPlayerActions.OnSkill2(InputAction.CallbackContext context)
+    public void OnSkill2(InputAction.CallbackContext context)
     {
         if (context.started)
         {
@@ -41,7 +55,7 @@ public class InputManager : MonoBehaviour, InputSystem_Actions.IPlayerActions
         }
     }
 
-    void InputSystem_Actions.IPlayerActions.OnSkill3(InputAction.CallbackContext context)
+    public void OnSkill3(InputAction.CallbackContext context)
     {
         if (context.started)
         {
@@ -49,6 +63,19 @@ public class InputManager : MonoBehaviour, InputSystem_Actions.IPlayerActions
             Debug.Log("Skill 3 started");
         }
     }
+
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        
+        Debug.Log("On Interact");
+    }
+
+    public void OnSelect(InputAction.CallbackContext context)
+    {
+        Debug.Log("On selected");
+    }
+
+    #endregion
 
     void OnEnable()
     {
@@ -62,23 +89,5 @@ public class InputManager : MonoBehaviour, InputSystem_Actions.IPlayerActions
             input.Player.Disable();
     }
 
-    public void OnMove(InputAction.CallbackContext context)
-    {
-        Debug.Log("On Move");
-    }
-
-    public void OnAttack(InputAction.CallbackContext context)
-    {
-        Debug.Log("On Attack");
-    }
-
-    public void OnInteract(InputAction.CallbackContext context)
-    {
-        Debug.Log("On Interact");
-    }
-
-    public void OnSelect(InputAction.CallbackContext context)
-    {
-        throw new NotImplementedException();
-    }
+    
 }
