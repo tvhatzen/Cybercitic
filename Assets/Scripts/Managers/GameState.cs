@@ -1,86 +1,136 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerStsteMachine : MonoBehaviour
+public class GameState : SingletonBase<GameState>
 {
-    // manager for state machine
-    // turn menus on/off for different states the player decides
-
-    [Header("References")]
-    [SerializeField] private UIManager uiManager;
-    [SerializeField] private FloorManager floorManager;
-    [SerializeField] private AudioManager audioManager;
-
-
-    public enum GameState
+    public enum GameStates
     {
-        MainMenu_state,
-        Gameplay_state,
-        PauseMenu_state,
-        GameOver_state
+        MainMenu,
+        Tutorial,
+        Playing,
+        Paused,
+        Upgrade,
+        Results,
+        Win,
+        Lose
     }
-    public GameState currentState { get; private set; }
+    public static event Action<GameStates> OnGameStateChanged;
+    public GameStates CurrentState { get; private set; }
+
+    [Header("Debug")]
     [SerializeField] private string currentStateDebug; // store state to string for debugging
     [SerializeField] private string lastStateDebug; // store state to string for debugging
 
+    private bool tutorialShown = false;
+
+    [Header("References")]
+    [SerializeField] private FloorManager floorManager;
+
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+
     private void Start()
     {
-        ChangeState(GameState.MainMenu_state);
+        StartCoroutine(InitializeState());
     }
-    public void ChangeState(GameState newState)
-    {
-        lastStateDebug = currentState.ToString(); // store current state as last state
-        currentState = newState;// set new state to change to (passed in as parameter)
 
-        HandleStateChange(newState); // Initiate state change
-        currentStateDebug = currentState.ToString(); // Store the new state as the current state
-    }
-    private void Update()
+    private IEnumerator InitializeState()
     {
-        if (currentState == GameState.MainMenu_state && Input.GetKeyDown(KeyCode.Space)) // MAIN MENU -> GAMEPLAY
+        yield return null; // wait one frame
+        ChangeState(GameStates.MainMenu);
+    }
+
+    public void StartFromMainMenu()
+    {
+        if (!tutorialShown)
         {
-            ChangeState(GameState.Gameplay_state);
+            tutorialShown = true;
+            ChangeState(GameStates.Tutorial);
         }
-
-        if (Input.GetKeyDown(KeyCode.Escape)) // GAMEPLAY -> PAUSE -> GAMEPLAY
+        else
         {
-            // check if in gameplay 
-            if (currentState == GameState.Gameplay_state)
-            {
-                ChangeState(GameState.PauseMenu_state); // switch from gameplay to pause menu
-            }
-            else if (currentState == GameState.PauseMenu_state)
-            {
-                ChangeState(GameState.Gameplay_state); // switch from pause menu to gameplay
-            }
+            StartGameplay();
         }
+    
     }
-    private void HandleStateChange(GameState state)
-    {
-        switch (state)
-        { // switching between game states
 
-            case GameState.MainMenu_state:
-                Debug.Log("Switched to Main Menu State!");
-                // Instructions for state here...
-                Time.timeScale = 1f;
-                break;
-            case GameState.Gameplay_state:
-                Debug.Log("Switched to Gameplay State!");
-                // Instructions for state here...
-                Time.timeScale = 1f;
-                break;
-            case GameState.PauseMenu_state:
-                Debug.Log("Switched to Pause Menu State!");
-                // Instructions for state here...
-                Time.timeScale = 0f;
-                break;
-            case GameState.GameOver_state:
-                Debug.Log("Switched to Game Over State!");
-                // Instructions for state here...
-                Time.timeScale = 1f;
-                break;
+    public void FinishTutorial()
+    {
+        // reset floor and player
+        if (floorManager != null) floorManager.ResetToFloor1();
+
+        // immediately reset player and start gameplay
+        ResetPlayer();
+        ChangeState(GameStates.Playing);
+    
+    
+    }
+
+    public void StartGameplay(bool fromDeath = false)
+    {
+        // prevent tutorial if respawning from death
+        if (fromDeath)
+            tutorialShown = true;
+
+        if (floorManager != null)
+            floorManager.ResetToFloor1(); // also respawns player
+
+        // change state to playing
+        ChangeState(GameStates.Playing);
+    
+    }
+
+    public void OnPlayerDeath()
+    {
+        Debug.Log("Player died — switching to Results screen");
+
+        // force game state to Results
+        ChangeState(GameStates.Results);
+    
+    }
+
+    public void OnBossDeath()
+    {
+        Debug.Log("Boss died — switching to Win screen");
+
+        ChangeState(GameStates.Win);
+    }
+
+    private void ResetPlayer()
+    {
+        var playerGO = PlayerInstance.Instance?.gameObject;
+        if (playerGO == null)
+        {
+            Debug.LogError("PlayerInstance singleton not found!");
+            return;
         }
+
+        // Reset health
+        var health = playerGO.GetComponent<HealthSystem>();
+        if (health != null) health.ResetHealth();
+
+        // Reset position
+        var movement = playerGO.GetComponent<PlayerMovement>();
+        if (movement != null && floorManager != null)
+            movement.ResetToSpawn(floorManager.playerSpawnPoint);
+
+    }
+
+
+    public void ChangeState(GameStates newState)
+    {
+        if (CurrentState == newState) return;
+
+        lastStateDebug = CurrentState.ToString();
+        CurrentState = newState;
+        currentStateDebug = CurrentState.ToString();
+
+        Debug.Log($"Game state changed: {lastStateDebug} -> {currentStateDebug}");
+
+        OnGameStateChanged?.Invoke(newState);
     }
 }

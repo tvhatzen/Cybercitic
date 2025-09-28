@@ -2,19 +2,12 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
-public class PlayerInstance : SingletonBase<GameManager>
+public class PlayerInstance : SingletonBase<PlayerInstance>
 {
-    private static PlayerInstance instance;
-
     protected override void Awake()
     {
-        if (instance != null && instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        base.Awake(); 
 
-        instance = this;
         DontDestroyOnLoad(gameObject);
     }
 }

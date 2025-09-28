@@ -2,11 +2,14 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class FloorManager : SingletonBase<FloorManager>
 {
     [Header("Player")]
+    public GameObject playerPrefab;
     public Transform playerSpawnPoint;
+    
 
     [Header("Enemies")]
     public List<GameObject> enemyPrefabsForThisFloor; 
@@ -33,44 +36,81 @@ public class FloorManager : SingletonBase<FloorManager>
     void Start()
     {
         // start in gameplay (for now)
-        UIManager.Instance.ShowScreen(UIManager.MenuScreen.Gameplay);
+        //GameState.Instance.ChangeState(GameState.GameStates.Playing);
 
-        SpawnPlayer();
+        StartCoroutine(SpawnPlayerCoroutine());
         SpawnEnemies();
     }
 
     public void LoadNextFloor()
     {
-        CurrentFloor++;
+        CurrentFloor = 1;
         OnFloorChanged?.Invoke(CurrentFloor);
 
-        // spawn player
-        SpawnPlayer();
+        // reset player using singleton
+        StartCoroutine(SpawnPlayerCoroutine());
 
-        // spawn enemies 
+        // spawn enemies for the floor
         SpawnEnemies();
+    }
+
+    public void ResetToFloor1()
+    {
+        CurrentFloor = 1;
+        Debug.Log("Resetting to Floor 1");
+
+        // respawn player & enemies
+        StartCoroutine(SpawnPlayerCoroutine());
+
+        // spawn enemies
+        SpawnEnemies();
+
+        OnFloorChanged?.Invoke(CurrentFloor);
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         // reset player position whenever a new floor scene loads
-        SpawnPlayer();
+        StartCoroutine(SpawnPlayerCoroutine());
         SpawnEnemies();
     }
 
-    void SpawnPlayer()
+    public IEnumerator SpawnPlayerCoroutine()
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        
+        // wait until PlayerInstance exists
+        while (PlayerInstance.Instance == null)
+            yield return null;
 
-        // player persists across floors, check if it already exists 
-        if (player != null)
+        GameObject playerGO = PlayerInstance.Instance?.gameObject;
+        
+        if (playerGO == null)
         {
-            var movement = player.GetComponent<PlayerMovement>();
-            if (movement != null)
-                movement.ResetToSpawn(playerSpawnPoint);
+            if (playerPrefab != null)
+            {
+                GameObject newPlayer = Instantiate(playerPrefab, playerSpawnPoint.position, playerSpawnPoint.rotation);
+                playerGO = newPlayer;
+            }
+            else
+            {
+                Debug.LogError("No Player prefab assigned to FloorManager!");
+                yield break;
+            }
         }
-        else
-            Debug.LogError("Player Instance not found.");
+
+        playerGO.SetActive(true);
+        
+        // Reset position
+        var movement = playerGO.GetComponent<PlayerMovement>();
+        if (movement != null)
+            movement.ResetToSpawn(playerSpawnPoint);
+
+        // Reset health
+        var health = playerGO.GetComponent<HealthSystem>();
+        if (health != null)
+            health.ResetHealth();
+
+        playerGO.SetActive(true);
     }
 
     void SpawnEnemies()

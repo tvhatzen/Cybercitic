@@ -651,11 +651,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d97c8ffe5b88db4dba543568fcf4364, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiParentCanvas: {fileID: 2013138922}
-  healthBarPrefab: {fileID: 2295046399595158862, guid: 377e57dfc19ccf142bf3076074bcceec, type: 3}
   foregroundBar: {fileID: 971704168}
   offset: {x: 0, y: 2, z: 0}
   followEntity: 1
+  worldSpaceCanvas: {fileID: 0}
 --- !u!114 &437134055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -668,7 +667,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e237d36bc3d16d44884f5c541ee1c0c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screenState: 0
   mainMenuUI: {fileID: 227870685}
   pauseUI: {fileID: 1553956648}
   upgradeUI: {fileID: 710121401}
@@ -676,7 +674,7 @@ MonoBehaviour:
   gameplayUI: {fileID: 1465745338}
   winUI: {fileID: 1465745338}
   loseUI: {fileID: 1465745338}
-  noneUI: {fileID: 1465745338}
+  tutorialUI: {fileID: 0}
 --- !u!1 &495511307
 GameObject:
   m_ObjectHideFlags: 0
@@ -721,15 +719,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8545e6164797720429bacb7fed5dfec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 1431616184263147312, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
   playerSpawnPoint: {fileID: 1759367129}
   enemyPrefabsForThisFloor:
-  - {fileID: 150106152159008451, guid: d7120f27bc6ce4148b12f617ca3d83a1, type: 3}
-  - {fileID: 150106152159008451, guid: d7120f27bc6ce4148b12f617ca3d83a1, type: 3}
-  - {fileID: 150106152159008451, guid: d7120f27bc6ce4148b12f617ca3d83a1, type: 3}
+  - {fileID: 4060379348875191879, guid: 029b3d4fc54acbe48950001290aeaac7, type: 3}
   enemySpawnPoints:
   - {fileID: 1334465389}
-  - {fileID: 620252182}
-  - {fileID: 555019184}
 --- !u!1001 &501968671
 PrefabInstance:
   m_ObjectHideFlags: 0

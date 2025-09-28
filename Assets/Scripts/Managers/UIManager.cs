@@ -1,12 +1,11 @@
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class UIManager : SingletonBase<UIManager>
 {
     public enum MenuScreen
     {
         MainMenu,
+        Tutorial,
         Pause,
         Upgrade,
         Results,
@@ -16,8 +15,6 @@ public class UIManager : SingletonBase<UIManager>
         None
     }
 
-    public MenuScreen screenState;
-
     [Header("UI Objects")]
     public GameObject mainMenuUI;
     public GameObject pauseUI;
@@ -26,74 +23,105 @@ public class UIManager : SingletonBase<UIManager>
     public GameObject gameplayUI;
     public GameObject winUI;
     public GameObject loseUI;
-    public GameObject noneUI;
+    public GameObject tutorialUI;
 
-    private MenuScreen currentScreen = MenuScreen.None;
+    private bool tutorialShown = false;
 
-    protected override void Awake()
+    private void Awake()
     {
         base.Awake();
 
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        mainMenuUI.SetActive(true);
+        gameplayUI.SetActive(true);
+        pauseUI.SetActive(true);
+        upgradeUI.SetActive(true);
+        resultsUI.SetActive(true);
+        winUI.SetActive(true);
+        loseUI.SetActive(true);
+
+        // Then immediately hide them all
+        ShowScreen(MenuScreen.MainMenu, 0f);
+
+        GameState.OnGameStateChanged += HandleGameStateChanged;
     }
 
-    private void OnDestroy() => SceneManager.sceneLoaded -= OnSceneLoaded;
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    private void OnDestroy()
     {
-        // By default show gameplay HUD in all gameplay scenes named Level
-        if (scene.name.StartsWith("Level")) { ShowScreen(MenuScreen.Gameplay); }
-        else if (scene.name == "MainMenu") { ShowScreen(MenuScreen.MainMenu); }
-        else if (scene.name == "GameWin") { ShowScreen(MenuScreen.WinGame); }
-        else if (scene.name == "GameOver") { ShowScreen(MenuScreen.LoseGame); }
-        else { ShowScreen(MenuScreen.None); }
-    }
-    
-    public void ShowScreen(MenuScreen screen)
-    {
-        // hide all
-        HideAllUI(noneUI);
-
-        // show chosen
-        switch (screen)
-        {
-            case MenuScreen.MainMenu: HideAllUI(mainMenuUI); ; break;
-            case MenuScreen.Pause: HideAllUI(pauseUI); ; break;
-            case MenuScreen.Upgrade: HideAllUI(upgradeUI); ; break;
-            case MenuScreen.Results: HideAllUI(resultsUI); ; break;
-            case MenuScreen.Gameplay: HideAllUI(gameplayUI); ; break;
-            case MenuScreen.WinGame: HideAllUI(winUI); ; break;
-            case MenuScreen.LoseGame: HideAllUI(loseUI); ; break;
-            case MenuScreen.None: break;
-        }
-
-        currentScreen = screen;
+        GameState.OnGameStateChanged -= HandleGameStateChanged;
     }
 
-    public void TogglePauseMenu()
+    private void HandleGameStateChanged(GameState.GameStates state)
     {
-        if (currentScreen == MenuScreen.Pause)
+        switch (state)
         {
-            ShowScreen(MenuScreen.Gameplay);
-            Time.timeScale = 1f;
-        }
-        else
-        {
-            ShowScreen(MenuScreen.Pause);
-            Time.timeScale = 0f;
+            case GameState.GameStates.MainMenu: ShowScreen(MenuScreen.MainMenu, 0f); break;
+            case GameState.GameStates.Tutorial: ShowScreen(MenuScreen.Tutorial, 1f); break;
+            case GameState.GameStates.Playing: ShowScreen(MenuScreen.Gameplay, 1f); break;
+            case GameState.GameStates.Paused: ShowScreen(MenuScreen.Pause, 0f); break;
+            case GameState.GameStates.Upgrade: ShowScreen(MenuScreen.Upgrade, 0f); break;
+            case GameState.GameStates.Results: ShowScreen(MenuScreen.Results, 0f); break;
+            case GameState.GameStates.Win: ShowScreen(MenuScreen.WinGame, 0f); break;
+            case GameState.GameStates.Lose: ShowScreen(MenuScreen.LoseGame, 0f); break;
+            default: ShowScreen(MenuScreen.None, 1f); break;
         }
     }
 
-    public void HideAllUI(GameObject ActiveUI)
+    private void ShowScreen(MenuScreen screen, float timescale)
     {
-        resultsUI.SetActive(false);
-        upgradeUI.SetActive(false);
-        mainMenuUI.SetActive(false);
-        gameplayUI.SetActive(false);
-        pauseUI.SetActive(false);
-        loseUI.SetActive(false);
-        winUI.SetActive(false);
-        noneUI.SetActive(false);
-        ActiveUI.SetActive(true);
+        mainMenuUI.SetActive(screen == MenuScreen.MainMenu);
+        tutorialUI.SetActive(screen == MenuScreen.Tutorial);
+        gameplayUI.SetActive(screen == MenuScreen.Gameplay);
+        pauseUI.SetActive(screen == MenuScreen.Pause);
+        upgradeUI.SetActive(screen == MenuScreen.Upgrade);
+        resultsUI.SetActive(screen == MenuScreen.Results);
+        winUI.SetActive(screen == MenuScreen.WinGame);
+        loseUI.SetActive(screen == MenuScreen.LoseGame);
+
+        // only scale time if gameplay screen, else normal time
+        Time.timeScale = timescale;
+
+        Debug.Log($"Showing screen: {screen}");
     }
+
+    #region Public Menu Buttons
+
+    public void TogglePause()
+    {
+        if (GameState.Instance.CurrentState == GameState.GameStates.Playing)
+            GameState.Instance.ChangeState(GameState.GameStates.Paused);
+        else if (GameState.Instance.CurrentState == GameState.GameStates.Paused)
+            GameState.Instance.ChangeState(GameState.GameStates.Playing);
+    }
+
+    public void StartGameFromMainMenu()
+    {
+        GameState.Instance.StartFromMainMenu();
+
+    }
+
+    public void FinishTutorialAndStartGame()
+    {
+        Debug.Log("Tutorial button pressed!");
+        GameState.Instance.FinishTutorial();
+    }
+
+    public void RestartAfterDeath()
+    {
+        // Player clicked to retry after death
+        GameState.Instance.StartGameplay(fromDeath: true);
+    }
+
+
+    public void GoToMenu() => GameState.Instance.ChangeState(GameState.GameStates.MainMenu);
+
+    public void ResumeGame()
+    {
+        GameState.Instance.ChangeState(GameState.GameStates.Playing);
+        Debug.Log("resumed game");
+    } 
+    public void GoToUpgrade() => GameState.Instance.ChangeState(GameState.GameStates.Upgrade);
+    public void ShowResults() => GameState.Instance.ChangeState(GameState.GameStates.Results);
+    public void QuitGame() => Application.Quit();
+
+    #endregion
 }

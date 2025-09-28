@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using TMPro;
+using System.Collections;
 
 public class HealthSystem : MonoBehaviour
 {
@@ -16,28 +17,46 @@ public class HealthSystem : MonoBehaviour
     public static event Action<GameObject> OnAnyDeath; // global death flag for any death
     public event Action<int> OnHealthChanged; // notify UI elements
 
-    [Header("UI")]
-    //[SerializeField] private GameObject healthBarPrefab; 
-    //[SerializeField] private Transform uiParentCanvas; 
+    [Header("Health Bar UI")]
     [SerializeField] private TextMeshProUGUI healthText;
 
-    private HealthBar_UI healthBarUI;
+
+    [Header("Damage Flash Settings")]
+    [SerializeField] private SpriteRenderer spriteRenderer; 
+    [SerializeField] private Color flashColor = Color.red;
+    [SerializeField] private float flashDuration = 0.1f;
+
+    private Color originalColor;
 
     private void Awake()
     {
         currentHealth = maxHealth; // set health
+        UpdateHealthText();
     }
 
     void Update()
     {
-        healthText.text = "HP: " + currentHealth + " / " + maxHealth;
+         if (healthText != null)
+        {
+            // make text face the camera
+            healthText.transform.rotation = Quaternion.LookRotation(
+                healthText.transform.position - Camera.main.transform.position
+            );
+        }
     }
 
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
         Debug.Log(name + " takes " + amount + " damage. HP: " + currentHealth);
+
         OnHealthChanged?.Invoke(currentHealth);
+        UpdateHealthText();
+
+        if (spriteRenderer != null)
+        {
+            StartCoroutine(FlashSprite());
+        }
 
         if (currentHealth <= 0)
         {
@@ -45,11 +64,62 @@ public class HealthSystem : MonoBehaviour
         }
     }
 
+    private IEnumerator FlashSprite()
+    {
+        spriteRenderer.color = flashColor;
+        yield return new WaitForSeconds(flashDuration);
+        spriteRenderer.color = originalColor;
+    }
+
+    private void UpdateHealthText()
+    {
+        if (healthText != null)
+        {
+            healthText.text = $"HP: {currentHealth} / {maxHealth}";
+        }
+    }
+
+    public void SetHealth(int health)
+    {
+        currentHealth = health;
+
+        // Update health UI
+        OnHealthChanged?.Invoke(health);
+        UpdateHealthText();
+    }
+
+    public void ResetHealth()
+    {
+        currentHealth = maxHealth;
+        OnHealthChanged?.Invoke(currentHealth);
+        UpdateHealthText();
+    }
+
     private void Die()
     {
         Debug.Log(name + " died!");
+
+        OnDeath?.Invoke(this);
+        OnAnyDeath?.Invoke(gameObject);
+
         GameEvents.EntityDied(this);
-        OnAnyDeath?.Invoke(gameObject); 
-        Destroy(gameObject); // Do death animation eventually
+
+        // if its the player, show Results
+        if (CompareTag("Player"))
+        {
+            // disable player prefab and trigger results
+            gameObject.SetActive(false);
+            GameState.Instance.OnPlayerDeath();
+        }
+        else if (CompareTag("Boss"))
+        {
+            GameState.Instance.OnBossDeath();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
+        //Destroy(gameObject); // Do death animation eventually
     }
 }
