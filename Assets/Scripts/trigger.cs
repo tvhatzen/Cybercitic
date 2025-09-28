@@ -8,8 +8,6 @@ public class trigger : MonoBehaviour
 {
     [Header("Next Floor Settings")]
     public string nextFloorSceneName; // scene to load when triggered
-    private int floorNumber;
-    [SerializeField] private TextMeshProUGUI floorUI;
 
     private void Awake()
     {
@@ -31,10 +29,8 @@ public class trigger : MonoBehaviour
         if (!string.IsNullOrEmpty(nextFloorSceneName))
         {
             SceneManager.LoadScene(nextFloorSceneName);
-            floorNumber++;
-            floorUI.text = "Floor:" + floorNumber.ToString();
+            FloorManager.Instance.LoadNextFloor();
         }
-
         else
             Debug.LogWarning("Next floor scene name not set on trigger!");
     }

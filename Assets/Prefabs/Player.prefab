@@ -180,6 +180,8 @@ MonoBehaviour:
   currentHealth: 0
   maxHealth: 500
   damagePerHit: 20
+  healthBarPrefab: {fileID: 2295046399595158862, guid: 377e57dfc19ccf142bf3076074bcceec, type: 3}
+  uiParentCanvas: {fileID: 0}
 --- !u!114 &7801801497178132509
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1902,7 +1902,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bdefc72e5eb61342a0ff2491ff78e03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextFloorSceneName: level2
+  nextFloorSceneName: level3
 --- !u!65 &1859022185
 BoxCollider:
   m_ObjectHideFlags: 0

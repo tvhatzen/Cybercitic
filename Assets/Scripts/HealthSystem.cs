@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using TMPro;
 
 public class HealthSystem : MonoBehaviour
 {
@@ -14,10 +15,22 @@ public class HealthSystem : MonoBehaviour
     public event Action<HealthSystem> OnDeath; // notify when this entity dies
     public static event Action<GameObject> OnAnyDeath; // global death flag for any death
     public event Action<int> OnHealthChanged; // notify UI elements
-    
+
+    [Header("UI")]
+    //[SerializeField] private GameObject healthBarPrefab; 
+    //[SerializeField] private Transform uiParentCanvas; 
+    [SerializeField] private TextMeshProUGUI healthText;
+
+    private HealthBar_UI healthBarUI;
+
     private void Awake()
     {
         currentHealth = maxHealth; // set health
+    }
+
+    void Update()
+    {
+        healthText.text = "HP: " + currentHealth + " / " + maxHealth;
     }
 
     public void TakeDamage(int amount)

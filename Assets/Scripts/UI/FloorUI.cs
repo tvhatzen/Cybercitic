@@ -1,16 +1,31 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FloorUI : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public TextMeshProUGUI floorText; 
+
+    void OnEnable()
     {
-        
+        FloorManager.OnFloorChanged += UpdateFloorText;
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnDisable()
     {
-        
+        FloorManager.OnFloorChanged -= UpdateFloorText;
+    }
+
+    void Start()
+    {
+        // show initial floor
+        if (FloorManager.Instance != null)
+            UpdateFloorText(FloorManager.Instance.CurrentFloor);
+    }
+
+    private void UpdateFloorText(int floor)
+    {
+        if (floorText != null)
+            floorText.text = $"Floor {floor}";
     }
 }

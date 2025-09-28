@@ -12,6 +12,11 @@ public class FloorManager : SingletonBase<FloorManager>
     public List<GameObject> enemyPrefabsForThisFloor; 
     public List<Transform> enemySpawnPoints;
 
+    // floor number
+    public static event Action<int> OnFloorChanged; // notify UI 
+
+    public int CurrentFloor { get; private set; } = 1;
+
     // event to tell others when an enemy appears
     public static event Action<GameObject> OnEnemySpawned;
 
@@ -24,13 +29,25 @@ public class FloorManager : SingletonBase<FloorManager>
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
-
+    
     void Start()
     {
         // start in gameplay (for now)
         UIManager.Instance.ShowScreen(UIManager.MenuScreen.Gameplay);
 
         SpawnPlayer();
+        SpawnEnemies();
+    }
+
+    public void LoadNextFloor()
+    {
+        CurrentFloor++;
+        OnFloorChanged?.Invoke(CurrentFloor);
+
+        // spawn player
+        SpawnPlayer();
+
+        // spawn enemies 
         SpawnEnemies();
     }
 
