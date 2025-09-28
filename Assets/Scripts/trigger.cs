@@ -1,19 +1,41 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using TMPro;
 
+[RequireComponent(typeof(Collider))]
 public class trigger : MonoBehaviour
 {
-    private SceneManager sceneManager;
+    [Header("Next Floor Settings")]
+    public string nextFloorSceneName; // scene to load when triggered
+    private int floorNumber;
+    [SerializeField] private TextMeshProUGUI floorUI;
 
-    private void OnCollisionEnter(Collision player)
+    private void Awake()
     {
-        GameObject playerobj = GameObject.FindGameObjectWithTag("Player");
-        // reference the player instance instead
-        if (playerobj)
+        Collider col = GetComponent<Collider>();
+        col.isTrigger = true;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
         {
-            Debug.Log("collided with player");
-            SceneManager.LoadScene("level2");
+            Debug.Log($"Player reached floor end! Loading {nextFloorSceneName}");
+            LoadNextFloor();
         }
+    }
+
+    private void LoadNextFloor()
+    {
+        if (!string.IsNullOrEmpty(nextFloorSceneName))
+        {
+            SceneManager.LoadScene(nextFloorSceneName);
+            floorNumber++;
+            floorUI.text = "Floor:" + floorNumber.ToString();
+        }
+
+        else
+            Debug.LogWarning("Next floor scene name not set on trigger!");
     }
 }

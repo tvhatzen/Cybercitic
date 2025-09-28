@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using UnityEngine.SceneManagement;
 
 public class FloorManager : SingletonBase<FloorManager>
 {
@@ -14,11 +15,28 @@ public class FloorManager : SingletonBase<FloorManager>
     // event to tell others when an enemy appears
     public static event Action<GameObject> OnEnemySpawned;
 
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
     void Start()
     {
         // start in gameplay (for now)
         UIManager.Instance.ShowScreen(UIManager.MenuScreen.Gameplay);
 
+        SpawnPlayer();
+        SpawnEnemies();
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // reset player position whenever a new floor scene loads
         SpawnPlayer();
         SpawnEnemies();
     }
@@ -30,8 +48,9 @@ public class FloorManager : SingletonBase<FloorManager>
         // player persists across floors, check if it already exists 
         if (player != null)
         {
-            player.transform.position = playerSpawnPoint.position;
-            player.transform.rotation = playerSpawnPoint.rotation;
+            var movement = player.GetComponent<PlayerMovement>();
+            if (movement != null)
+                movement.ResetToSpawn(playerSpawnPoint);
         }
         else
             Debug.LogError("Player Instance not found.");

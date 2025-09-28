@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,13 +11,20 @@ public class PlayerController : MonoBehaviour
     public LayerMask enemyLayer;
     public float combatCheckRadius = 2f;
 
+    [Tooltip("How long to keep moving to gather nearby enemies before stopping combat")]
+    public float gatherWindowDuration = 0.5f;
+    
     private CharacterController controller;
 
     // list of enemies in range 
     private readonly List<Transform> enemiesInRange = new List<Transform>();
     private List<GameObject> currentEnemies = new List<GameObject>();
     private Transform currentEnemy;
+
+    // combat checks
     private bool inCombat;
+    private bool gatheringEnemies;
+    private Coroutine gatherRoutine;
 
     void Awake() => controller = GetComponent<CharacterController>();
     void OnEnable()
@@ -47,7 +55,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (!inCombat)
+        // only move if not actually in combat, can still move while gathering enemies
+        if (!inCombat || gatheringEnemies)
         {
             // left to right auto move
             transform.position += Vector3.right * moveSpeed * Time.deltaTime;
@@ -59,11 +68,12 @@ public class PlayerController : MonoBehaviour
     private void UpdateCombatState()
     {
         ScanEnemiesInRange();
-        Transform closestEnemy = GetClosestAliveEnemy();
 
-        if (closestEnemy != null)
+        Transform[] enemiesArray = enemiesInRange.ToArray();
+
+        if (enemiesArray.Length > 0)
         {
-            EnterOrContinueCombat(closestEnemy);
+            EnterOrContinueCombat(enemiesArray);
         }
         else
         {
@@ -93,40 +103,37 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Pick the closest alive enemy in range.
-    /// </summary>
-    private Transform GetClosestAliveEnemy()
-    {
-        if (enemiesInRange.Count == 0) return null;
-
-        Transform closest = null;
-        float closestDist = Mathf.Infinity;
-        Vector3 playerPos = transform.position;
-
-        foreach (var e in enemiesInRange)
-        {
-            if (e == null) continue;
-            float dist = Vector3.Distance(playerPos, e.position);
-            if (dist < closestDist)
-            {
-                closestDist = dist;
-                closest = e;
-            }
-        }
-        return closest;
-    }
-
-    /// <summary>
     /// Enter combat with a new enemy or continue with the same one.
     /// </summary>
-    private void EnterOrContinueCombat(Transform enemy)
+    private void EnterOrContinueCombat(Transform[] enemies)
     {
-        if (!inCombat || currentEnemy != enemy)
+        if (!inCombat && !gatheringEnemies)
+        {
+            // Start gather window
+            gatherRoutine = StartCoroutine(GatherEnemiesThenEnterCombat());
+        }
+    }
+
+    private IEnumerator GatherEnemiesThenEnterCombat()
+    {
+        gatheringEnemies = true;
+        float timer = 0f;
+
+        while (timer < gatherWindowDuration)
+        {
+            timer += Time.deltaTime;
+            ScanEnemiesInRange(); // keep updating who’s in range
+            yield return null;
+        }
+
+        // after gather window
+        gatheringEnemies = false;
+
+        if (enemiesInRange.Count > 0)
         {
             inCombat = true;
-            currentEnemy = enemy;
-            Debug.Log($"Entering combat with: {currentEnemy.name}");
-            GameEvents.PlayerEnteredCombat(currentEnemy);
+            Debug.Log($"Entering combat with {enemiesInRange.Count} enemies");
+            GameEvents.PlayerEnteredCombat(enemiesInRange.ToArray());
         }
     }
 
@@ -135,11 +142,12 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void ExitCombatIfNoEnemies()
     {
-        if (inCombat)
+        if (inCombat && !gatheringEnemies && enemiesInRange.Count == 0)
         {
             Debug.Log("No enemies left, exiting combat");
             inCombat = false;
             currentEnemy = null;
+            if (gatherRoutine != null) StopCoroutine(gatherRoutine);
             GameEvents.PlayerExitedCombat();
         }
     }

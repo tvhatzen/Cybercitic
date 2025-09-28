@@ -5,6 +5,7 @@ public class HealthSystem : MonoBehaviour
 {
     [SerializeField] private int currentHealth;
     [SerializeField] private int maxHealth = 100;
+    public int MaxHealth => maxHealth;
     [SerializeField] private int damagePerHit = 10;
 
     public int CurrentHealth => currentHealth;

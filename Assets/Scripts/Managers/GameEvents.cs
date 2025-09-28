@@ -4,7 +4,7 @@ using UnityEngine;
 public class GameEvents : MonoBehaviour
 {
     // when the player enters an enemy’s combat zone
-    public static event Action<Transform> OnPlayerEnterCombat;
+    public static event Action<Transform[]> OnPlayerEnterCombat;
 
     // when the player leaves the combat zone
     public static event Action OnPlayerExitCombat;
@@ -15,17 +15,16 @@ public class GameEvents : MonoBehaviour
     // when any HealthSystem dies
     public static event Action<HealthSystem> OnAnyDeath;
 
-    public static void PlayerEnteredCombat(Transform enemy)
+    public static void PlayerEnteredCombat(Transform[] enemies)
     {
-        if (enemy == null)
+        if (enemies == null || enemies.Length == 0)
         {
             Debug.LogWarning("GameEvents: tried to enter combat with null enemy");
             return;
         }
 
-        OnPlayerEnterCombat?.Invoke(enemy);
-        Debug.Log("GameEvents: on player entered combat with " + enemy.name);
-        //CombatManager.Instance.HandleEnterCombat(enemy);
+        OnPlayerEnterCombat?.Invoke(enemies);
+        Debug.Log("GameEvents: on player entered combat with " + enemies.Length + "enemies");
     }
 
     public static void PlayerExitedCombat()
