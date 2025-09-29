@@ -44,7 +44,7 @@ public class FloorManager : SingletonBase<FloorManager>
 
     public void LoadNextFloor()
     {
-        CurrentFloor = 1;
+        CurrentFloor = CurrentFloor + 1;
         OnFloorChanged?.Invoke(CurrentFloor);
 
         // reset player using singleton

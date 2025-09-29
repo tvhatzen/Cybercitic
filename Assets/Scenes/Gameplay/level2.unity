@@ -774,6 +774,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5912712985965815511, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: maxHealth
+      value: 500
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2789013506845833324, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
     - {fileID: -5762853995267359531, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
@@ -966,6 +970,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8545e6164797720429bacb7fed5dfec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 0}
   playerSpawnPoint: {fileID: 1678910001}
   enemyPrefabsForThisFloor:
   - {fileID: 150106152159008451, guid: d7120f27bc6ce4148b12f617ca3d83a1, type: 3}
@@ -1650,11 +1655,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d97c8ffe5b88db4dba543568fcf4364, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiParentCanvas: {fileID: 631288961}
-  healthBarPrefab: {fileID: 2295046399595158862, guid: 377e57dfc19ccf142bf3076074bcceec, type: 3}
   foregroundBar: {fileID: 949502883}
   offset: {x: 0, y: 2, z: 0}
   followEntity: 1
+  worldSpaceCanvas: {fileID: 0}
 --- !u!114 &1726602903
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1667,7 +1671,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e237d36bc3d16d44884f5c541ee1c0c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screenState: 0
   mainMenuUI: {fileID: 1451702725}
   pauseUI: {fileID: 1088952044}
   upgradeUI: {fileID: 1624742118}
@@ -1675,7 +1678,7 @@ MonoBehaviour:
   gameplayUI: {fileID: 1682698896}
   winUI: {fileID: 1682698896}
   loseUI: {fileID: 1682698896}
-  noneUI: {fileID: 1682698896}
+  tutorialUI: {fileID: 0}
 --- !u!1 &1743417055
 GameObject:
   m_ObjectHideFlags: 0

@@ -22,7 +22,7 @@ public class HealthSystem : MonoBehaviour
 
 
     [Header("Damage Flash Settings")]
-    [SerializeField] private SpriteRenderer spriteRenderer; 
+    [SerializeField] private SpriteRenderer spriteRenderer;  // make multiple for 
     [SerializeField] private Color flashColor = Color.red;
     [SerializeField] private float flashDuration = 0.1f;
 
@@ -64,7 +64,7 @@ public class HealthSystem : MonoBehaviour
         }
     }
 
-    private IEnumerator FlashSprite()
+    private IEnumerator FlashSprite() 
     {
         spriteRenderer.color = flashColor;
         yield return new WaitForSeconds(flashDuration);

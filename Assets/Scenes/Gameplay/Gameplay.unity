@@ -1046,6 +1046,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5912712985965815511, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: maxHealth
+      value: 400
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2232,6 +2236,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2050774742}
   - component: {fileID: 2050774743}
+  - component: {fileID: 2050774744}
   m_Layer: 0
   m_Name: UIManager
   m_TagString: Untagged
@@ -2277,6 +2282,19 @@ MonoBehaviour:
   winUI: {fileID: 2128305464}
   loseUI: {fileID: 2096824644}
   tutorialUI: {fileID: 1504410315}
+--- !u!114 &2050774744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2050774741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb4f8d9d7d7d58e4e95497fd410198a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floorText: {fileID: 862008809}
 --- !u!1 &2096824644
 GameObject:
   m_ObjectHideFlags: 0

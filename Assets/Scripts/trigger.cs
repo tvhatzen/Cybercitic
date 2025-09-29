@@ -35,3 +35,4 @@ public class trigger : MonoBehaviour
             Debug.LogWarning("Next floor scene name not set on trigger!");
     }
 }
+// fire floor chang event 
