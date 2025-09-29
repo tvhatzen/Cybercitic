@@ -15,6 +15,9 @@ public class GameEvents : MonoBehaviour
     // when any HealthSystem dies
     public static event Action<HealthSystem> OnAnyDeath;
 
+    // when purchasing an upgrade 
+    public static event Action<Upgrade> onUpgradePurchased;
+
     public static void PlayerEnteredCombat(Transform[] enemies)
     {
         if (enemies == null || enemies.Length == 0)
@@ -49,5 +52,13 @@ public class GameEvents : MonoBehaviour
 
         Debug.Log($"GameEvents: {hs.name} died!");
         OnAnyDeath?.Invoke(hs);
+    }
+
+    public static void UpgradePurchased(Upgrade upgrade)
+    {
+        if (upgrade == null) return;
+
+        onUpgradePurchased?.Invoke(upgrade);
+        Debug.Log("Upgrade event called for: " + upgrade.name);
     }
 }

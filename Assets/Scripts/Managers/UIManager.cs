@@ -69,7 +69,7 @@ public class UIManager : SingletonBase<UIManager>
     private void ShowScreen(MenuScreen screen, float timescale)
     {
         mainMenuUI.SetActive(screen == MenuScreen.MainMenu);
-        tutorialUI.SetActive(screen == MenuScreen.Tutorial);
+        tutorialUI.SetActive(screen == MenuScreen.Tutorial); // firing a null reference exception on scene change 
         gameplayUI.SetActive(screen == MenuScreen.Gameplay);
         pauseUI.SetActive(screen == MenuScreen.Pause);
         upgradeUI.SetActive(screen == MenuScreen.Upgrade);

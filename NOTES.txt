@@ -2,4 +2,8 @@ Upgrades
 Head - 
 Core - 
 Arms - 
-Legs - 
+Legs - dodge chance, speed
+
+Things to update
+check player floor progress to set health to current health
+account for multiple player sprites to have damage flash

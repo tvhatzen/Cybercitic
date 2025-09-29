@@ -2,15 +2,7 @@ using UnityEngine;
 
 public class PlayerSkills : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    // list of unlocked skills
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    // handle state changes with input
 }

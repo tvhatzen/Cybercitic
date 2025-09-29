@@ -88,7 +88,7 @@ public class HealthSystem : MonoBehaviour
         UpdateHealthText();
     }
 
-    public void ResetHealth()
+    public void ResetHealth() // !!! NOTE: make it so when the player progresses floors, set health to current. when respawning, set to max
     {
         currentHealth = maxHealth;
         OnHealthChanged?.Invoke(currentHealth);

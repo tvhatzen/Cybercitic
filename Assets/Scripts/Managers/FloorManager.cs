@@ -35,9 +35,6 @@ public class FloorManager : SingletonBase<FloorManager>
     
     void Start()
     {
-        // start in gameplay (for now)
-        //GameState.Instance.ChangeState(GameState.GameStates.Playing);
-
         StartCoroutine(SpawnPlayerCoroutine());
         SpawnEnemies();
     }
@@ -108,7 +105,7 @@ public class FloorManager : SingletonBase<FloorManager>
         // Reset health
         var health = playerGO.GetComponent<HealthSystem>();
         if (health != null)
-            health.ResetHealth();
+            health.ResetHealth(); // check if player health is not max / is dead?
 
         playerGO.SetActive(true);
     }
