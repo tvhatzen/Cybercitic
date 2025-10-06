@@ -1,16 +1,11 @@
 using UnityEngine;
 
-public class AudioManager : MonoBehaviour
+public class AudioManager : SingletonBase<AudioManager>
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void PlaySFX(AudioClip clip)
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 }

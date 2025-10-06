@@ -1,23 +1,94 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PlayerStats : SingletonBase<PlayerStats>
 {
-    // money
+    [Header("Base Stats")]
+    [SerializeField] private int baseHealth = 100;
+    [SerializeField] private float baseSpeed = 5f;
+    [SerializeField] private int baseAttack = 10;
+    [SerializeField] private float baseDodgeChance = 0.1f;
 
-    // upgrades unlocked
-    public List<Skill> skills = new List<Skill>();
-    // upgrade levels
-    public List<Upgrade> upgrades = new List<Upgrade>(); // check if i can make a list but use inherited classes
-
-    // stats (speed, health, dodge chance, etc)
+    [Header("Current Stats")]
     public int Health;
     public float speed;
     public int attack;
     public float dodgeChance;
 
-    // have event for stats changed, link with upgrades purchased
+    [Header("Skills and Upgrades")]
+    public List<Skill> skills = new List<Skill>();
+    public List<Upgrade> upgrades = new List<Upgrade>();
 
-    // either make one method taking stat argument, and amount arg
+    public event Action<PlayerStats> OnStatsChanged;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        InitializeStats();
+    }
+
+    private void InitializeStats()
+    {
+        Health = baseHealth;
+        speed = baseSpeed;
+        attack = baseAttack;
+        dodgeChance = baseDodgeChance;
+    }
+
+    // Stat modification methods
+    public void ModifyHealth(int amount)
+    {
+        Health += amount;
+        OnStatsChanged?.Invoke(this);
+        Debug.Log($"Health modified by {amount}. Current: {Health}");
+    }
+
+    public void ModifySpeed(float amount)
+    {
+        speed += amount;
+        OnStatsChanged?.Invoke(this);
+        Debug.Log($"Speed modified by {amount}. Current: {speed}");
+    }
+
+    public void ModifyAttack(int amount)
+    {
+        attack += amount;
+        OnStatsChanged?.Invoke(this);
+        Debug.Log($"Attack modified by {amount}. Current: {attack}");
+    }
+
+    public void ModifyDodgeChance(float amount)
+    {
+        dodgeChance = Mathf.Clamp01(dodgeChance + amount);
+        OnStatsChanged?.Invoke(this);
+        Debug.Log($"Dodge chance modified by {amount}. Current: {dodgeChance}");
+    }
+
+    // Reset all stats to base values
+    public void ResetStats()
+    {
+        InitializeStats();
+        OnStatsChanged?.Invoke(this);
+    }
+
+    // Add skill to the player's skill list
+    public void AddSkill(Skill skill)
+    {
+        if (skill != null && !skills.Contains(skill))
+        {
+            skills.Add(skill);
+            Debug.Log($"Added skill: {skill.name}");
+        }
+    }
+
+    // Remove skill from the player's skill list
+    public void RemoveSkill(Skill skill)
+    {
+        if (skills.Contains(skill))
+        {
+            skills.Remove(skill);
+            Debug.Log($"Removed skill: {skill.name}");
+        }
+    }
 }

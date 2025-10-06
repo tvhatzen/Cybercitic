@@ -1,17 +1,11 @@
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "Core Upgrade", menuName = "Scriptable Objects/Upgrades/Core")]
 public class Core : Upgrade
 {
-    void Start()
+    protected override void ApplyUpgrade()
     {
-        
-    }
-
-    public override void OnPurchase()
-    {
-        base.OnPurchase();
-
-        // increase stats to increase
-        Debug.Log("upgraded core");
+        base.ApplyUpgrade();
+        Debug.Log("Applied Core upgrade - Increased health");
     }
 }

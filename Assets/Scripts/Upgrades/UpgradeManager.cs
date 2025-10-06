@@ -1,16 +1,103 @@
 using UnityEngine;
+using System.Collections.Generic;
+using System;
 
-public class UpgradeManager : MonoBehaviour
+public class UpgradeManager : SingletonBase<UpgradeManager>
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [Header("Available Upgrades")]
+    [SerializeField] private List<Upgrade> allUpgrades = new List<Upgrade>();
+    
+    [Header("Shop Settings")]
+    [SerializeField] private bool unlockAllUpgradesAtStart = false;
+
+    // Events
+    public event Action<Upgrade> OnUpgradePurchased;
+    public event Action<Upgrade> OnUpgradeUnlocked;
+
+    private void Start()
     {
-        
+        InitializeUpgrades();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void InitializeUpgrades()
     {
+        foreach (var upgrade in allUpgrades)
+        {
+            if (upgrade != null)
+            {
+                upgrade.ResetUpgrade();
+                
+                if (unlockAllUpgradesAtStart)
+                {
+                    upgrade.UnlockUpgrade();
+                }
+            }
+        }
+    }
+
+    public List<Upgrade> GetAvailableUpgrades()
+    {
+        return allUpgrades.FindAll(upgrade => upgrade != null && upgrade.isUnlocked);
+    }
+
+    public List<Upgrade> GetAllUpgrades()
+    {
+        return new List<Upgrade>(allUpgrades);
+    }
+
+    public bool PurchaseUpgrade(Upgrade upgrade)
+    {
+        if (upgrade == null) return false;
         
+        bool success = upgrade.PurchaseUpgrade();
+        if (success)
+        {
+            OnUpgradePurchased?.Invoke(upgrade);
+            Debug.Log($"Successfully purchased upgrade: {upgrade.UpgradeName}");
+        }
+        
+        return success;
+    }
+
+    public void UnlockUpgrade(Upgrade upgrade)
+    {
+        if (upgrade == null) return;
+        
+        upgrade.UnlockUpgrade();
+        OnUpgradeUnlocked?.Invoke(upgrade);
+        Debug.Log($"Unlocked upgrade: {upgrade.UpgradeName}");
+    }
+
+    public void UnlockAllUpgrades()
+    {
+        foreach (var upgrade in allUpgrades)
+        {
+            if (upgrade != null)
+            {
+                UnlockUpgrade(upgrade);
+            }
+        }
+    }
+
+    public Upgrade GetUpgradeByName(string upgradeName)
+    {
+        return allUpgrades.Find(upgrade => upgrade != null && upgrade.UpgradeName == upgradeName);
+    }
+
+    // Reset all upgrades 
+    public void ResetAllUpgrades()
+    {
+        foreach (var upgrade in allUpgrades)
+        {
+            if (upgrade != null)
+            {
+                upgrade.ResetUpgrade();
+            }
+        }
+        
+        if (PlayerStats.Instance != null)
+        {
+            PlayerStats.Instance.ResetStats();
+        }
     }
 }

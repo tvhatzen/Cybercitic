@@ -4,20 +4,20 @@ public class EnemyLoot : MonoBehaviour
 {
     [Header("Default Currency Drop")]
     [SerializeField] private GameObject currencyPrefab; 
-    [SerializeField] private int creditsOnDeath = 10;
+    public int creditsOnDeath = 10;
     
     [Header("Additional Loot Drops")]
     [SerializeField] private LootDrop[] possibleDrops;
 
     private HealthSystem health;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         health = GetComponent<HealthSystem>();
         health.OnDeath += HandleDeath;
     }
 
-    private void HandleDeath(HealthSystem hs)
+    protected virtual void HandleDeath(HealthSystem hs)
     {
         if (CurrencyManager.Instance != null)
         {
@@ -45,7 +45,7 @@ public class EnemyLoot : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
+    protected virtual void OnDestroy()
     {
         if (health != null)
             health.OnDeath -= HandleDeath;

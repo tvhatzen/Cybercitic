@@ -1,17 +1,11 @@
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "Arm Upgrade", menuName = "Scriptable Objects/Upgrades/Arm")]
 public class Arm : Upgrade
 {
-    void Start()
+    protected override void ApplyUpgrade()
     {
-        
-    }
-
-    public override void OnPurchase()
-    {
-        base.OnPurchase();
-
-        // increase stats to increase
-        Debug.Log("upgraded arm");
+        base.ApplyUpgrade();
+        Debug.Log("Applied Arm upgrade - Increased attack power");
     }
 }

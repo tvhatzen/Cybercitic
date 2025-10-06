@@ -20,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!CanMove) return;
 
-        // simple auto-move to the right
+        // auto-move to the right
         Vector3 move = Vector3.right * moveSpeed * Time.deltaTime;
         controller.Move(move);
     }

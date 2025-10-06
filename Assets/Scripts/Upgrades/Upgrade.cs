@@ -1,43 +1,97 @@
 using UnityEngine;
+using System;
 
-public class Upgrade : MonoBehaviour 
+[CreateAssetMenu(fileName = "Upgrade", menuName = "Scriptable Objects/Upgrade")]
+public class Upgrade : ScriptableObject 
 {
-    // name 
+    [Header("Upgrade Info")]
     [SerializeField] private string upgradeName;
-    // descriptiom
-    [SerializeField] private string[] description;
-    // cost
-    [SerializeField] private int upgradeCost;
-    // level
-    [SerializeField] private int upgradeLevel;
-    [SerializeField] private int maxUpgradeLevel;
-    [SerializeField] private bool canUpgrade;
-    // stat to upgrade
-    //[SerializeField] private 
-    // percent it upgrades
-    [SerializeField] private float upgradePercent;
-    // icon Locked
-    public Sprite iconLocked;
-    // icon
-    public Sprite icon;
+    [SerializeField] private string upgradeDescription;
+    [SerializeField] private Sprite icon;
+    [SerializeField] private Sprite iconLocked;
+    
+    [Header("Cost and Levels")]
+    [SerializeField] private int baseCost = 100;
+    [SerializeField] private int maxUpgradeLevel = 3;
+    [SerializeField] private float costMultiplier = 1.5f;
+    
+    [Header("Stat Modifications")]
+    [SerializeField] private UpgradeType upgradeType;
+    public float statIncreasePerLevel = 0.1f;
+    
+    // Runtime data
+    [NonSerialized] public int currentLevel = 0;
+    [NonSerialized] public bool isUnlocked = false;
 
-    public virtual void Awake()
+    public enum UpgradeType
     {
-        upgradeLevel = 0;
-        maxUpgradeLevel = 4;
+        Health,
+        Speed,
+        Attack,
+        DodgeChance
     }
 
-    public virtual void OnPurchase()
+    public string UpgradeName => upgradeName;
+    public string Description => upgradeDescription;
+    public Sprite Icon => isUnlocked ? icon : iconLocked;
+    public int CurrentLevel => currentLevel;
+    public int MaxLevel => maxUpgradeLevel;
+    public bool IsMaxLevel => currentLevel >= maxUpgradeLevel;
+    public bool CanUpgrade => currentLevel < maxUpgradeLevel && isUnlocked;
+
+    public int GetCost()
     {
-        Debug.Log("Upgrade button pressed");
-        // increment stat to upgrade, use upgrade cost
-        if (canUpgrade && upgradeLevel != maxUpgradeLevel)
+        if (currentLevel >= maxUpgradeLevel) return int.MaxValue;
+        return Mathf.RoundToInt(baseCost * Mathf.Pow(costMultiplier, currentLevel));
+    }
+
+    public virtual bool PurchaseUpgrade()
+    {
+        if (!CanUpgrade) return false;
+        
+        int cost = GetCost();
+        if (!CurrencyManager.Instance.SpendCredits(cost)) return false;
+        
+        currentLevel++;
+        ApplyUpgrade();
+        
+        GameEvents.UpgradePurchased(this);
+        Debug.Log($"Purchased {upgradeName} level {currentLevel} for {cost} credits");
+        
+        return true;
+    }
+
+    protected virtual void ApplyUpgrade()
+    {
+        if (PlayerStats.Instance == null) return;
+        
+        float statIncrease = statIncreasePerLevel;
+        
+        switch (upgradeType)
         {
-            upgradeLevel++;
-            //GameEvents.UpgradePurchased();
-            Debug.Log("Upgraded skill " + upgradeName);
+            case UpgradeType.Health:
+                PlayerStats.Instance.ModifyHealth(Mathf.RoundToInt(statIncrease * 100));
+                break;
+            case UpgradeType.Speed:
+                PlayerStats.Instance.ModifySpeed(statIncrease);
+                break;
+            case UpgradeType.Attack:
+                PlayerStats.Instance.ModifyAttack(Mathf.RoundToInt(statIncrease * 100));
+                break;
+            case UpgradeType.DodgeChance:
+                PlayerStats.Instance.ModifyDodgeChance(statIncrease);
+                break;
         }
     }
-}
-// need to figure out which upgrade is selected, upgrade only selected one
-// base off mouse input 
+
+    public void ResetUpgrade()
+    {
+        currentLevel = 0;
+        isUnlocked = false;
+    }
+
+    public void UnlockUpgrade()
+    {
+        isUnlocked = true;
+    }
+} 
