@@ -1280,6 +1280,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5912712985965815511, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: maxHealth
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 5912712985965815511, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: damagePerHit
       value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -3073,6 +3077,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -375
       objectReference: {fileID: 0}
+    - target: {fileID: 7738470188244526203, guid: a0d229183b2851346a0f58392d1e6e76, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -110
+      objectReference: {fileID: 0}
     - target: {fileID: 8506765139170170175, guid: a0d229183b2851346a0f58392d1e6e76, type: 3}
       propertyPath: m_Colors.m_PressedColor.b
       value: 0.10866857
@@ -3101,6 +3109,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2050774743}
+    - target: {fileID: 8618872093726986133, guid: a0d229183b2851346a0f58392d1e6e76, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 110
+      objectReference: {fileID: 0}
     - target: {fileID: 8777119630732851343, guid: a0d229183b2851346a0f58392d1e6e76, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1

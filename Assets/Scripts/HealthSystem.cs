@@ -123,3 +123,4 @@ public class HealthSystem : MonoBehaviour
         //Destroy(gameObject); // Do death animation eventually
     }
 }
+// make sure health carries over to other scenes, then on death reset it to max

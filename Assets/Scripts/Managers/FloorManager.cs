@@ -104,7 +104,7 @@ public class FloorManager : SingletonBase<FloorManager>
 
         // Reset health
         var health = playerGO.GetComponent<HealthSystem>();
-        if (health != null)
+        if (health != null && health.CurrentHealth <= 0)
             health.ResetHealth(); // check if player health is not max / is dead?
 
         playerGO.SetActive(true);
