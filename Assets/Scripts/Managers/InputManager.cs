@@ -70,11 +70,6 @@ public class InputManager : MonoBehaviour, InputSystem_Actions.IPlayerActions
         Debug.Log("On Interact");
     }
 
-    public void OnSelect(InputAction.CallbackContext context)
-    {
-        Debug.Log("On selected");
-    }
-
     #endregion
 
     void OnEnable()
@@ -87,7 +82,5 @@ public class InputManager : MonoBehaviour, InputSystem_Actions.IPlayerActions
     {
         if (input != null)
             input.Player.Disable();
-    }
-
-    
+    }  
 }

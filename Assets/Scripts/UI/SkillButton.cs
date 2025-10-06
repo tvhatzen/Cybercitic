@@ -42,7 +42,7 @@ public class SkillButton : MonoBehaviour
                     keyLabel.text = "E";
                     break;
                 case 2:
-                    keyLabel.text = "R";
+                    keyLabel.text = "1";
                     break;
                 case 3:
                     keyLabel.text = "T";
@@ -54,7 +54,7 @@ public class SkillButton : MonoBehaviour
         }
 
         // Initially hide the button (set to true for testing)
-        SetButtonActive(false);
+        SetButtonActive(true);
     }
 
     public void SetSkill(Skill skill)
@@ -81,11 +81,12 @@ public class SkillButton : MonoBehaviour
         return assignedSkill;
     }
 
-    private void OnButtonClicked()
+    public void OnButtonClicked()
     {
         if (assignedSkill != null && PlayerSkills.Instance != null)
         {
             PlayerSkills.Instance.ActivateSkill(slotIndex);
+            Debug.Log("Skill button clicked");
         }
     }
 

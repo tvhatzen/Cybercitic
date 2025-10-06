@@ -84,6 +84,7 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
     public bool ActivateSkill(int skillIndex)
     {
         if (skillIndex < 0 || skillIndex >= equippedSkills.Count) return false;
+        Debug.Log("Activated skill");
         return ActivateSkill(equippedSkills[skillIndex]);
     }
 

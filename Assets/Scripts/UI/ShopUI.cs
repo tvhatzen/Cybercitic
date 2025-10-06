@@ -1,8 +1,9 @@
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using static GameState;
 
 public class ShopUI : MonoBehaviour
 {
@@ -18,6 +19,9 @@ public class ShopUI : MonoBehaviour
 
     private List<GameObject> upgradeButtons = new List<GameObject>();
     private List<Upgrade> availableUpgrades = new List<Upgrade>();
+
+    [Header("Upgrade Skill Slots")]
+    public List<Transform> skillSlots = new List<Transform>();
 
     private void Start()
     {
@@ -175,7 +179,7 @@ public class ShopUI : MonoBehaviour
 
     public void CloseShop()
     {
-        gameObject.SetActive(false);
+        GameState.Instance.ChangeState(GameStates.Results);
     }
 
     public void ToggleShop()

@@ -25,8 +25,6 @@ public class UIManager : SingletonBase<UIManager>
     public GameObject loseUI;
     public GameObject tutorialUI;
 
-    private bool tutorialShown = false;
-
     private void Awake()
     {
         base.Awake();
@@ -55,7 +53,7 @@ public class UIManager : SingletonBase<UIManager>
         switch (state)
         {
             case GameState.GameStates.MainMenu: ShowScreen(MenuScreen.MainMenu, 0f); break;
-            case GameState.GameStates.Tutorial: ShowScreen(MenuScreen.Tutorial, 1f); break;
+            case GameState.GameStates.Tutorial: ShowScreen(MenuScreen.Tutorial, 0f); break;
             case GameState.GameStates.Playing: ShowScreen(MenuScreen.Gameplay, 1f); break;
             case GameState.GameStates.Paused: ShowScreen(MenuScreen.Pause, 0f); break;
             case GameState.GameStates.Upgrade: ShowScreen(MenuScreen.Upgrade, 0f); break;
@@ -96,12 +94,12 @@ public class UIManager : SingletonBase<UIManager>
     public void StartGameFromMainMenu()
     {
         GameState.Instance.StartFromMainMenu();
-
     }
 
     public void FinishTutorialAndStartGame()
     {
         Debug.Log("Tutorial button pressed!");
+        //Time.timeScale = 1f; // need?
         GameState.Instance.FinishTutorial();
     }
 

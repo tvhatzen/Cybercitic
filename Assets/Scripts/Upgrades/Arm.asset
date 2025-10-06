@@ -9,15 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bfa3d6d682718e7459e0070d9b55b627, type: 3}
-  m_Name: Head
+  m_Script: {fileID: 11500000, guid: 8614e0ff86f35424c9bf02a913f1c3d1, type: 3}
+  m_Name: Arm
   m_EditorClassIdentifier: 
-  upgradeName: Head
+  upgradeName: Arm
   upgradeDescription: this is a description
-  icon: {fileID: 21300000, guid: 946242e4671a82a488ef38d6d3df5a8f, type: 3}
-  iconLocked: {fileID: 21300000, guid: 1470d2448268c2042b2d64bf4708d903, type: 3}
+  icon: {fileID: 21300000, guid: 7782a8debace5054bafe789e8ef4b874, type: 3}
+  iconLocked: {fileID: 21300000, guid: d28e56b09b552e2418e7d79bf6167f2f, type: 3}
   baseCost: 100
   maxUpgradeLevel: 3
   costMultiplier: 1.5
-  upgradeType: 0
+  upgradeType: 2
   statIncreasePerLevel: 0.1

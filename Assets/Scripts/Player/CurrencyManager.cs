@@ -26,3 +26,4 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     }
 
 }
+// find existing or create currency ui reference to tmpro

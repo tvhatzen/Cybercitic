@@ -55,26 +55,23 @@ public class GameState : SingletonBase<GameState>
         {
             StartGameplay();
         }
-    
     }
 
     public void FinishTutorial()
     {
         // reset floor and player
-        if (floorManager != null) floorManager.ResetToFloor1();
+        //if (floorManager != null) floorManager.ResetToFloor1();
 
         // immediately reset player and start gameplay
         ResetPlayer();
         ChangeState(GameStates.Playing);
-    
-    
     }
 
     public void StartGameplay(bool fromDeath = false)
     {
         // prevent tutorial if respawning from death
-        if (fromDeath)
-            tutorialShown = true;
+        //if (fromDeath)
+            //tutorialShown = true;
 
         if (floorManager != null)
             floorManager.ResetToFloor1(); // also respawns player
