@@ -30,7 +30,7 @@ public class PlayerAttack : MonoBehaviour
         var health = target.GetComponent<HealthSystem>();
         if (health != null)
         {
-            health.TakeDamage(10); // make enemy dmg
+            health.TakeDamage(health.DamagePerHit); // make enemy dmg
         }
     }
 }

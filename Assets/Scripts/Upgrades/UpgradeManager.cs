@@ -8,7 +8,7 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
     [SerializeField] private List<Upgrade> allUpgrades = new List<Upgrade>();
     
     [Header("Shop Settings")]
-    [SerializeField] private bool unlockAllUpgradesAtStart = false;
+    [SerializeField] private bool unlockAllUpgrades = false;
 
     // Events
     public event Action<Upgrade> OnUpgradePurchased;
@@ -27,7 +27,7 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
             {
                 upgrade.ResetUpgrade();
                 
-                if (unlockAllUpgradesAtStart)
+                if (unlockAllUpgrades)
                 {
                     upgrade.UnlockUpgrade();
                 }
@@ -95,9 +95,9 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
             }
         }
         
-        if (PlayerStats.Instance != null)
+        if (EntityStats.Instance != null)
         {
-            PlayerStats.Instance.ResetStats();
+            EntityStats.Instance.ResetStats();
         }
     }
 }

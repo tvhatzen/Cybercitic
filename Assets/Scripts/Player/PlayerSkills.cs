@@ -191,9 +191,9 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
         if (skill == null) return;
 
         // Add to player stats
-        if (PlayerStats.Instance != null)
+        if (EntityStats.Instance != null)
         {
-            PlayerStats.Instance.AddSkill(skill);
+            EntityStats.Instance.AddSkill(skill);
         }
 
         // Equip the skill if there's space

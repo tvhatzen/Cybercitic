@@ -6,12 +6,14 @@ public class EnemyCombat : MonoBehaviour
 {
     [Header("Enemy Combat Settings")]
     public float attackCooldown = 2f;
-    public int damage = 5;
+    private int damage;
 
     [Header("Combat Target")]
     protected  Transform player;
     private float nextAttackTime;
     protected  HealthSystem health;
+
+    private EntityStats stats;
 
     // Only attack if player is in combat
     private bool canAttack = false;
@@ -25,6 +27,8 @@ public class EnemyCombat : MonoBehaviour
 
         // Try to find player
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
+
+        damage = stats.attack; // set damage amount
 
         // Subscribe to GameEvents
         GameEvents.OnPlayerEnterCombat += EnableCombat;
@@ -86,3 +90,4 @@ public class EnemyCombat : MonoBehaviour
         canAttack = false;
     }
 }
+// when adding Entity stats script, enemies sprites are not appearing / they are not being instantiated. problem here?

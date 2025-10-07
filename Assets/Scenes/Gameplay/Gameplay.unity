@@ -400,7 +400,10 @@ MonoBehaviour:
   allUpgrades:
   - {fileID: 11400000, guid: 927f469c8937a4942bfdae81c26894eb, type: 2}
   - {fileID: 11400000, guid: 06fb4e54e0de42d47b83bd551d42b982, type: 2}
-  unlockAllUpgradesAtStart: 1
+  - {fileID: 11400000, guid: ab67d98f534b3aa469e3ce20022f2091, type: 2}
+  - {fileID: 11400000, guid: ef17048074e685b45b2fbb9cfc04edec, type: 2}
+  - {fileID: 11400000, guid: f388c9189db18c44a93280bbff83d070, type: 2}
+  unlockAllUpgrades: 1
 --- !u!1 &398285071
 GameObject:
   m_ObjectHideFlags: 0
@@ -1198,6 +1201,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 5669860155023522084, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: skill1Key
+      value: 257
+      objectReference: {fileID: 0}
+    - target: {fileID: 5669860155023522084, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: skill2Key
+      value: 258
+      objectReference: {fileID: 0}
+    - target: {fileID: 5669860155023522084, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: skill3Key
+      value: 259
+      objectReference: {fileID: 0}
+    - target: {fileID: 5669860155023522084, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: skill4Key
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 5669860155023522084, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: equippedSkills.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5669860155023522084, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: 'equippedSkills.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: c7e2318ea9b8a71448b6758afe178809, type: 2}
     - target: {fileID: 5781737063218651057, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1289,7 +1316,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1431616184263147312, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2134808703}
   m_SourcePrefab: {fileID: 100100000, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
 --- !u!1 &986872042
 GameObject:
@@ -2929,6 +2959,33 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1391824651940601701, guid: 2c8fd6b88646b0245b48b6c62b17a003, type: 3}
   m_PrefabInstance: {fileID: 4517215343131476648}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2134808691 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1431616184263147312, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+  m_PrefabInstance: {fileID: 940762356}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2134808703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2134808691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b3283cf401d82f4c80f7376953619c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseHealth: 100
+  baseSpeed: 5
+  baseAttack: 10
+  baseDodgeChance: 0.1
+  Health: 0
+  speed: 0
+  attack: 0
+  dodgeChance: 0
+  skills: []
+  upgrades: []
 --- !u!1001 &2691261713402641946
 PrefabInstance:
   m_ObjectHideFlags: 0

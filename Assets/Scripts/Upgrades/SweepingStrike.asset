@@ -12,3 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0f048a40312d884eaeef32a5eb8de10, type: 3}
   m_Name: SweepingStrike
   m_EditorClassIdentifier: 
+  skillName: Sweeping Strike
+  skillDescription: this is a description...
+  skillIcon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  castIcon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  cooldownDuration: 5
+  castingTime: 1
+  skillDuration: 2
+  skillDamage: 50
+  skillRange: 5
+  maxCharges: 1
+  skillSound: {fileID: 0}
+  skillEffect: {fileID: 0}

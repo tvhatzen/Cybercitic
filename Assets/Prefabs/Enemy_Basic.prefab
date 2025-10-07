@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2559679550886762718}
   - component: {fileID: 2368068569990490157}
   - component: {fileID: 7473089266629081275}
+  - component: {fileID: -3826230659584264504}
   m_Layer: 3
   m_Name: Enemy_Basic
   m_TagString: Enemy
@@ -138,9 +139,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18c9816d3d648ed438d2301878985472, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 0
-  maxHealth: 20
-  damagePerHit: 2
   healthText: {fileID: 5617473571488467594}
   spriteRenderer: {fileID: 3737664258124136096}
   flashColor: {r: 1, g: 0, b: 0, a: 1}
@@ -174,6 +172,28 @@ MonoBehaviour:
   currencyPrefab: {fileID: 4788816608471098415, guid: 243313326fb77f84080086ce389d2827, type: 3}
   creditsOnDeath: 10
   possibleDrops: []
+--- !u!114 &-3826230659584264504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 150106152159008451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b3283cf401d82f4c80f7376953619c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseHealth: 20
+  baseSpeed: 1
+  baseAttack: 2
+  baseDodgeChance: 0.1
+  Health: 0
+  speed: 0
+  attack: 0
+  dodgeChance: 0
+  skills: []
+  upgrades: []
 --- !u!1 &6294944155768324108
 GameObject:
   m_ObjectHideFlags: 0

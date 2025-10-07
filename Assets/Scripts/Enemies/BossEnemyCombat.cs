@@ -7,7 +7,6 @@ public class BossEnemyCombat : EnemyCombat
         base.Awake();
 
         attackCooldown = 1f;
-        damage = 15;
     }
     
     protected override void AttackTarget(HealthSystem target)

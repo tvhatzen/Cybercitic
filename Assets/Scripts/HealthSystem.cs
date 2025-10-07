@@ -5,10 +5,8 @@ using System.Collections;
 
 public class HealthSystem : MonoBehaviour
 {
-    [SerializeField] private int currentHealth;
-    [SerializeField] private int maxHealth = 100;
-    public int MaxHealth => maxHealth;
-    [SerializeField] private int damagePerHit = 10;
+    private int currentHealth;
+    private int damagePerHit;
 
     public int CurrentHealth => currentHealth;
     public int DamagePerHit => damagePerHit;
@@ -22,15 +20,21 @@ public class HealthSystem : MonoBehaviour
 
 
     [Header("Damage Flash Settings")]
-    [SerializeField] private SpriteRenderer spriteRenderer;  // make multiple for 
+    [SerializeField] private SpriteRenderer spriteRenderer;  // make multiple for player sprites
     [SerializeField] private Color flashColor = Color.red;
     [SerializeField] private float flashDuration = 0.1f;
+
+    private EntityStats stats;
 
     private Color originalColor;
 
     private void Awake()
     {
-        currentHealth = maxHealth; // set health
+        stats = GetComponent<EntityStats>();
+
+        currentHealth = stats.Health; // set health
+        damagePerHit = stats.attack; // set damage
+
         UpdateHealthText();
     }
 
@@ -75,7 +79,7 @@ public class HealthSystem : MonoBehaviour
     {
         if (healthText != null)
         {
-            healthText.text = $"HP: {currentHealth} / {maxHealth}";
+            healthText.text = $"HP: {currentHealth} / {stats.baseHealth}";
         }
     }
 
@@ -90,7 +94,7 @@ public class HealthSystem : MonoBehaviour
 
     public void ResetHealth() // !!! NOTE: make it so when the player progresses floors, set health to current. when respawning, set to max
     {
-        currentHealth = maxHealth;
+        currentHealth = stats.baseHealth;
         OnHealthChanged?.Invoke(currentHealth);
         UpdateHealthText();
     }

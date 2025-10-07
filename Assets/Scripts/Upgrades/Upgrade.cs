@@ -28,6 +28,7 @@ public class Upgrade : ScriptableObject
         Health,
         Speed,
         Attack,
+        Defense,
         DodgeChance
     }
 
@@ -63,23 +64,23 @@ public class Upgrade : ScriptableObject
 
     protected virtual void ApplyUpgrade()
     {
-        if (PlayerStats.Instance == null) return;
+        if (EntityStats.Instance == null) return;
         
         float statIncrease = statIncreasePerLevel;
         
         switch (upgradeType)
         {
             case UpgradeType.Health:
-                PlayerStats.Instance.ModifyHealth(Mathf.RoundToInt(statIncrease * 100));
+                EntityStats.Instance.ModifyHealth(Mathf.RoundToInt(statIncrease * 100));
                 break;
             case UpgradeType.Speed:
-                PlayerStats.Instance.ModifySpeed(statIncrease);
+                EntityStats.Instance.ModifySpeed(statIncrease);
                 break;
             case UpgradeType.Attack:
-                PlayerStats.Instance.ModifyAttack(Mathf.RoundToInt(statIncrease * 100));
+                EntityStats.Instance.ModifyAttack(Mathf.RoundToInt(statIncrease * 100));
                 break;
             case UpgradeType.DodgeChance:
-                PlayerStats.Instance.ModifyDodgeChance(statIncrease);
+                EntityStats.Instance.ModifyDodgeChance(statIncrease);
                 break;
         }
     }

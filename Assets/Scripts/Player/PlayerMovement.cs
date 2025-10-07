@@ -3,17 +3,16 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Movement")]
-    public float moveSpeed = 3f;
-
     /// <summary> Whether movement is allowed. PlayerCombat can toggle this. </summary>
     public bool CanMove { get; set; } = true;
 
     private CharacterController controller;
+    private EntityStats stats;
 
     void Awake()
     {
         controller = GetComponent<CharacterController>();
+        stats = GetComponent<EntityStats>();
     }
 
     void Update()
@@ -21,6 +20,8 @@ public class PlayerMovement : MonoBehaviour
         if (!CanMove) return;
 
         // auto-move to the right
+        var moveSpeed = stats.speed;
+
         Vector3 move = Vector3.right * moveSpeed * Time.deltaTime;
         controller.Move(move);
     }

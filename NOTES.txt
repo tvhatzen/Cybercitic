@@ -1,9 +1,19 @@
 Upgrades
-Head - 
-Core - 
-Arms - 
-Legs - dodge chance, speed
+Core - health
+Left Arm - attack
+Right Arm - defense
+Left Leg - dodge chance
+Right Leg - speed
 
-Things to update
-check player floor progress to set health to current health
-account for multiple player sprites to have damage flash
+Things for Alpha
+- win condition (get boss working on floor 5)
+- upgrade screen UI
+- upgrade functionality
+- skill buttons drop
+- skill buttons functionality
+- implement art
+- account for multiple player sprites to have damage flash
+
+* floor manager singleton is spawning prefabs set in the game manager, have it set per floor/scene
+*tutorial UIManager reference not being assigned after closing (happens in scenes after 1)
+* add enemy tiers, apply new health and damage once reaching a certain point (level?)

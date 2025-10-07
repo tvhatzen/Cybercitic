@@ -54,7 +54,7 @@ public class HealthBar_UI : MonoBehaviour
     {
         if (foregroundBar != null && healthSystem != null)
         {
-            float ratio = (float)currentHealth / healthSystem.MaxHealth;
+            float ratio = (float)currentHealth / healthSystem.CurrentHealth; // ??
             foregroundBar.fillAmount = Mathf.Clamp01(ratio);
         }
     }

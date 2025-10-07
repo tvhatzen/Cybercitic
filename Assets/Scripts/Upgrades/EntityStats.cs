@@ -2,15 +2,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class PlayerStats : SingletonBase<PlayerStats>
+public class EntityStats : SingletonBase<EntityStats>
 {
-    [Header("Base Stats")]
-    [SerializeField] private int baseHealth = 100;
+    // make it so enemies can also use this, will need to alter stats of same enemy type depending on floor level
+    // elits and boss enemies can add skills to use other types of attacks
+    // implement enemy tiers - increases health and damage (make scalable?)
+
+    [Header("Base Stats")] 
+    public int baseHealth = 100;
     [SerializeField] private float baseSpeed = 5f;
     [SerializeField] private int baseAttack = 10;
     [SerializeField] private float baseDodgeChance = 0.1f;
 
-    [Header("Current Stats")]
+    [Header("Current Stats")] // reference these in movement & combat !!!
     public int Health;
     public float speed;
     public int attack;
@@ -20,7 +24,7 @@ public class PlayerStats : SingletonBase<PlayerStats>
     public List<Skill> skills = new List<Skill>();
     public List<Upgrade> upgrades = new List<Upgrade>();
 
-    public event Action<PlayerStats> OnStatsChanged;
+    public event Action<EntityStats> OnStatsChanged;
 
     protected override void Awake()
     {
