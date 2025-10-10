@@ -6,10 +6,9 @@ using System.Collections;
 public class HealthSystem : MonoBehaviour
 {
     private int currentHealth;
-    private int damagePerHit;
 
     public int CurrentHealth => currentHealth;
-    public int DamagePerHit => damagePerHit;
+    public int DamagePerHit => entityData != null ? entityData.currentAttack : 0;
 
     public event Action<HealthSystem> OnDeath; // notify when this entity dies
     public static event Action<GameObject> OnAnyDeath; // global death flag for any death
@@ -24,18 +23,38 @@ public class HealthSystem : MonoBehaviour
     [SerializeField] private Color flashColor = Color.red;
     [SerializeField] private float flashDuration = 0.1f;
 
-    private EntityStats stats;
+    private EntityData entityData;
 
     private Color originalColor;
 
+    public bool debug = false;
+
     private void Awake()
     {
-        stats = GetComponent<EntityStats>();
+        entityData = GetComponent<EntityData>();
+        
+        if (entityData == null)
+        {
+            if(debug) Debug.LogError($"{name} is missing EntityData component!");
+            return;
+        }
 
-        currentHealth = stats.Health; // set health
-        damagePerHit = stats.attack; // set damage
+        // store original sprite color for flash effect
+        if (spriteRenderer != null)
+        {
+            originalColor = spriteRenderer.color;
+        }
+    }
 
-        UpdateHealthText();
+    private void Start()
+    {
+        if (entityData != null)
+        {
+            currentHealth = entityData.currentHealth; // set health
+            UpdateHealthText();
+            
+            if(debug) Debug.Log($"[HealthSystem] {name} initialized - HP: {currentHealth}/{entityData.baseHealth}, ATK: {DamagePerHit}");
+        }
     }
 
     void Update()
@@ -52,7 +71,7 @@ public class HealthSystem : MonoBehaviour
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
-        Debug.Log(name + " takes " + amount + " damage. HP: " + currentHealth);
+        if(debug) Debug.Log(name + " takes " + amount + " damage. HP: " + currentHealth);
 
         OnHealthChanged?.Invoke(currentHealth);
         UpdateHealthText();
@@ -77,9 +96,9 @@ public class HealthSystem : MonoBehaviour
 
     private void UpdateHealthText()
     {
-        if (healthText != null)
+        if (healthText != null && entityData != null)
         {
-            healthText.text = $"HP: {currentHealth} / {stats.baseHealth}";
+            healthText.text = $"HP: {currentHealth} / {entityData.baseHealth}";
         }
     }
 
@@ -92,16 +111,52 @@ public class HealthSystem : MonoBehaviour
         UpdateHealthText();
     }
 
-    public void ResetHealth() // !!! NOTE: make it so when the player progresses floors, set health to current. when respawning, set to max
+    public void ResetHealth()
     {
-        currentHealth = stats.baseHealth;
-        OnHealthChanged?.Invoke(currentHealth);
-        UpdateHealthText();
+        if (entityData != null)
+        {
+            currentHealth = entityData.baseHealth;
+            OnHealthChanged?.Invoke(currentHealth);
+            UpdateHealthText();
+        }
+    }
+
+    public void ResetHealthToBase()
+    {
+        if (entityData != null)
+        {
+            currentHealth = entityData.baseHealth;
+            OnHealthChanged?.Invoke(currentHealth);
+            UpdateHealthText();
+        }
+    }
+
+    // Reset all stats to original values (for new game after win)
+    public void ResetToOriginalStats()
+    {
+        if (entityData != null)
+        {
+            entityData.ResetToOriginalStats();
+            currentHealth = entityData.currentHealth;
+            OnHealthChanged?.Invoke(currentHealth);
+            UpdateHealthText();
+
+            // also reset credits if player
+            if (CompareTag("Player"))
+            {
+                if (CurrencyManager.Instance != null)
+                {
+                    CurrencyManager.Instance.ResetCredits();
+                }
+            }
+            
+            if(debug) Debug.Log($"[HealthSystem] {name} reset to original stats - HP: {currentHealth}, ATK: {DamagePerHit}, Credits: {CurrencyManager.Instance.Credits}");
+        }
     }
 
     private void Die()
     {
-        Debug.Log(name + " died!");
+        if(debug) Debug.Log(name + " died!");
 
         OnDeath?.Invoke(this);
         OnAnyDeath?.Invoke(gameObject);
@@ -127,4 +182,3 @@ public class HealthSystem : MonoBehaviour
         //Destroy(gameObject); // Do death animation eventually
     }
 }
-// make sure health carries over to other scenes, then on death reset it to max

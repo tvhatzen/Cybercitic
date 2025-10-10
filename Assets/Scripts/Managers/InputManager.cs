@@ -6,6 +6,10 @@ using System;
 public class InputManager : MonoBehaviour, InputSystem_Actions.IPlayerActions
 {
     private InputSystem_Actions input;
+
+    [Header("DEBUG")]
+    public bool debug = false;
+
     void Awake()
     {
         try
@@ -16,7 +20,7 @@ public class InputManager : MonoBehaviour, InputSystem_Actions.IPlayerActions
         }
         catch (Exception exception)
         {
-            Debug.LogError($"Error initializing InputManager: {exception.Message}");
+            if(debug) Debug.LogError($"Error initializing InputManager: {exception.Message}");
         }
     }
 
@@ -38,11 +42,7 @@ public class InputManager : MonoBehaviour, InputSystem_Actions.IPlayerActions
         if (context.started)
         {
             skill1InputEvent?.Invoke();
-            Debug.Log("Skill 1 started");
-        }
-        if (context.performed)
-        {
-         // pass skill usage logic    
+            if(debug) Debug.Log("Skill 1 started");
         }
     }
 
@@ -51,7 +51,7 @@ public class InputManager : MonoBehaviour, InputSystem_Actions.IPlayerActions
         if (context.started)
         {
             skill2InputEvent?.Invoke();
-            Debug.Log("Skill 2 started");
+            if(debug) Debug.Log("Skill 2 started");
         }
     }
 
@@ -60,14 +60,13 @@ public class InputManager : MonoBehaviour, InputSystem_Actions.IPlayerActions
         if (context.started)
         {
             skill3InputEvent?.Invoke();
-            Debug.Log("Skill 3 started");
+            if(debug) Debug.Log("Skill 3 started");
         }
     }
 
     public void OnInteract(InputAction.CallbackContext context)
     {
-        
-        Debug.Log("On Interact");
+        if(debug) Debug.Log("On Interact");
     }
 
     #endregion

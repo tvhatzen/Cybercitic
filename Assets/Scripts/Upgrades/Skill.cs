@@ -55,6 +55,9 @@ public class Skill : ScriptableObject
     public bool IsReady => currentState == SkillStates.ReadyToUse && isUnlocked;
     public bool IsUnlocked => isUnlocked;
 
+    [Header("DEBUG")]
+    public bool debug = false;
+
     public virtual void Initialize()
     {
         currentState = isUnlocked ? SkillStates.ReadyToUse : SkillStates.Locked;
@@ -64,9 +67,13 @@ public class Skill : ScriptableObject
 
     public virtual bool Activate()
     {
-        if (!CanActivate()) return false;
+        if (!CanActivate())
+        {
+            if(debug) Debug.LogWarning($"[Skill] Cannot activate {skillName} - State: {currentState}, Unlocked: {isUnlocked}, Charges: {currentCharges}");
+            return false;
+        }
 
-        Debug.Log($"Activating skill: {skillName}");
+        if(debug) Debug.Log($"[Skill] Activating skill: {skillName}");
         currentState = SkillStates.Casting;
         OnSkillActivated?.Invoke(this);
 
@@ -83,18 +90,22 @@ public class Skill : ScriptableObject
 
     protected virtual IEnumerator ExecuteSkill()
     {
+        if(debug) Debug.Log($"[Skill] {skillName} - Starting execution (casting time: {castingTime}s)");
         yield return new WaitForSeconds(castingTime);
         
+        if(debug) Debug.Log($"[Skill] {skillName} - Applying effects");
         ApplySkillEffects();
         
+        if(debug) Debug.Log($"[Skill] {skillName} - Waiting for skill duration: {skillDuration}s");
         yield return new WaitForSeconds(skillDuration);
         
+        if(debug) Debug.Log($"[Skill] {skillName} - Finishing skill");
         FinishSkill();
     }
 
     protected virtual void ApplySkillEffects()
     {
-        Debug.Log($"{skillName} effects applied!");
+        if(debug) Debug.Log($"{skillName} effects applied!");
         
         // Play sound effect
         if (skillSound != null && AudioManager.Instance != null)
@@ -124,7 +135,7 @@ public class Skill : ScriptableObject
             if (enemyHealth != null)
             {
                 enemyHealth.TakeDamage(skillDamage);
-                Debug.Log($"Dealt {skillDamage} damage to {enemy.name}");
+                if(debug) Debug.Log($"Dealt {skillDamage} damage to {enemy.name}");
             }
         }
     }
@@ -139,6 +150,7 @@ public class Skill : ScriptableObject
     {
         currentState = SkillStates.Cooldown;
         currentCooldown = cooldownDuration;
+        if(debug) Debug.Log($"[Skill] {skillName} - Starting cooldown ({cooldownDuration}s)");
         OnSkillCooldownStarted?.Invoke(this);
         
         // Start coroutine to handle cooldown
@@ -147,12 +159,14 @@ public class Skill : ScriptableObject
 
     protected virtual IEnumerator HandleCooldown()
     {
+        if(debug) Debug.Log($"[Skill] {skillName} - Cooldown coroutine started");
         while (currentCooldown > 0)
         {
             currentCooldown -= Time.deltaTime;
             yield return null;
         }
         
+        if(debug) Debug.Log($"[Skill] {skillName} - Cooldown finished");
         FinishCooldown();
     }
 
@@ -162,14 +176,14 @@ public class Skill : ScriptableObject
         currentState = SkillStates.ReadyToUse;
         currentCharges = maxCharges;
         OnSkillCooldownFinished?.Invoke(this);
-        Debug.Log($"{skillName} is ready to use again!");
+        if(debug) Debug.Log($"{skillName} is ready to use again!");
     }
 
     public virtual void UnlockSkill()
     {
         isUnlocked = true;
         currentState = SkillStates.ReadyToUse;
-        Debug.Log($"Unlocked skill: {skillName}");
+        if(debug) Debug.Log($"Unlocked skill: {skillName}");
     }
 
     public virtual void LockSkill()
@@ -180,12 +194,28 @@ public class Skill : ScriptableObject
         currentCharges = 0;
     }
 
+    public virtual void ResetCooldown()
+    {
+        if (isUnlocked)
+        {
+            currentState = SkillStates.ReadyToUse;
+            currentCooldown = 0f;
+            currentCharges = maxCharges;
+            if (debug) Debug.Log($"[Skill] {skillName} cooldown reset - ready to use!");
+        }
+    }
+
     // start coroutines from ScriptableObject
     private void StartCoroutine(IEnumerator coroutine)
     {
         if (PlayerSkills.Instance != null)
         {
             PlayerSkills.Instance.StartCoroutine(coroutine);
+            if(debug) Debug.Log($"[Skill] {skillName} - Coroutine started via PlayerSkills");
+        }
+        else
+        {
+            if(debug) Debug.LogError($"[Skill] {skillName} - Cannot start coroutine! PlayerSkills.Instance is null!");
         }
     }
 }

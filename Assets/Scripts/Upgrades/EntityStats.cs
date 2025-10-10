@@ -2,97 +2,106 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+/// <summary>
+/// EntityStats is a PLAYER-ONLY singleton for managing upgrades and skills.
+/// </summary>
 public class EntityStats : SingletonBase<EntityStats>
 {
-    // make it so enemies can also use this, will need to alter stats of same enemy type depending on floor level
-    // elits and boss enemies can add skills to use other types of attacks
-    // implement enemy tiers - increases health and damage (make scalable?)
-
-    [Header("Base Stats")] 
-    public int baseHealth = 100;
-    [SerializeField] private float baseSpeed = 5f;
-    [SerializeField] private int baseAttack = 10;
-    [SerializeField] private float baseDodgeChance = 0.1f;
-
-    [Header("Current Stats")] // reference these in movement & combat !!!
-    public int Health;
-    public float speed;
-    public int attack;
-    public float dodgeChance;
-
     [Header("Skills and Upgrades")]
     public List<Skill> skills = new List<Skill>();
     public List<Upgrade> upgrades = new List<Upgrade>();
 
     public event Action<EntityStats> OnStatsChanged;
 
+    private EntityData playerData;
+
+    [Header("DEBUG")]
+    public bool debug = false;
+
     protected override void Awake()
     {
         base.Awake();
-        InitializeStats();
+        
+        playerData = GetComponent<EntityData>();
+        if (playerData == null)
+        {
+            if(debug) Debug.LogWarning("EntityStats: No EntityData found on player. Add EntityData component to player.");
+        }
     }
 
-    private void InitializeStats()
+    public EntityData GetPlayerData()
     {
-        Health = baseHealth;
-        speed = baseSpeed;
-        attack = baseAttack;
-        dodgeChance = baseDodgeChance;
+        return playerData;
     }
 
-    // Stat modification methods
+    // stat modification methods - these modify the player's EntityData
     public void ModifyHealth(int amount)
     {
-        Health += amount;
-        OnStatsChanged?.Invoke(this);
-        Debug.Log($"Health modified by {amount}. Current: {Health}");
+        if (playerData != null)
+        {
+            playerData.ModifyBaseStats(healthMod: amount);
+            OnStatsChanged?.Invoke(this);
+            if(debug) Debug.Log($"Health modified by {amount}. New base: {playerData.baseHealth}");
+        }
     }
 
     public void ModifySpeed(float amount)
     {
-        speed += amount;
-        OnStatsChanged?.Invoke(this);
-        Debug.Log($"Speed modified by {amount}. Current: {speed}");
+        if (playerData != null)
+        {
+            playerData.ModifyBaseStats(speedMod: amount);
+            OnStatsChanged?.Invoke(this);
+            if(debug) Debug.Log($"Speed modified by {amount}. New base: {playerData.baseSpeed}");
+        }
     }
 
     public void ModifyAttack(int amount)
     {
-        attack += amount;
-        OnStatsChanged?.Invoke(this);
-        Debug.Log($"Attack modified by {amount}. Current: {attack}");
+        if (playerData != null)
+        {
+            playerData.ModifyBaseStats(attackMod: amount);
+            OnStatsChanged?.Invoke(this);
+            if(debug) Debug.Log($"Attack modified by {amount}. New base: {playerData.baseAttack}");
+        }
     }
 
     public void ModifyDodgeChance(float amount)
     {
-        dodgeChance = Mathf.Clamp01(dodgeChance + amount);
-        OnStatsChanged?.Invoke(this);
-        Debug.Log($"Dodge chance modified by {amount}. Current: {dodgeChance}");
+        if (playerData != null)
+        {
+            playerData.ModifyBaseStats(dodgeMod: amount);
+            OnStatsChanged?.Invoke(this);
+            if(debug) Debug.Log($"Dodge chance modified by {amount}. New base: {playerData.baseDodgeChance}");
+        }
     }
 
-    // Reset all stats to base values
+    // reset all stats to base values
     public void ResetStats()
     {
-        InitializeStats();
-        OnStatsChanged?.Invoke(this);
+        if (playerData != null)
+        {
+            playerData.ResetToBase();
+            OnStatsChanged?.Invoke(this);
+        }
     }
 
-    // Add skill to the player's skill list
+    // add skill to the player's skill list
     public void AddSkill(Skill skill)
     {
         if (skill != null && !skills.Contains(skill))
         {
             skills.Add(skill);
-            Debug.Log($"Added skill: {skill.name}");
+            if(debug) Debug.Log($"Added skill: {skill.name}");
         }
     }
 
-    // Remove skill from the player's skill list
+    // remove skill from the player's skill list
     public void RemoveSkill(Skill skill)
     {
         if (skills.Contains(skill))
         {
             skills.Remove(skill);
-            Debug.Log($"Removed skill: {skill.name}");
+            if(debug) Debug.Log($"Removed skill: {skill.name}");
         }
     }
 }

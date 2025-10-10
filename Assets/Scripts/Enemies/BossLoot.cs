@@ -12,18 +12,17 @@ public class BossLoot : EnemyLoot
 
     protected override void HandleDeath(HealthSystem hs)
     {
-        // Give more credits for boss kills
+        // give credits for boss kills
         if (CurrencyManager.Instance != null)
         {
             int bossCredits = creditsOnDeath * bossCreditsMultiplier;
-            Debug.Log($"{gameObject.name} (BOSS) dropped {bossCredits} credits!");
+            if(debug) Debug.Log($"{gameObject.name} (BOSS) dropped {bossCredits} credits!");
             CurrencyManager.Instance.AddCredits(bossCredits);
         }
 
-        // Call base loot handling
         base.HandleDeath(hs);
         
-        // Handle skill drops
+        // skill drops
         HandleSkillDrops();
     }
 
@@ -35,39 +34,31 @@ public class BossLoot : EnemyLoot
         {
             if (skillDrop.skill == null) continue;
 
-            // Check if skill should drop
+            // check if skill should drop
             if (Random.Range(0f, 100f) < skillDrop.dropChance)
             {
-                // Check if player already has this skill
+                // check if player already has this skill
                 if (PlayerSkills.Instance != null && !PlayerSkills.Instance.HasSkill(skillDrop.skill))
                 {
-                    // Unlock the skill
+                    // unlock skill
                     PlayerSkills.Instance.UnlockSkillFromBossDrop(skillDrop.skill);
                     
-                    // Show notification
-                    ShowSkillUnlockedNotification(skillDrop.skill);
-                    
-                    Debug.Log($"BOSS DROP: Unlocked skill {skillDrop.skill.SkillName}!");
+                    if(debug) Debug.Log($"BOSS DROP: Unlocked skill {skillDrop.skill.SkillName}!");
                 }
                 else
                 {
-                    Debug.Log($"Player already has skill {skillDrop.skill.SkillName}, giving extra credits instead");
-                    // Give extra credits if player already has the skill
+                    if (debug) Debug.Log($"Player already has skill {skillDrop.skill.SkillName}, giving extra credits instead");
+                    
+                    // give credits if player already has the skill
                     if (CurrencyManager.Instance != null)
                     {
                         int bonusCredits = 50;
                         CurrencyManager.Instance.AddCredits(bonusCredits);
-                        Debug.Log($"Received {bonusCredits} bonus credits for already having {skillDrop.skill.SkillName}");
+                        if(debug) Debug.Log($"Received {bonusCredits} bonus credits for already having {skillDrop.skill.SkillName}");
                     }
                 }
             }
         }
-    }
-
-    private void ShowSkillUnlockedNotification(Skill skill)
-    {
-        // show UI notification
-        Debug.Log($"NEW SKILL UNLOCKED: {skill.SkillName} - {skill.Description}");
     }
 }
 

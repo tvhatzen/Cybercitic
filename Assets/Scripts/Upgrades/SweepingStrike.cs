@@ -12,7 +12,7 @@ public class SweepingStrike : Skill
     {
         base.ApplySkillEffects();
         
-        Debug.Log($"Sweeping Strike activated! Sweeping {sweepAngle} degrees with {skillDamage + additionalDamage} damage!");
+        if(debug) Debug.Log($"Sweeping Strike activated! Sweeping {sweepAngle} degrees with {skillDamage + additionalDamage} damage!");
         
         // Apply sweeping damage to enemies in arc
         ApplySweepingDamage();
@@ -40,7 +40,7 @@ public class SweepingStrike : Skill
                 {
                     int totalDamage = skillDamage + additionalDamage;
                     enemyHealth.TakeDamage(totalDamage);
-                    Debug.Log($"Sweeping Strike dealt {totalDamage} damage to {enemy.name}");
+                    if(debug) Debug.Log($"Sweeping Strike dealt {totalDamage} damage to {enemy.name}");
                 }
             }
         }

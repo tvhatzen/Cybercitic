@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour
     private bool gatheringEnemies;
     private Coroutine gatherRoutine;
 
+    public bool debug = false;
+
     void Awake() => controller = GetComponent<CharacterController>();
     void OnEnable()
     {
@@ -41,16 +43,7 @@ public class PlayerController : MonoBehaviour
     private void RegisterEnemy(GameObject enemy)
     {
         currentEnemies.Add(enemy);
-        Debug.Log("Player now knows about enemy: " + enemy.name);
-    }
-
-    private void UnregisterEnemy(GameObject deadObject)
-    {
-        if (currentEnemies.Contains(deadObject))
-        {
-            currentEnemies.Remove(deadObject);
-            Debug.Log("Enemy removed from list: " + deadObject.name);
-        }
+        if(debug) Debug.Log("Player now knows about enemy: " + enemy.name);
     }
 
     void Update()
@@ -81,9 +74,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Populate enemiesInRange list with alive enemies inside radius.
-    /// </summary>
+    // populate enemiesInRange list with alive enemies inside radius.
     private void ScanEnemiesInRange()
     {
         enemiesInRange.Clear();
@@ -102,14 +93,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Enter combat with a new enemy or continue with the same one.
-    /// </summary>
+    // enter combat with a new enemy or continue with the same one.
     private void EnterOrContinueCombat(Transform[] enemies)
     {
         if (!inCombat && !gatheringEnemies)
         {
-            // Start gather window
+            // start gather window
             gatherRoutine = StartCoroutine(GatherEnemiesThenEnterCombat());
         }
     }
@@ -132,19 +121,17 @@ public class PlayerController : MonoBehaviour
         if (enemiesInRange.Count > 0)
         {
             inCombat = true;
-            Debug.Log($"Entering combat with {enemiesInRange.Count} enemies");
+            if(debug) Debug.Log($"Entering combat with {enemiesInRange.Count} enemies");
             GameEvents.PlayerEnteredCombat(enemiesInRange.ToArray());
         }
     }
 
-    /// <summary>
-    /// Exit combat when no valid enemies are left.
-    /// </summary>
+    // exit combat when no valid enemies are left
     private void ExitCombatIfNoEnemies()
     {
         if (inCombat && !gatheringEnemies && enemiesInRange.Count == 0)
         {
-            Debug.Log("No enemies left, exiting combat");
+            if(debug) Debug.Log("No enemies left, exiting combat");
             inCombat = false;
             currentEnemy = null;
             if (gatherRoutine != null) StopCoroutine(gatherRoutine);
@@ -152,9 +139,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// React when any entity dies; forces a re-check next frame.
-    /// </summary>
+    // react when any entity dies
     private void OnAnyEntityDeath(GameObject deadObject)
     {
         if (currentEnemies.Contains(deadObject))
@@ -164,7 +149,7 @@ public class PlayerController : MonoBehaviour
 
         if (currentEnemy != null && deadObject.transform == currentEnemy)
         {
-            Debug.Log($"Current enemy {deadObject.name} died, switching target...");
+            if(debug) Debug.Log($"Current enemy {deadObject.name} died, switching target...");
             currentEnemy = null;
             inCombat = false; 
         }

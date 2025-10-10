@@ -12,13 +12,13 @@ GameObject:
   - component: {fileID: 4475478415844549348}
   - component: {fileID: 6201989232763626291}
   - component: {fileID: 7323873510990202161}
+  - component: {fileID: 8364269315205024833}
   - component: {fileID: 5669860155023522084}
   - component: {fileID: 5544270215821477331}
   - component: {fileID: 5912712985965815511}
   - component: {fileID: 7801801497178132509}
   - component: {fileID: 7237819879296602304}
   - component: {fileID: 3032767640868300122}
-  - component: {fileID: 8364269315205024833}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -148,6 +148,27 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.16, y: 0.16, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &8364269315205024833
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1431616184263147312}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.4422186, y: 0.5076203, z: 0.6067429}
+  m_Center: {x: 0.00038212538, y: 0.17381018, z: 0.026496619}
 --- !u!114 &5669860155023522084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -160,6 +181,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58b6e02af0405c040988d17af6ffe35d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skill1Key: 49
+  skill2Key: 50
+  skill3Key: 51
+  equippedSkills: []
+  debug: 0
 --- !u!114 &5544270215821477331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,13 +210,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18c9816d3d648ed438d2301878985472, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 0
-  maxHealth: 100
-  damagePerHit: 20
   healthText: {fileID: 7075336437740411348}
   spriteRenderer: {fileID: 5988893342598707982}
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.1
+  debug: 0
 --- !u!114 &7801801497178132509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,7 +227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 822f24a81dc976946b7da9557e1cfed4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3
+  debug: 0
 --- !u!114 &7237819879296602304
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -221,6 +245,7 @@ MonoBehaviour:
     m_Bits: 8
   combatCheckRadius: 2
   gatherWindowDuration: 0.5
+  debug: 0
 --- !u!114 &3032767640868300122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,27 +259,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackCooldown: 1
---- !u!65 &8364269315205024833
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1431616184263147312}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.4422186, y: 0.5076203, z: 0.6067429}
-  m_Center: {x: 0.00038212538, y: 0.17381018, z: 0.026496619}
+  debug: 0
 --- !u!1 &1538942524082916767
 GameObject:
   m_ObjectHideFlags: 0

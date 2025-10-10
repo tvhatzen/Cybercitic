@@ -34,11 +34,15 @@ public class Upgrade : ScriptableObject
 
     public string UpgradeName => upgradeName;
     public string Description => upgradeDescription;
-    public Sprite Icon => isUnlocked ? icon : iconLocked;
+    public Sprite Icon => currentLevel > 0 ? icon : iconLocked;
     public int CurrentLevel => currentLevel;
     public int MaxLevel => maxUpgradeLevel;
     public bool IsMaxLevel => currentLevel >= maxUpgradeLevel;
-    public bool CanUpgrade => currentLevel < maxUpgradeLevel && isUnlocked;
+    public bool CanUpgrade => currentLevel < maxUpgradeLevel; // Can always upgrade if not at max level
+    public UpgradeType GetUpgradeType() => upgradeType;
+
+    [Header("DEBUG")]
+    public bool debug = false;
 
     public int GetCost()
     {
@@ -48,16 +52,38 @@ public class Upgrade : ScriptableObject
 
     public virtual bool PurchaseUpgrade()
     {
-        if (!CanUpgrade) return false;
+        if(debug) Debug.Log($"[Upgrade] PurchaseUpgrade called for {upgradeName} - Current level: {currentLevel}, CanUpgrade: {CanUpgrade}");
+        
+        if (!CanUpgrade) 
+        {
+            if(debug) Debug.LogWarning($"[Upgrade] Cannot upgrade {upgradeName} - already at max level or locked");
+            return false;
+        }
         
         int cost = GetCost();
-        if (!CurrencyManager.Instance.SpendCredits(cost)) return false;
+        if(debug) Debug.Log($"[Upgrade] Cost for {upgradeName}: {cost} credits");
         
+        if (!CurrencyManager.Instance.SpendCredits(cost)) 
+        {
+            if(debug) Debug.LogWarning($"[Upgrade] Not enough credits for {upgradeName}");
+            return false;
+        }
+        
+        int oldLevel = currentLevel;
         currentLevel++;
+        if(debug) Debug.Log($"[Upgrade] {upgradeName} level increased from {oldLevel} to {currentLevel}");
+        
+        // Mark as unlocked on first purchase
+        if (!isUnlocked)
+        {
+            isUnlocked = true;
+            if(debug) Debug.Log($"[Upgrade] {upgradeName} unlocked!");
+        }
+        
         ApplyUpgrade();
         
         GameEvents.UpgradePurchased(this);
-        Debug.Log($"Purchased {upgradeName} level {currentLevel} for {cost} credits");
+        if(debug) Debug.Log($"[Upgrade] Successfully purchased {upgradeName} level {currentLevel}/{maxUpgradeLevel} for {cost} credits");
         
         return true;
     }

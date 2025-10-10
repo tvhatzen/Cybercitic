@@ -22,6 +22,7 @@ public class GameState : SingletonBase<GameState>
     [Header("Debug")]
     [SerializeField] private string currentStateDebug; // store state to string for debugging
     [SerializeField] private string lastStateDebug; // store state to string for debugging
+    public bool debug = false;
 
     private bool tutorialShown = false;
 
@@ -59,9 +60,6 @@ public class GameState : SingletonBase<GameState>
 
     public void FinishTutorial()
     {
-        // reset floor and player
-        //if (floorManager != null) floorManager.ResetToFloor1();
-
         // immediately reset player and start gameplay
         ResetPlayer();
         ChangeState(GameStates.Playing);
@@ -69,32 +67,28 @@ public class GameState : SingletonBase<GameState>
 
     public void StartGameplay(bool fromDeath = false)
     {
-        // prevent tutorial if respawning from death
-        //if (fromDeath)
-            //tutorialShown = true;
-
-        if (floorManager != null)
-            floorManager.ResetToFloor1(); // also respawns player
+        if (fromDeath && floorManager != null)
+        {
+            // Only reset to floor 1 if this is called from death/retry
+            floorManager.ResetToFloor1();
+        }
 
         // change state to playing
         ChangeState(GameStates.Playing);
-    
     }
 
     public void OnPlayerDeath()
     {
-        Debug.Log("Player died — switching to Results screen");
-
-        // force game state to Results
+        if(debug) Debug.Log("Player died — switching to Results screen");
         ChangeState(GameStates.Results);
-    
     }
 
     public void OnBossDeath()
     {
-        Debug.Log("Boss died — switching to Win screen");
+        if(debug) Debug.Log("Boss died — switching to Win screen");
 
         ChangeState(GameStates.Win);
+        ResetPlayer();
     }
 
     private void ResetPlayer()
@@ -102,15 +96,18 @@ public class GameState : SingletonBase<GameState>
         var playerGO = PlayerInstance.Instance?.gameObject;
         if (playerGO == null)
         {
-            Debug.LogError("PlayerInstance singleton not found!");
+            if(debug) Debug.LogError("PlayerInstance singleton not found!");
             return;
         }
 
-        // Reset health
+        // reset health
         var health = playerGO.GetComponent<HealthSystem>();
+        if (health != null && GameStates.Win == CurrentState)
+            health.ResetToOriginalStats();
+
         if (health != null) health.ResetHealth();
 
-        // Reset position
+        // reset position
         var movement = playerGO.GetComponent<PlayerMovement>();
         if (movement != null && floorManager != null)
             movement.ResetToSpawn(floorManager.playerSpawnPoint);
@@ -126,7 +123,7 @@ public class GameState : SingletonBase<GameState>
         CurrentState = newState;
         currentStateDebug = CurrentState.ToString();
 
-        Debug.Log($"Game state changed: {lastStateDebug} -> {currentStateDebug}");
+        if(debug) Debug.Log($"Game state changed: {lastStateDebug} -> {currentStateDebug}");
 
         OnGameStateChanged?.Invoke(newState);
     }

@@ -13,6 +13,9 @@ public class CombatManager : SingletonBase<CombatManager>
 
     private Coroutine combatRoutine;
 
+    [Header("DEBUG")]
+    public bool debug = false;
+
     void OnEnable()
     {
         GameEvents.OnPlayerEnterCombat += HandleEnterCombat;
@@ -32,7 +35,7 @@ public class CombatManager : SingletonBase<CombatManager>
 
     public void HandleEnterCombat(Transform[] enemies)
     {        
-        Debug.Log("Player entered combat with " + enemies.Length + "enemies");
+        if(debug) Debug.Log("Player entered combat with " + enemies.Length + "enemies");
 
         activeEnemies.Clear();
         foreach (var enemy in enemies)
@@ -58,7 +61,7 @@ public class CombatManager : SingletonBase<CombatManager>
 
     void HandleExitCombat()
     {
-        Debug.Log("Player exited combat");
+        if(debug) Debug.Log("Player exited combat");
 
         if (combatRoutine != null)
         {
@@ -91,7 +94,7 @@ public class CombatManager : SingletonBase<CombatManager>
 
     private IEnumerator CombatLoop()
     {
-        Debug.Log("entered combat loop coroutine");
+        if(debug) Debug.Log("entered combat loop coroutine");
 
         float playerTimer = 0f;
         float enemyTimer = 0f;
@@ -108,16 +111,6 @@ public class CombatManager : SingletonBase<CombatManager>
             {
                 playerTimer = 0f;
                 Attack(playerHealth, targetEnemy);
-            }
-
-            if (enemyTimer >= 1f / enemyAttackRate)
-            {
-                enemyTimer = 0f;
-
-                foreach (var enemy in activeEnemies)
-                {
-                    Attack(enemy, playerHealth);
-                }
             }
 
             yield return null;
@@ -149,6 +142,6 @@ public class CombatManager : SingletonBase<CombatManager>
     {
         if (target == null) return;
         target.TakeDamage(attacker.DamagePerHit);
-        Debug.Log(attacker.name + " attacks " + target.name);
+        if(debug) Debug.Log(attacker.name + " attacks " + target.name);
     }
 }

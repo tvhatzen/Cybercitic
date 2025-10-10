@@ -6,6 +6,7 @@ public class EnemyCombat : MonoBehaviour
 {
     [Header("Enemy Combat Settings")]
     public float attackCooldown = 2f;
+    public float attackRange = 2f; // how close enemy needs to be to attack
     private int damage;
 
     [Header("Combat Target")]
@@ -13,24 +14,31 @@ public class EnemyCombat : MonoBehaviour
     private float nextAttackTime;
     protected  HealthSystem health;
 
-    private EntityStats stats;
+    private EntityData entityData;
 
-    // Only attack if player is in combat
+    // only attack if player is in combat
     private bool canAttack = false;
+
+    [Header("DEBUG")]
+    public bool debug = false;
 
     public virtual void Awake()
     {
-        // Initialize HealthSystem
+        // initialize HealthSystem
         health = GetComponent<HealthSystem>();
-        if (health == null)
-            Debug.LogError($"{name} is missing a HealthSystem component!");
 
-        // Try to find player
+        // initialize EntityData
+        entityData = GetComponent<EntityData>();
+
+        // try to find player
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
 
-        damage = stats.attack; // set damage amount
+        // set damage from EntityData
+        if (entityData != null)
+        {
+            damage = entityData.currentAttack; 
+        }
 
-        // Subscribe to GameEvents
         GameEvents.OnPlayerEnterCombat += EnableCombat;
         GameEvents.OnPlayerExitCombat += DisableCombat;
     }
@@ -51,7 +59,12 @@ public class EnemyCombat : MonoBehaviour
         var playerHealth = player.GetComponent<HealthSystem>();
         if (playerHealth != null && playerHealth.CurrentHealth > 0)
         {
-            TryAttack(playerHealth);
+            // check if player is in attack range
+            float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+            if (distanceToPlayer <= attackRange)
+            {
+                TryAttack(playerHealth);
+            }
         }
     }
 
@@ -69,12 +82,12 @@ public class EnemyCombat : MonoBehaviour
         if (target == null) return;
 
         target.TakeDamage(damage);
-        Debug.Log($"{name} attacked {target.name} for {damage} damage!");
+        if(debug) Debug.Log($"[EnemyCombat] {name} attacked {target.name} for {damage} damage!");
     }
 
     private void EnableCombat(Transform[] enemiesInCombat)
     {
-        // only enable if this enemy is part of the combat
+        // only enable if this enemy is in combat
         foreach (var t in enemiesInCombat)
         {
             if (t == transform)
@@ -89,5 +102,11 @@ public class EnemyCombat : MonoBehaviour
     {
         canAttack = false;
     }
+
+    // Draw attack range
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
 }
-// when adding Entity stats script, enemies sprites are not appearing / they are not being instantiated. problem here?

@@ -5,10 +5,9 @@ using System;
 public class PlayerSkills : SingletonBase<PlayerSkills>
 {
     [Header("Input Settings")]
-    [SerializeField] private KeyCode skill1Key = KeyCode.Q;
-    [SerializeField] private KeyCode skill2Key = KeyCode.E;
-    [SerializeField] private KeyCode skill3Key = KeyCode.R;
-    [SerializeField] private KeyCode skill4Key = KeyCode.T;
+    [SerializeField] private KeyCode skill1Key = KeyCode.Alpha1;
+    [SerializeField] private KeyCode skill2Key = KeyCode.Alpha2;
+    [SerializeField] private KeyCode skill3Key = KeyCode.Alpha3;
 
     [Header("Skill Slots")]
     [SerializeField] private List<Skill> equippedSkills = new List<Skill>();
@@ -16,6 +15,8 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
     // Events
     public event Action<Skill> OnSkillActivated;
     public event Action<Skill> OnSkillUnlocked;
+
+    public bool debug = false;
 
     private void Start()
     {
@@ -29,7 +30,7 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
 
     private void InitializeSkills()
     {
-        // Initialize all equipped skills
+        // initialize all equipped skills
         foreach (var skill in equippedSkills)
         {
             if (skill != null)
@@ -41,7 +42,7 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
 
     private void HandleSkillInput()
     {
-        // Handle skill activation based on input
+        // handle skill activation based on input
         if (Input.GetKeyDown(skill1Key) && equippedSkills.Count > 0 && equippedSkills[0] != null)
         {
             ActivateSkill(equippedSkills[0]);
@@ -56,26 +57,21 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
         {
             ActivateSkill(equippedSkills[2]);
         }
-        
-        if (Input.GetKeyDown(skill4Key) && equippedSkills.Count > 3 && equippedSkills[3] != null)
-        {
-            ActivateSkill(equippedSkills[3]);
-        }
     }
 
     public bool ActivateSkill(Skill skill)
     {
-        if (skill == null) return false;
+        if (skill == null)
+        {
+            if(debug) Debug.LogWarning("[PlayerSkills] Cannot activate - skill is null");
+            return false;
+        }
 
         bool success = skill.Activate();
         if (success)
         {
             OnSkillActivated?.Invoke(skill);
-            Debug.Log($"Player activated skill: {skill.SkillName}");
-        }
-        else
-        {
-            Debug.Log($"Failed to activate skill: {skill.SkillName}");
+            if(debug) Debug.Log($"[PlayerSkills] Successfully activated skill: {skill.SkillName}");
         }
 
         return success;
@@ -83,46 +79,50 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
 
     public bool ActivateSkill(int skillIndex)
     {
-        if (skillIndex < 0 || skillIndex >= equippedSkills.Count) return false;
-        Debug.Log("Activated skill");
-        return ActivateSkill(equippedSkills[skillIndex]);
+        if (skillIndex < 0 || skillIndex >= equippedSkills.Count)
+            return false;
+        
+        Skill skill = equippedSkills[skillIndex];
+        if (skill == null)
+            return false;
+        
+        if(debug) Debug.Log($"[PlayerSkills] Activating skill at index {skillIndex}: {skill.SkillName}");
+        return ActivateSkill(skill);
     }
 
     public void EquipSkill(Skill skill, int slotIndex = -1)
     {
         if (skill == null) return;
 
-        // If no slot specified, find the first available slot
+        // if no slot specified, find first available slot
         if (slotIndex == -1)
         {
             slotIndex = FindEmptySlot();
             if (slotIndex == -1)
             {
-                Debug.LogWarning("No empty skill slots available!");
+                if(debug) Debug.LogWarning("No empty skill slots available!");
                 return;
             }
         }
 
-        // Ensure the slot index is valid
         if (slotIndex < 0 || slotIndex >= 4)
         {
-            Debug.LogWarning($"Invalid skill slot index: {slotIndex}");
+            if(debug) Debug.LogWarning($"Invalid skill slot index: {slotIndex}");
             return;
         }
-
-        // Resize the list if necessary
+        // add to player equipped skills
         while (equippedSkills.Count <= slotIndex)
         {
             equippedSkills.Add(null);
         }
 
-        // Equip the skill
+        // equip skill
         equippedSkills[slotIndex] = skill;
         skill.Initialize();
         skill.UnlockSkill();
         
         OnSkillUnlocked?.Invoke(skill);
-        Debug.Log($"Equipped skill {skill.SkillName} to slot {slotIndex}");
+        if(debug) Debug.Log($"Equipped skill {skill.SkillName} to slot {slotIndex}");
     }
 
     public void UnequipSkill(int slotIndex)
@@ -134,16 +134,7 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
         {
             skill.LockSkill();
             equippedSkills[slotIndex] = null;
-            Debug.Log($"Unequipped skill from slot {slotIndex}");
-        }
-    }
-
-    public void UnequipSkill(Skill skill)
-    {
-        int slotIndex = equippedSkills.IndexOf(skill);
-        if (slotIndex != -1)
-        {
-            UnequipSkill(slotIndex);
+            if(debug) Debug.Log($"Unequipped skill from slot {slotIndex}");
         }
     }
 
@@ -159,15 +150,21 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
         return -1;
     }
 
-    public Skill GetSkillAtSlot(int slotIndex)
+    // unlock a skill from boss drops
+    public void UnlockSkillFromBossDrop(Skill skill)
     {
-        if (slotIndex < 0 || slotIndex >= equippedSkills.Count) return null;
-        return equippedSkills[slotIndex];
-    }
+        if (skill == null) return;
 
-    public List<Skill> GetAllEquippedSkills()
-    {
-        return new List<Skill>(equippedSkills);
+        // add to player stats
+        if (EntityStats.Instance != null)
+        {
+            EntityStats.Instance.AddSkill(skill);
+        }
+
+        // equip the skill if there's space
+        EquipSkill(skill);
+        
+        if(debug) Debug.Log($"Unlocked new skill from boss drop: {skill.SkillName}");
     }
 
     public bool HasSkill(Skill skill)
@@ -175,48 +172,15 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
         return equippedSkills.Contains(skill);
     }
 
-    public int GetSkillCount()
+    public void ResetAllSkillCooldowns()
     {
-        int count = 0;
+        if (debug) Debug.Log("[PlayerSkills] Resetting all skill cooldowns");
+        
         foreach (var skill in equippedSkills)
         {
-            if (skill != null) count++;
-        }
-        return count;
-    }
-
-    // Method to unlock a skill from boss drops
-    public void UnlockSkillFromBossDrop(Skill skill)
-    {
-        if (skill == null) return;
-
-        // Add to player stats
-        if (EntityStats.Instance != null)
-        {
-            EntityStats.Instance.AddSkill(skill);
-        }
-
-        // Equip the skill if there's space
-        EquipSkill(skill);
-        
-        Debug.Log($"Unlocked new skill from boss drop: {skill.SkillName}");
-    }
-
-    // Method to spawn skill effects at player position
-    public void SpawnSkillEffect(GameObject effectPrefab, Vector3 offset = default)
-    {
-        if (effectPrefab == null) return;
-
-        Vector3 spawnPosition = transform.position + offset;
-        GameObject effect = Instantiate(effectPrefab, spawnPosition, transform.rotation);
-        
-        // Auto-destroy the effect after a reasonable time if it doesn't destroy itself
-        if (effect.GetComponent<ParticleSystem>() != null)
-        {
-            ParticleSystem ps = effect.GetComponent<ParticleSystem>();
-            if (ps.main.duration > 0)
+            if (skill != null)
             {
-                Destroy(effect, ps.main.duration + 1f);
+                skill.ResetCooldown();
             }
         }
     }

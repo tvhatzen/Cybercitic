@@ -7,6 +7,8 @@ public class PlayerAttack : MonoBehaviour
 
     private PlayerCombat combat;
 
+    public bool debug = false;
+
     void Awake() => combat = GetComponent<PlayerCombat>();
 
     void Update()
@@ -26,11 +28,19 @@ public class PlayerAttack : MonoBehaviour
     {
         GameEvents.PlayerAttack(target);
 
-        // apply damage 
+        // apply damage using PLAYER damage
         var health = target.GetComponent<HealthSystem>();
         if (health != null)
         {
-            health.TakeDamage(health.DamagePerHit); // make enemy dmg
+            var playerHealth = GetComponent<HealthSystem>();
+            if (playerHealth != null)
+            {
+                int damage = playerHealth.DamagePerHit;
+                health.TakeDamage(damage); // use PLAYER's damage
+                
+                var playerData = GetComponent<EntityData>();
+                if(debug) Debug.Log($"[PlayerAttack] Player attacks {target.name} for {damage} damage (EntityData.currentAttack: {playerData?.currentAttack})");
+            }
         }
     }
 }

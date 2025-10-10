@@ -14,6 +14,9 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
     public event Action<Upgrade> OnUpgradePurchased;
     public event Action<Upgrade> OnUpgradeUnlocked;
 
+    [Header("DEBUG")]
+    public bool debug = false;
+
     private void Start()
     {
         InitializeUpgrades();
@@ -53,7 +56,7 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
         if (success)
         {
             OnUpgradePurchased?.Invoke(upgrade);
-            Debug.Log($"Successfully purchased upgrade: {upgrade.UpgradeName}");
+            if(debug) Debug.Log($"Successfully purchased upgrade: {upgrade.UpgradeName}");
         }
         
         return success;
@@ -65,7 +68,7 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
         
         upgrade.UnlockUpgrade();
         OnUpgradeUnlocked?.Invoke(upgrade);
-        Debug.Log($"Unlocked upgrade: {upgrade.UpgradeName}");
+        if(debug) Debug.Log($"Unlocked upgrade: {upgrade.UpgradeName}");
     }
 
     public void UnlockAllUpgrades()

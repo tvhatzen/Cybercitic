@@ -25,7 +25,10 @@ public class UIManager : SingletonBase<UIManager>
     public GameObject loseUI;
     public GameObject tutorialUI;
 
-    private void Awake()
+    [Header("DEBUG")]
+    public bool debug = false;
+
+    protected override void Awake()
     {
         base.Awake();
 
@@ -37,7 +40,6 @@ public class UIManager : SingletonBase<UIManager>
         winUI.SetActive(true);
         loseUI.SetActive(true);
 
-        // Then immediately hide them all
         ShowScreen(MenuScreen.MainMenu, 0f);
 
         GameState.OnGameStateChanged += HandleGameStateChanged;
@@ -78,7 +80,7 @@ public class UIManager : SingletonBase<UIManager>
         // only scale time if gameplay screen, else normal time
         Time.timeScale = timescale;
 
-        Debug.Log($"Showing screen: {screen}");
+        if(debug) Debug.Log($"Showing screen: {screen}");
     }
 
     #region Public Menu Buttons
@@ -91,32 +93,17 @@ public class UIManager : SingletonBase<UIManager>
             GameState.Instance.ChangeState(GameState.GameStates.Playing);
     }
 
-    public void StartGameFromMainMenu()
-    {
-        GameState.Instance.StartFromMainMenu();
-    }
+    public void StartGameFromMainMenu() => GameState.Instance.StartFromMainMenu();
 
     public void FinishTutorialAndStartGame()
     {
-        Debug.Log("Tutorial button pressed!");
-        //Time.timeScale = 1f; // need?
+        if(debug) Debug.Log("Tutorial button pressed!");
         GameState.Instance.FinishTutorial();
     }
 
-    public void RestartAfterDeath()
-    {
-        // Player clicked to retry after death
-        GameState.Instance.StartGameplay(fromDeath: true);
-    }
-
-
+    public void RestartAfterDeath() => GameState.Instance.StartGameplay(fromDeath: true);
     public void GoToMenu() => GameState.Instance.ChangeState(GameState.GameStates.MainMenu);
-
-    public void ResumeGame()
-    {
-        GameState.Instance.ChangeState(GameState.GameStates.Playing);
-        Debug.Log("resumed game");
-    } 
+    public void ResumeGame() => GameState.Instance.ChangeState(GameState.GameStates.Playing);
     public void GoToUpgrade() => GameState.Instance.ChangeState(GameState.GameStates.Upgrade);
     public void ShowResults() => GameState.Instance.ChangeState(GameState.GameStates.Results);
     public void QuitGame() => Application.Quit();

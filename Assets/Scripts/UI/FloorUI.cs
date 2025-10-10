@@ -5,16 +5,21 @@ using UnityEngine.UI;
 public class FloorUI : MonoBehaviour
 {
     public TextMeshProUGUI floorText; 
+    
+    public bool debug = false;
 
     void OnEnable()
     {
         FloorManager.OnFloorChanged += UpdateFloorText;
+        
+        if (FloorManager.Instance != null)
+        {
+            UpdateFloorText(FloorManager.Instance.CurrentFloor);
+            if(debug) Debug.Log($"[FloorUI] Updated floor display on enable to: Floor {FloorManager.Instance.CurrentFloor}");
+        }
     }
 
-    void OnDisable()
-    {
-        FloorManager.OnFloorChanged -= UpdateFloorText;
-    }
+    void OnDisable() => FloorManager.OnFloorChanged -= UpdateFloorText;
 
     void Start()
     {
@@ -23,9 +28,8 @@ public class FloorUI : MonoBehaviour
             UpdateFloorText(FloorManager.Instance.CurrentFloor);
     }
 
-    private void UpdateFloorText(int floor)
+    public void UpdateFloorText(int floor)
     {
-        if (floorText != null)
-            floorText.text = $"Floor {floor} / 5";
+        if (floorText != null) floorText.text = $"Floor {floor} / 5";
     }
 }

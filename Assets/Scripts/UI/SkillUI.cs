@@ -11,10 +11,22 @@ public class SkillUI : MonoBehaviour
     [Header("Skill Key Labels")]
     [SerializeField] private List<TextMeshProUGUI> keyLabels = new List<TextMeshProUGUI>();
 
+    [Header("Testing")]
+    [SerializeField] private bool unlockAllSkillsOnStart = false;
+    [SerializeField] private List<Skill> testSkills = new List<Skill>(); // for testing
+
+    public bool debug = false;
+
     private void Start()
     {
         InitializeSkillButtons();
         SubscribeToEvents();
+        
+        // Test mode: unlock all skills if checkbox is enabled
+        if (unlockAllSkillsOnStart)
+        {
+            UnlockAllTestSkills();
+        }
     }
 
     private void OnDestroy()
@@ -24,7 +36,7 @@ public class SkillUI : MonoBehaviour
 
     private void InitializeSkillButtons()
     {
-        // Initialize all skill buttons
+        // initialize all skill buttons
         for (int i = 0; i < skillButtons.Count; i++)
         {
             if (skillButtons[i] != null)
@@ -54,7 +66,7 @@ public class SkillUI : MonoBehaviour
 
     private void OnSkillActivated(Skill skill)
     {
-        // Find the button for this skill and update it
+        // find button for this skill and trigger visual feedback
         for (int i = 0; i < skillButtons.Count; i++)
         {
             if (skillButtons[i] != null && skillButtons[i].GetSkill() == skill)
@@ -67,7 +79,7 @@ public class SkillUI : MonoBehaviour
 
     private void OnSkillUnlocked(Skill skill)
     {
-        // Find an empty slot and assign the skill
+        // find an empty slot and assign the skill
         for (int i = 0; i < skillButtons.Count; i++)
         {
             if (skillButtons[i] != null && skillButtons[i].GetSkill() == null)
@@ -80,7 +92,7 @@ public class SkillUI : MonoBehaviour
 
     private void Update()
     {
-        // Update all skill buttons (for cooldown display)
+        // update all skill buttons (for cooldown display)
         foreach (var button in skillButtons)
         {
             if (button != null)
@@ -88,6 +100,55 @@ public class SkillUI : MonoBehaviour
                 button.UpdateCooldown();
             }
         }
+    }
+
+    // Test method to unlock all skills and assign them to buttons
+    private void UnlockAllTestSkills()
+    {
+        if (PlayerSkills.Instance == null)
+        {
+            if(debug) Debug.LogWarning("PlayerSkills instance not found! Cannot unlock test skills.");
+            return;
+        }
+
+        if(debug) Debug.Log($"[SkillUI TEST MODE] Unlocking {testSkills.Count} test skills");
+
+        // unlock and equip each test skill to available slots
+        for (int i = 0; i < testSkills.Count && i < skillButtons.Count; i++)
+        {
+            if (testSkills[i] != null)
+            {
+                PlayerSkills.Instance.EquipSkill(testSkills[i], i);
+                if(debug) Debug.Log($"[SkillUI TEST MODE] Equipped {testSkills[i].SkillName} to slot {i}");
+            }
+        }
+
+        if(debug) Debug.Log("[SkillUI TEST MODE] All test skills unlocked and assigned!");
+    }
+
+    // manually unlock test skills
+    public void UnlockTestSkillsManually()
+    {
+        UnlockAllTestSkills();
+    }
+
+    // Test method to clear all skills 
+    public void ClearAllSkills()
+    {
+        for (int i = 0; i < skillButtons.Count; i++)
+        {
+            if (skillButtons[i] != null)
+            {
+                skillButtons[i].SetSkill(null);
+            }
+            
+            if (PlayerSkills.Instance != null)
+            {
+                PlayerSkills.Instance.UnequipSkill(i);
+            }
+        }
+        
+        if(debug) Debug.Log("[SkillUI] All skills cleared");
     }
 }
 

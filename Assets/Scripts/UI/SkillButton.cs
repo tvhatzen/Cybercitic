@@ -10,6 +10,7 @@ public class SkillButton : MonoBehaviour
     [SerializeField] private Image skillIcon;
     [SerializeField] private Image cooldownOverlay;
     [SerializeField] private TextMeshProUGUI cooldownText;
+    [SerializeField] private TextMeshProUGUI skillNameText; 
     [SerializeField] private TextMeshProUGUI keyLabel;
 
     [Header("Visual Settings")]
@@ -19,18 +20,17 @@ public class SkillButton : MonoBehaviour
 
     private Skill assignedSkill;
     private int slotIndex;
+    private int instanceID; 
+
+    [Header("DEBUG")]
+    public bool debug = false;
 
     public void Initialize(int index)
     {
         slotIndex = index;
+        instanceID = GetInstanceID(); // store instance ID for debugging
 
-        if (button != null)
-        {
-            button.onClick.RemoveAllListeners();
-            button.onClick.AddListener(OnButtonClicked);
-        }
-
-        // Set up key label
+        // set up key label
         if (keyLabel != null)
         {
             switch (index)
@@ -42,7 +42,7 @@ public class SkillButton : MonoBehaviour
                     keyLabel.text = "E";
                     break;
                 case 2:
-                    keyLabel.text = "1";
+                    keyLabel.text = "R";
                     break;
                 case 3:
                     keyLabel.text = "T";
@@ -53,7 +53,31 @@ public class SkillButton : MonoBehaviour
             }
         }
 
-        // Initially hide the button (set to true for testing)
+        // show the button but with no skill assigned
+        if (skillIcon != null)
+        {
+            skillIcon.enabled = false;
+            skillIcon.sprite = null;
+        }
+
+        if (cooldownOverlay != null)
+        {
+            cooldownOverlay.fillAmount = 0f;
+            cooldownOverlay.gameObject.SetActive(false);
+        }
+
+        if (cooldownText != null)
+        {
+            cooldownText.text = "";
+            cooldownText.gameObject.SetActive(false);
+        }
+
+        if (skillNameText != null)
+        {
+            skillNameText.text = "";
+            skillNameText.gameObject.SetActive(false);
+        }
+
         SetButtonActive(true);
     }
 
@@ -65,13 +89,50 @@ public class SkillButton : MonoBehaviour
         {
             SetButtonActive(true);
 
-            if (skillIcon != null)
+            // set skill icon
+            if (skillIcon != null && skill.Icon != null)
+            {
                 skillIcon.sprite = skill.Icon;
+                skillIcon.enabled = true;
+                skillIcon.color = readyColor; 
+            }
 
-            Debug.Log($"Set skill {skill.SkillName} to button slot {slotIndex}");
+            // set skill name
+            if (skillNameText != null)
+            {
+                skillNameText.text = skill.SkillName;
+                skillNameText.gameObject.SetActive(true);
+            }
+
+            // initialize cooldown overlay
+            if (cooldownOverlay != null)
+            {
+                cooldownOverlay.fillAmount = 0f;
+                cooldownOverlay.gameObject.SetActive(false);
+            }
+
+            // clear cooldown text
+            if (cooldownText != null)
+            {
+                cooldownText.text = "";
+                cooldownText.gameObject.SetActive(false);
+            }
         }
         else
         {
+            // clear button
+            if (skillIcon != null)
+            {
+                skillIcon.sprite = null;
+                skillIcon.enabled = false;
+            }
+            
+            if (skillNameText != null)
+            {
+                skillNameText.text = "";
+                skillNameText.gameObject.SetActive(false);
+            }
+            
             SetButtonActive(false);
         }
     }
@@ -85,8 +146,7 @@ public class SkillButton : MonoBehaviour
     {
         if (assignedSkill != null && PlayerSkills.Instance != null)
         {
-            PlayerSkills.Instance.ActivateSkill(slotIndex);
-            Debug.Log("Skill button clicked");
+            bool activated = PlayerSkills.Instance.ActivateSkill(slotIndex);
         }
     }
 
@@ -102,12 +162,14 @@ public class SkillButton : MonoBehaviour
 
             case Skill.SkillStates.Casting:
                 SetButtonState(castingColor, 0f, "CASTING");
+                if(debug) Debug.Log($"[SkillButton] {assignedSkill.SkillName} is CASTING");
                 break;
 
             case Skill.SkillStates.Cooldown:
                 float progress = assignedSkill.CooldownProgress;
                 float remainingTime = assignedSkill.CurrentCooldown;
                 SetButtonState(cooldownColor, progress, $"{remainingTime:F1}s");
+                if(debug) Debug.Log($"[SkillButton] {assignedSkill.SkillName} cooldown: {remainingTime:F1}s (progress: {progress:F2})");
                 break;
 
             case Skill.SkillStates.Locked:
@@ -127,24 +189,20 @@ public class SkillButton : MonoBehaviour
             cooldownOverlay.gameObject.SetActive(cooldownFill > 0);
         }
 
+        // display cooldown timer text
         if (cooldownText != null)
         {
             cooldownText.text = cooldownTextValue;
             cooldownText.gameObject.SetActive(!string.IsNullOrEmpty(cooldownTextValue));
+            
+            if (debug && !string.IsNullOrEmpty(cooldownTextValue))
+                Debug.Log($"[SkillButton] Cooldown text set to: '{cooldownTextValue}' (active: {cooldownText.gameObject.activeSelf})");
         }
 
         if (button != null)
             button.interactable = assignedSkill != null && assignedSkill.IsReady;
     }
 
-    private void SetButtonActive(bool active)
-    {
-        gameObject.SetActive(active);
-    }
-
-    public void OnSkillActivated()
-    {
-        // called when a skill is activated for visual feedback
-        Debug.Log($"Skill button {slotIndex} activated!");
-    }
+    private void SetButtonActive(bool active) => gameObject.SetActive(active);
+    public void OnSkillActivated() => OnButtonClicked();
 }

@@ -14,43 +14,48 @@ public class GameEvents : MonoBehaviour
 
     // when any HealthSystem dies
     public static event Action<HealthSystem> OnAnyDeath;
+    // when a boss dies
+    public static event Action<HealthSystem> OnBossDeath;
 
     // when purchasing an upgrade 
     public static event Action<Upgrade> onUpgradePurchased;
+
+    [Header("DEBUG")]
+    public static bool debug = false;
 
     public static void PlayerEnteredCombat(Transform[] enemies)
     {
         if (enemies == null || enemies.Length == 0)
         {
-            Debug.LogWarning("GameEvents: tried to enter combat with null enemy");
+            if(debug) Debug.LogWarning("GameEvents: tried to enter combat with null enemy");
             return;
         }
 
         OnPlayerEnterCombat?.Invoke(enemies);
-        Debug.Log("GameEvents: on player entered combat with " + enemies.Length + "enemies");
+        if(debug) Debug.Log("GameEvents: on player entered combat with " + enemies.Length + "enemies");
     }
 
     public static void PlayerExitedCombat()
     {
         OnPlayerExitCombat?.Invoke();
-        Debug.Log("GameEvents: player exited combat");
+        if(debug) Debug.Log("GameEvents: player exited combat");
     }
 
     public static void PlayerAttack(Transform target)
     {
         OnPlayerAttack?.Invoke(target);
-        Debug.Log("GameEvents: player attack" + target.name);
+        if(debug) Debug.Log("GameEvents: player attack" + target.name);
     }
 
     public static void EntityDied(HealthSystem hs)
     {
         if (hs == null)
         {
-            Debug.LogWarning("GameEvents: tried to broadcast death of null entity");
+            if(debug) Debug.LogWarning("GameEvents: tried to broadcast death of null entity");
             return;
         }
 
-        Debug.Log($"GameEvents: {hs.name} died!");
+        if(debug) Debug.Log($"GameEvents: {hs.name} died!");
         OnAnyDeath?.Invoke(hs);
     }
 
@@ -59,6 +64,6 @@ public class GameEvents : MonoBehaviour
         if (upgrade == null) return;
 
         onUpgradePurchased?.Invoke(upgrade);
-        Debug.Log("Upgrade event called for: " + upgrade.name);
+        if(debug) Debug.Log("Upgrade event called for: " + upgrade.name);
     }
 }

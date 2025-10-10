@@ -20,6 +20,9 @@ public class PlayerCombat : MonoBehaviour
     private bool gatheringEnemies;
     private Coroutine gatherRoutine;
 
+    [Header("DEBUG")]
+    public bool debug = false;
+
     void Awake()
     {
         movement = GetComponent<PlayerMovement>();
@@ -45,6 +48,13 @@ public class PlayerCombat : MonoBehaviour
         enemiesInRange.Clear();
 
         Collider[] hits = Physics.OverlapSphere(transform.position, combatCheckRadius, enemyLayer);
+        
+        // Debug info
+        if (hits.Length > 0)
+        {
+            if(debug) Debug.Log($"[PlayerCombat] Found {hits.Length} colliders in range");
+        }
+        
         // collect root transfroms that have a HealthSystem and are alive
         foreach (var hit in hits)
         {
@@ -53,7 +63,14 @@ public class PlayerCombat : MonoBehaviour
             if (health != null && health.CurrentHealth > 0)
             {
                 if (!enemiesInRange.Contains(enemyTransform))
+                {
                     enemiesInRange.Add(enemyTransform);
+                    if(debug) Debug.Log($"[PlayerCombat] Added enemy to combat: {enemyTransform.name} (HP: {health.CurrentHealth})");
+                }
+            }
+            else
+            {
+                if(debug) Debug.LogWarning($"[PlayerCombat] Hit object {hit.name} but no valid HealthSystem found");
             }
         }
     }
@@ -98,7 +115,7 @@ public class PlayerCombat : MonoBehaviour
             // pass the full array to GameEvents
             GameEvents.PlayerEnteredCombat(enemiesInRange.ToArray());
 
-            Debug.Log($"Entering combat with {enemiesInRange.Count} enemies. Target: {CurrentTarget?.name ?? "none"}");
+            if(debug) Debug.Log($"Entering combat with {enemiesInRange.Count} enemies. Target: {CurrentTarget?.name ?? "none"}");
         }
     }
 
@@ -120,7 +137,7 @@ public class PlayerCombat : MonoBehaviour
             }
 
             GameEvents.PlayerExitedCombat();
-            Debug.Log("No enemies left, exiting combat");
+            if(debug) Debug.Log("No enemies left, exiting combat");
         }
     }
 

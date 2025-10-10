@@ -7,7 +7,12 @@ using TMPro;
 public class trigger : MonoBehaviour
 {
     [Header("Next Floor Settings")]
-    public string nextFloorSceneName; // scene to load when triggered
+    public bool loadNewScene = false; // if true, loads a new scene; if false, progresses floor in same scene
+    public string nextFloorSceneName; // scene to load when triggered (only if loadNewScene is true)
+
+    public bool debug = false;
+    
+    private bool hasBeenTriggered = false; // prevent multiple triggers
 
     private void Awake()
     {
@@ -17,22 +22,36 @@ public class trigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && !hasBeenTriggered)
         {
-            Debug.Log($"Player reached floor end! Loading {nextFloorSceneName}");
+            hasBeenTriggered = true; // prevent re-triggering
+            
+            if(debug) Debug.Log($"[Trigger] Player reached floor end!");
             LoadNextFloor();
         }
     }
 
     private void LoadNextFloor()
     {
-        if (!string.IsNullOrEmpty(nextFloorSceneName))
+        if (loadNewScene)
         {
-            SceneManager.LoadScene(nextFloorSceneName);
-            FloorManager.Instance.LoadNextFloor();
+            // load a new scene
+            if (!string.IsNullOrEmpty(nextFloorSceneName))
+            {
+                if(debug) Debug.Log($"[Trigger] Loading new scene: {nextFloorSceneName}");
+                
+                // increment floor BEFORE loading scene so OnSceneLoaded has correct floor number
+                int currentFloorBefore = FloorManager.Instance.CurrentFloor;
+                FloorManager.Instance.IncrementFloor();
+                if(debug) Debug.Log($"[Trigger] Floor incremented from {currentFloorBefore} to {FloorManager.Instance.CurrentFloor}");
+                
+                // Load the scene - OnSceneLoaded will handle setting state to Playing
+                SceneManager.LoadScene(nextFloorSceneName);
+            }
+            else
+            {
+                if(debug) Debug.LogWarning("[Trigger] Next floor scene name not set on trigger!");
+            }
         }
-        else
-            Debug.LogWarning("Next floor scene name not set on trigger!");
     }
 }
-// fire floor chang event 

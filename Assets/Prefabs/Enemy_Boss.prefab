@@ -147,10 +147,11 @@ GameObject:
   - component: {fileID: 4626786823808415381}
   - component: {fileID: 5677088393632722384}
   - component: {fileID: 8969816573239620014}
-  - component: {fileID: -7815250697143827743}
   - component: {fileID: 2958436485605607723}
-  - component: {fileID: 939086418269555162}
   - component: {fileID: 4903866260193589597}
+  - component: {fileID: -5057696123977782798}
+  - component: {fileID: -8762542245306527853}
+  - component: {fileID: 4571561975590357121}
   m_Layer: 3
   m_Name: Enemy_Boss
   m_TagString: Boss
@@ -250,18 +251,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2, y: 0.2, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-7815250697143827743
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4060379348875191879}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a0afa03710ea0b4daf7455f1b1e3ddd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2958436485605607723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -274,27 +263,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18c9816d3d648ed438d2301878985472, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 0
-  maxHealth: 150
-  damagePerHit: 8
   healthText: {fileID: 1458773518392947188}
   spriteRenderer: {fileID: 5677088393632722384}
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.1
---- !u!114 &939086418269555162
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4060379348875191879}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cdc0ff31fa083994c86eeb15fd198872, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attackCooldown: 2
-  damage: 5
 --- !u!114 &4903866260193589597
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -310,6 +282,57 @@ MonoBehaviour:
   currencyPrefab: {fileID: 4788816608471098415, guid: 243313326fb77f84080086ce389d2827, type: 3}
   creditsOnDeath: 50
   possibleDrops: []
+--- !u!114 &-5057696123977782798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4060379348875191879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d430ce667a15f3458c8febf575d45d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseHealth: 100
+  baseSpeed: 5
+  baseAttack: 10
+  baseDodgeChance: 0.1
+  currentHealth: 0
+  currentSpeed: 0
+  currentAttack: 0
+  currentDodgeChance: 0
+--- !u!114 &-8762542245306527853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4060379348875191879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79147db44d41db942a5cae13f5b5a230, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackCooldown: 2
+  attackRange: 2
+--- !u!114 &4571561975590357121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4060379348875191879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c43a212c292e484d9c599fafc872d68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floorsPerTier: 5
+  isBoss: 1
+  bossMultiplier: 2
+  isElite: 0
+  eliteMultiplier: 1.5
 --- !u!1 &9070836695079755518
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,6 +8,11 @@ public class PlayerInstance : SingletonBase<PlayerInstance>
     {
         base.Awake(); 
 
+        if (!CompareTag("Player"))
+        {
+            tag = "Player";
+        }
+
         DontDestroyOnLoad(gameObject);
     }
 }

@@ -11,6 +11,9 @@ public class EnemyLoot : MonoBehaviour
 
     private HealthSystem health;
 
+    [Header("DEBUG")]
+    public bool debug = false;
+
     protected virtual void Awake()
     {
         health = GetComponent<HealthSystem>();
@@ -21,7 +24,7 @@ public class EnemyLoot : MonoBehaviour
     {
         if (CurrencyManager.Instance != null)
         {
-            Debug.Log($"{gameObject.name} dropped {creditsOnDeath} credits!");
+            if(debug) Debug.Log($"{gameObject.name} dropped {creditsOnDeath} credits!");
             CurrencyManager.Instance.AddCredits(creditsOnDeath);
         }
 

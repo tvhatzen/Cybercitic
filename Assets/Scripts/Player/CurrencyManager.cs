@@ -8,11 +8,19 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
     private int credits = 0;
     public int Credits => credits;
 
+    public bool debug = false;
+
+    public bool CanAfford(int cost)
+    {
+        if (cost <= credits)
+            return true;
+        return false;
+    }
 
     public void AddCredits(int amount)
     {
         credits += amount;
-        Debug.Log($"Player earned {amount} credits. Total = {credits}");
+        if(debug) Debug.Log($"Player earned {amount} credits. Total = {credits}");
         OnCreditsChanged?.Invoke(credits);
     }
 
@@ -25,5 +33,10 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         return true;
     }
 
+    public void ResetCredits()
+    {
+        credits = 0;
+        if(debug) Debug.Log("Credits reset to 0");
+        OnCreditsChanged?.Invoke(credits);
+    }
 }
-// find existing or create currency ui reference to tmpro
