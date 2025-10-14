@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class UIManager : SingletonBase<UIManager>
@@ -45,6 +46,10 @@ public class UIManager : SingletonBase<UIManager>
         GameState.OnGameStateChanged += HandleGameStateChanged;
     }
 
+    private void Update()
+    {
+        TogglePause();
+    }
     private void OnDestroy()
     {
         GameState.OnGameStateChanged -= HandleGameStateChanged;
@@ -87,9 +92,9 @@ public class UIManager : SingletonBase<UIManager>
 
     public void TogglePause()
     {
-        if (GameState.Instance.CurrentState == GameState.GameStates.Playing)
+        if (Input.GetKeyDown(KeyCode.Escape) && GameState.Instance.CurrentState == GameState.GameStates.Playing)
             GameState.Instance.ChangeState(GameState.GameStates.Paused);
-        else if (GameState.Instance.CurrentState == GameState.GameStates.Paused)
+        else if (Input.GetKeyDown(KeyCode.Escape) && GameState.Instance.CurrentState == GameState.GameStates.Paused)
             GameState.Instance.ChangeState(GameState.GameStates.Playing);
     }
 
@@ -107,6 +112,9 @@ public class UIManager : SingletonBase<UIManager>
     public void GoToUpgrade() => GameState.Instance.ChangeState(GameState.GameStates.Upgrade);
     public void ShowResults() => GameState.Instance.ChangeState(GameState.GameStates.Results);
     public void QuitGame() => Application.Quit();
+
+    // toggle pause? 
+    
 
     #endregion
 }
