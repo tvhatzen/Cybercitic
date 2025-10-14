@@ -19,6 +19,7 @@ public class PlayerCombat : MonoBehaviour
     private readonly List<Transform> enemiesInRange = new List<Transform>();
     private bool gatheringEnemies;
     private Coroutine gatherRoutine;
+    private Transform previousTarget; // Track previous target for event firing
 
     [Header("DEBUG")]
     public bool debug = false;
@@ -40,7 +41,17 @@ public class PlayerCombat : MonoBehaviour
 
         // while in combat, always keep the closest alive enemy as the attack target
         if (InCombat && enemiesInRange.Count > 0)
-            CurrentTarget = FindClosestEnemy();
+        {
+            Transform newTarget = FindClosestEnemy();
+            
+            // Fire event if target changed
+            if (newTarget != CurrentTarget)
+            {
+                GameEvents.PlayerTargetChanged(CurrentTarget, newTarget);
+                previousTarget = CurrentTarget;
+                CurrentTarget = newTarget;
+            }
+        }
     }
 
     private void ScanEnemiesInRange()
@@ -112,6 +123,9 @@ public class PlayerCombat : MonoBehaviour
             // pick initial closest target
             CurrentTarget = FindClosestEnemy();
 
+            // Fire target changed event (from null to first target)
+            GameEvents.PlayerTargetChanged(null, CurrentTarget);
+
             // pass the full array to GameEvents
             GameEvents.PlayerEnteredCombat(enemiesInRange.ToArray());
 
@@ -125,6 +139,13 @@ public class PlayerCombat : MonoBehaviour
         if (InCombat && !gatheringEnemies && enemiesInRange.Count == 0)
         {
             InCombat = false;
+            
+            // Fire target changed event (from current target to null)
+            if (CurrentTarget != null)
+            {
+                GameEvents.PlayerTargetChanged(CurrentTarget, null);
+            }
+            
             CurrentTarget = null;
 
             // allow movement again

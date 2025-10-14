@@ -21,8 +21,8 @@ public class SweepingStrike : Skill
     private void ApplySweepingDamage()
     {
         // Get player position and forward direction
-        Vector3 playerPos = Vector3.zero; // PlayerSkills.Instance.transform.position 
-        Vector3 playerForward = Vector3.forward; // PlayerSkills.Instance.transform.forward
+        Vector3 playerPos = Vector3.zero; 
+        Vector3 playerForward = Vector3.forward; 
         
         // Find all enemies in range
         Collider[] enemies = Physics.OverlapSphere(playerPos, skillRange, LayerMask.GetMask("Enemy"));

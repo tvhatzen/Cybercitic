@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using static GameState;
 
 /// <summary>
@@ -363,9 +364,21 @@ public class UpgradeShopUI : MonoBehaviour
     {
         gameObject.SetActive(false);
 
+        // reset run stats for retry (keep upgrades and credits)
+        if (RunStatsTracker.Instance != null)
+            RunStatsTracker.Instance.ResetStatsForRetry();
+        
+        // reset floor to 1 but keep player upgrades
+        if (FloorManager.Instance != null)
+            FloorManager.Instance.ResetToFloor1();
+        
+        // restart the game
         if (GameState.Instance != null)
+            GameState.Instance.ChangeState(GameState.GameStates.Playing);
+        else
         {
-            GameState.Instance.ChangeState(GameStates.Playing); // set to floor 1 again
+            // reload current scene 
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 

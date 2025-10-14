@@ -312,7 +312,7 @@ public class FloorManager : SingletonBase<FloorManager>
         // check for boss floor (every 5 floors: 5, 10, 15, 20, etc.)
         bool isBossFloor = CurrentFloor % bossFloorInterval == 0;
         if (debug) Debug.Log($"[FloorManager] SpawnEnemies - CurrentFloor: {CurrentFloor}, bossFloorInterval: {bossFloorInterval}, isBossFloor: {isBossFloor}, bossPrefab: {(bossPrefab != null ? bossPrefab.name : "null")}");
-        
+
         if (isBossFloor && bossPrefab != null)
         {
             if (debug) Debug.Log($"[FloorManager] Spawning BOSS for floor {CurrentFloor} (boss floor!)");
@@ -323,6 +323,12 @@ public class FloorManager : SingletonBase<FloorManager>
             if (debug) Debug.Log($"[FloorManager] Spawning regular enemies for floor {CurrentFloor}");
             SpawnRegularEnemies();
         }
+
+        foreach (GameObject enemy in existingEnemies)
+        {
+            enemy.GetComponent<EnemyVisualFeedback>()?.PlaySpawnEffect(); // not triggering ??
+        }
+        
     }
 
     private void SpawnBoss()

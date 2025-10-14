@@ -12,6 +12,9 @@ public class GameEvents : MonoBehaviour
     // when the player automatically attacks
     public static event Action<Transform> OnPlayerAttack;
 
+    // when the player's current target changes (provides old target and new target)
+    public static event Action<Transform, Transform> OnPlayerTargetChanged;
+
     // when any HealthSystem dies
     public static event Action<HealthSystem> OnAnyDeath;
     // when a boss dies
@@ -45,6 +48,12 @@ public class GameEvents : MonoBehaviour
     {
         OnPlayerAttack?.Invoke(target);
         if(debug) Debug.Log("GameEvents: player attack" + target.name);
+    }
+
+    public static void PlayerTargetChanged(Transform oldTarget, Transform newTarget)
+    {
+        OnPlayerTargetChanged?.Invoke(oldTarget, newTarget);
+        if(debug) Debug.Log($"GameEvents: player target changed from {oldTarget?.name ?? "none"} to {newTarget?.name ?? "none"}");
     }
 
     public static void EntityDied(HealthSystem hs)
