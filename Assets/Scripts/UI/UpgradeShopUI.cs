@@ -365,7 +365,7 @@ public class UpgradeShopUI : MonoBehaviour
 
         if (GameState.Instance != null)
         {
-            GameState.Instance.ChangeState(GameStates.Results);
+            GameState.Instance.ChangeState(GameStates.Playing); // set to floor 1 again
         }
     }
 
