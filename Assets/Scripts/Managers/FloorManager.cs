@@ -283,10 +283,9 @@ public class FloorManager : SingletonBase<FloorManager>
             if (debug) Debug.Log("[FloorManager] Reset all skill cooldowns on player spawn");
         }
 
-        // Wait a frame to ensure all components are properly initialized
         yield return null;
         
-        // Verify EntityData component exists and is properly initialized
+        // make sure EntityData component exists 
         var entityData = playerGO.GetComponent<EntityData>();
         if (entityData == null)
         {
@@ -415,3 +414,6 @@ public class FloorManager : SingletonBase<FloorManager>
     // check if current floor is boss floor
     public bool IsBossFloor() { return CurrentFloor % bossFloorInterval == 0; }
 }
+//  create more general spawner 
+// list of spawners
+// fires off signal to player spawner to run that logic separately
