@@ -40,7 +40,6 @@ public class EntityData : MonoBehaviour
     private float originalBaseDodgeChance;
     private bool originalStatsStored = false;
 
-    [Header("DEBUG")]
     public bool debug = false;
 
     private void Awake()

@@ -29,6 +29,8 @@ public class FloorManager : SingletonBase<FloorManager>
 
     public bool debug = false;
 
+    public FloorProgressBar _floorProgressBar;
+
     protected override void Awake()
     {
         base.Awake(); 
@@ -80,6 +82,8 @@ public class FloorManager : SingletonBase<FloorManager>
         
         OnFloorChanged?.Invoke(CurrentFloor);
 
+        _floorProgressBar.IncreaseProgressAmount(1);
+
         // tell run stats tracker
         if (RunStatsTracker.Instance != null)
         {
@@ -95,6 +99,9 @@ public class FloorManager : SingletonBase<FloorManager>
         // Reset floor counter first
         CurrentFloor = 1;
         OnFloorChanged?.Invoke(CurrentFloor);
+
+        _floorProgressBar.ResetProgress(); 
+
         if (debug) Debug.Log($"[FloorManager] Floor changed event triggered: Floor {CurrentFloor}");
 
         UpdateFloorUIBackup();
@@ -279,7 +286,7 @@ public class FloorManager : SingletonBase<FloorManager>
         // reset skill cooldowns when respawning
         if (PlayerSkills.Instance != null)
         {
-            PlayerSkills.Instance.ResetAllSkillCooldowns();
+            //PlayerSkills.Instance.ResetAllSkillCooldowns(); // TESTING: dont reset skill cooldown when respawning
             if (debug) Debug.Log("[FloorManager] Reset all skill cooldowns on player spawn");
         }
 
@@ -295,6 +302,9 @@ public class FloorManager : SingletonBase<FloorManager>
         {
             if (debug) Debug.Log($"[FloorManager] Player spawned successfully with EntityData. Speed: {entityData.currentSpeed}");
         }
+
+        // reset health bar foreground
+
 
         playerGO.SetActive(true);
     }

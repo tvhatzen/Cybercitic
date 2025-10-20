@@ -5,6 +5,11 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMovement))]
 public class PlayerCombat : MonoBehaviour
 {
+
+    // * add combat dodge chance upgrade. start at 15% to not take dmg from enemy attack
+    // * add defense upgrade. start with 10% reduced dmg from enemy.
+    // * add speed upgrade. reduce atk cooldown by 15% each upgrade.
+
     [Header("Combat")]
     public LayerMask enemyLayer;
     public float combatCheckRadius = 2f;
@@ -21,7 +26,6 @@ public class PlayerCombat : MonoBehaviour
     private Coroutine gatherRoutine;
     private Transform previousTarget; // Track previous target for event firing
 
-    [Header("DEBUG")]
     public bool debug = false;
 
     void Awake()

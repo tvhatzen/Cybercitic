@@ -1,6 +1,7 @@
-using UnityEngine;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Audio;
 
 public class PlayerSkills : SingletonBase<PlayerSkills>
 {
@@ -15,6 +16,13 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
     // Events
     public event Action<Skill> OnSkillActivated;
     public event Action<Skill> OnSkillUnlocked;
+
+    [Header("Particle Effects")]
+    [SerializeField] private ParticleSystem skillUseParticle;
+
+    [Header("Audio")]
+    [SerializeField] private AudioClip useSkillSound;
+    private AudioSource audioSource;
 
     public bool debug = false;
 
@@ -87,6 +95,10 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
             return false;
         
         if(debug) Debug.Log($"[PlayerSkills] Activating skill at index {skillIndex}: {skill.SkillName}");
+
+        PlayParticles();
+        PlaySound();
+
         return ActivateSkill(skill);
     }
 
@@ -182,6 +194,22 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
             {
                 skill.ResetCooldown();
             }
+        }
+    }
+
+    private void PlayParticles()
+    {
+        if (skillUseParticle != null)
+        {
+            skillUseParticle.Play();
+        }
+    }
+
+    private void PlaySound()
+    {
+        if (audioSource != null && useSkillSound != null)
+        {
+            audioSource.PlayOneShot(useSkillSound);
         }
     }
 }

@@ -333,11 +333,9 @@ MonoBehaviour:
   skillUnlockedPanel: {fileID: 9141995169809385310}
   skillNameText: {fileID: 1325602463719519881}
   continueButton: {fileID: 1376144276262393175}
-  mainMenuButton: {fileID: 0}
-  retryButton: {fileID: 0}
   useCountUpAnimation: 1
   countUpDuration: 1
-  debug: 0
+  debug: 1
 --- !u!1 &4414767040774464644
 GameObject:
   m_ObjectHideFlags: 0

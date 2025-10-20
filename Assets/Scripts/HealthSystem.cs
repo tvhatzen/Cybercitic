@@ -6,7 +6,7 @@ using System.Collections;
 public class HealthSystem : MonoBehaviour
 {
     private int currentHealth;
-
+    //[SerializeField] private float maxHealth = 100;
     public int CurrentHealth => currentHealth;
     public int DamagePerHit => entityData != null ? entityData.currentAttack : 0;
 
@@ -16,7 +16,7 @@ public class HealthSystem : MonoBehaviour
 
     [Header("Health Bar UI")]
     [SerializeField] private TextMeshProUGUI healthText;
-
+    [SerializeField] private HealthBar healthBar;
 
     [Header("Damage Flash Settings")]
     [SerializeField] private SpriteRenderer spriteRenderer;  // make multiple for player sprites
@@ -52,19 +52,9 @@ public class HealthSystem : MonoBehaviour
         {
             currentHealth = entityData.currentHealth; // set health
             UpdateHealthText();
+            healthBar.UpdateHealthBar(entityData.baseHealth, currentHealth);
             
             if(debug) Debug.Log($"[HealthSystem] {name} initialized - HP: {currentHealth}/{entityData.baseHealth}, ATK: {DamagePerHit}");
-        }
-    }
-
-    void Update()
-    {
-         if (healthText != null)
-        {
-            // make text face the camera
-            healthText.transform.rotation = Quaternion.LookRotation(
-                healthText.transform.position - Camera.main.transform.position
-            );
         }
     }
 
@@ -75,6 +65,7 @@ public class HealthSystem : MonoBehaviour
 
         OnHealthChanged?.Invoke(currentHealth);
         UpdateHealthText();
+        healthBar.UpdateHealthBar(entityData.baseHealth, currentHealth);
 
         if (spriteRenderer != null)
         {
@@ -109,6 +100,7 @@ public class HealthSystem : MonoBehaviour
         // Update health UI
         OnHealthChanged?.Invoke(health);
         UpdateHealthText();
+        healthBar.UpdateHealthBar(entityData.baseHealth, currentHealth);
     }
 
     public void ResetHealth()
@@ -118,6 +110,7 @@ public class HealthSystem : MonoBehaviour
             currentHealth = entityData.baseHealth;
             OnHealthChanged?.Invoke(currentHealth);
             UpdateHealthText();
+            healthBar.UpdateHealthBar(entityData.baseHealth, currentHealth);
         }
     }
 
@@ -128,6 +121,7 @@ public class HealthSystem : MonoBehaviour
             currentHealth = entityData.baseHealth;
             OnHealthChanged?.Invoke(currentHealth);
             UpdateHealthText();
+            healthBar.UpdateHealthBar(entityData.baseHealth, currentHealth);
         }
     }
 

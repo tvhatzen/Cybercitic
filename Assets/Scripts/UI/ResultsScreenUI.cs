@@ -16,8 +16,6 @@ public class ResultsScreenUI : MonoBehaviour
     
     [Header("Buttons")]
     [SerializeField] private Button continueButton;
-    [SerializeField] private Button mainMenuButton;
-    [SerializeField] private Button retryButton;
     
     [Header("Optional - Animated Display")]
     [SerializeField] private bool useCountUpAnimation = true;
@@ -36,12 +34,6 @@ public class ResultsScreenUI : MonoBehaviour
         // setup button listeners
         if (continueButton != null)
             continueButton.onClick.AddListener(OnContinueClicked);
-            
-        if (mainMenuButton != null)
-            mainMenuButton.onClick.AddListener(OnMainMenuClicked);
-            
-        if (retryButton != null)
-            retryButton.onClick.AddListener(OnRetryClicked);
     }
 
     private void OnEnable() => DisplayResults();
@@ -153,48 +145,11 @@ public class ResultsScreenUI : MonoBehaviour
         else
             gameObject.SetActive(false);
     }
-
-    private void OnMainMenuClicked()
-    {
-        // reset stats for next run
-        if (RunStatsTracker.Instance != null)
-            RunStatsTracker.Instance.ResetStats();
-        
-        // load main menu
-        SceneManager.LoadScene("MainMenu");
-    }
-
-    private void OnRetryClicked()
-    {
-        // reset run stats for retry (keep upgrades and credits)
-        if (RunStatsTracker.Instance != null)
-            RunStatsTracker.Instance.ResetStatsForRetry();
-        
-        // reset floor to 1 but keep player upgrades
-        if (FloorManager.Instance != null)
-            FloorManager.Instance.ResetToFloor1();
-        
-        // restart the game
-        if (GameState.Instance != null)
-            GameState.Instance.ChangeState(GameState.GameStates.Playing);
-        else
-        {
-            // reload current scene 
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
-    }
-
     private void OnDestroy()
     {
         // Clean up button listeners
         if (continueButton != null)
             continueButton.onClick.RemoveListener(OnContinueClicked);
-            
-        if (mainMenuButton != null)
-            mainMenuButton.onClick.RemoveListener(OnMainMenuClicked);
-            
-        if (retryButton != null)
-            retryButton.onClick.RemoveListener(OnRetryClicked);
     }
 }
 
