@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -3.6799927, y: -146.15097}
-  m_SizeDelta: {x: 0.16, y: 0.16}
+  m_SizeDelta: {x: 1, y: 0.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &1934188692772953923
 SpriteRenderer:
@@ -83,7 +83,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: def19841bb4512948a9945b6bbe6c444, type: 3}
   m_Color: {r: 0.59119487, g: 0.59119487, b: 0.59119487, a: 1}
   m_FlipX: 0
   m_FlipY: 0

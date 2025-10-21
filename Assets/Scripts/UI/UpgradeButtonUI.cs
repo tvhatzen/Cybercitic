@@ -8,18 +8,11 @@ public class UpgradeButtonUI : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Button button;
-    [SerializeField] private Image iconImage;
-    [SerializeField] private Image backgroundImage;
-    [SerializeField] private TextMeshProUGUI nameText;
     
     [Header("Level Indicator Prefabs")]
     [SerializeField] private GameObject purchasedSquarePrefab;
     [SerializeField] private GameObject nonPurchasedSquarePrefab;
     [SerializeField] private Transform levelIndicatorParent;
-    
-    [Header("Selection Visual")]
-    [SerializeField] private Color selectedColor = new Color(1f, 1f, 0.5f, 1f); // yellow
-    [SerializeField] private Color normalColor = Color.white;
     
     private Upgrade upgrade;
     private UpgradeShopUI shopUI;
@@ -34,9 +27,6 @@ public class UpgradeButtonUI : MonoBehaviour
     {
         if (button == null)
             button = GetComponent<Button>();
-            
-        if (backgroundImage == null)
-            backgroundImage = GetComponent<Image>();
             
         if (button != null)
             button.onClick.AddListener(OnButtonClicked);
@@ -53,19 +43,6 @@ public class UpgradeButtonUI : MonoBehaviour
     public void UpdateDisplay()
     {
         if (upgrade == null) return;
-
-        // update icon
-        if (iconImage != null)
-        {
-            iconImage.sprite = upgrade.Icon;
-            iconImage.color = Color.white;
-        }
-
-        // update name text
-        if (nameText != null)
-        {
-            nameText.text = upgrade.UpgradeName;
-        }
 
         // update level indicators
         UpdateLevelIndicators();
@@ -99,11 +76,6 @@ public class UpgradeButtonUI : MonoBehaviour
     public void SetSelected(bool selected)
     {
         isSelected = selected;
-        
-        if (backgroundImage != null)
-        {
-            backgroundImage.color = selected ? selectedColor : normalColor;
-        }
     }
 
     private void OnButtonClicked()

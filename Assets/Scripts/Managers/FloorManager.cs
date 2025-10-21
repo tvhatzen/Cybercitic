@@ -92,7 +92,7 @@ public class FloorManager : SingletonBase<FloorManager>
     }
 
     // reset to floor 1 for retry. keeps player upgrades but resets floor progression
-    public void ResetToFloor1()
+    public void ResetToFloor1() // right now after death/win, not resetting to floor 1 properly
     {
         if (debug) Debug.Log("[FloorManager] Resetting to Floor 1 for retry");
 
