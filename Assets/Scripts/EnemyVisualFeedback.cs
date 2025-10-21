@@ -14,12 +14,7 @@ public class EnemyVisualFeedback : MonoBehaviour
     [SerializeField] private ParticleSystem deathParticles;
     [SerializeField] private ParticleSystem spawnParticles;
 
-    [Header("Audio (Optional)")]
-    [SerializeField] private AudioClip damageSound;
-    [SerializeField] private AudioClip deathSound;
-
     private HealthSystem healthSystem;
-    private AudioSource audioSource;
     private bool isTargeted = false;
     private int lastKnownHealth; // Track health to detect damage
 
@@ -28,7 +23,6 @@ public class EnemyVisualFeedback : MonoBehaviour
     private void Awake()
     {
         healthSystem = GetComponent<HealthSystem>();
-        audioSource = GetComponent<AudioSource>();
 
         // Store original material (use sharedMaterial to avoid creating instances)
         if (targetRenderer != null)
@@ -179,10 +173,7 @@ public class EnemyVisualFeedback : MonoBehaviour
         }
 
         // Play damage sound
-        if (audioSource != null && damageSound != null)
-        {
-            audioSource.PlayOneShot(damageSound);
-        }
+        
 
         if (debug) Debug.Log($"[EnemyVisualFeedback] Playing damage effect for {name}");
     }
@@ -199,10 +190,7 @@ public class EnemyVisualFeedback : MonoBehaviour
         }
 
         // Play death sound
-        if (audioSource != null && deathSound != null)
-        {
-            audioSource.PlayOneShot(deathSound);
-        }
+        
 
         if (debug) Debug.Log($"[EnemyVisualFeedback] Playing death effect for {name}");
     }

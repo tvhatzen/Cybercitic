@@ -16,27 +16,18 @@ public class PlayerVisualFeedback : MonoBehaviour
     
     [Tooltip("Name of the attack animation trigger in the Animator")]
     [SerializeField] private string attackTriggerName = "Attack";
+    [SerializeField] private string damagedTriggerName = "Damage";
 
     [Header("Particle Effects")]
     [SerializeField] private ParticleSystem attackParticles;
-    [SerializeField] private ParticleSystem combatEnterParticles;
-    [SerializeField] private ParticleSystem combatExitParticles;
+    [SerializeField] private ParticleSystem takeDamageParticles;
 
-    [Header("Audio (Optional)")]
-    [SerializeField] private AudioClip attackSound;
-    [SerializeField] private AudioClip combatEnterSound;
-    [SerializeField] private AudioClip combatExitSound;
-
-    private AudioSource audioSource;
     private Transform currentTarget; // Track current target for icon positioning
 
-    [Header("DEBUG")]
     [SerializeField] private bool debug = false;
 
     private void Awake()
     {
-        audioSource = GetComponent<AudioSource>();
-        
         // If no animator is assigned, try to find one
         if (animator == null)
         {
@@ -48,8 +39,7 @@ public class PlayerVisualFeedback : MonoBehaviour
     {
         // Subscribe to combat events
         GameEvents.OnPlayerAttack += HandlePlayerAttack;
-        GameEvents.OnPlayerEnterCombat += HandleCombatEnter;
-        GameEvents.OnPlayerExitCombat += HandleCombatExit;
+        GameEvents.OnPlayerTakeDamage += HandlePlayerTakeDamage;
         GameEvents.OnPlayerTargetChanged += HandleTargetChanged;
     }
 
@@ -57,8 +47,7 @@ public class PlayerVisualFeedback : MonoBehaviour
     {
         // Unsubscribe from combat events
         GameEvents.OnPlayerAttack -= HandlePlayerAttack;
-        GameEvents.OnPlayerEnterCombat -= HandleCombatEnter;
-        GameEvents.OnPlayerExitCombat -= HandleCombatExit;
+        GameEvents.OnPlayerTakeDamage -= HandlePlayerTakeDamage;
         GameEvents.OnPlayerTargetChanged -= HandleTargetChanged;
     }
 
@@ -71,23 +60,16 @@ public class PlayerVisualFeedback : MonoBehaviour
     {
         PlayAttackAnimation();
         PlayAttackParticles();
-        PlayAttackSound();
+        if( AudioManager.Instance != null)
+            AudioManager.Instance.PlaySound(AudioManager.attack);
 
         if (debug) Debug.Log($"[PlayerVisualFeedback] Playing attack visuals for target: {target?.name ?? "none"}");
     }
 
-    private void HandleCombatEnter(Transform[] enemies)
+    private void HandlePlayerTakeDamage()
     {
-        PlayCombatEnterEffect();
-        
-        if (debug) Debug.Log($"[PlayerVisualFeedback] Entering combat with {enemies.Length} enemies");
-    }
-
-    private void HandleCombatExit()
-    {
-        PlayCombatExitEffect();
-        
-        if (debug) Debug.Log("[PlayerVisualFeedback] Exiting combat");
+        PlayDamagedAnimation();
+        PlayDamagedParticles();
     }
 
     private void HandleTargetChanged(Transform oldTarget, Transform newTarget)
@@ -114,6 +96,7 @@ public class PlayerVisualFeedback : MonoBehaviour
         }
     }
 
+    // ========== ATTACK ========== //
     private void PlayAttackAnimation()
     {
         if (animator != null && !string.IsNullOrEmpty(attackTriggerName))
@@ -130,37 +113,20 @@ public class PlayerVisualFeedback : MonoBehaviour
         }
     }
 
-    private void PlayAttackSound()
+    // ========== DAMAGE ========== //
+    private void PlayDamagedAnimation()
     {
-        if (audioSource != null && attackSound != null)
+        if (animator != null && !string.IsNullOrEmpty(damagedTriggerName))
         {
-            audioSource.PlayOneShot(attackSound);
+            animator.SetTrigger(damagedTriggerName);
         }
     }
 
-    private void PlayCombatEnterEffect()
+    private void PlayDamagedParticles()
     {
-        if (combatEnterParticles != null)
+        if (takeDamageParticles != null)
         {
-            combatEnterParticles.Play();
-        }
-
-        if (audioSource != null && combatEnterSound != null)
-        {
-            audioSource.PlayOneShot(combatEnterSound);
-        }
-    }
-
-    private void PlayCombatExitEffect()
-    {
-        if (combatExitParticles != null)
-        {
-            combatExitParticles.Play();
-        }
-
-        if (audioSource != null && combatExitSound != null)
-        {
-            audioSource.PlayOneShot(combatExitSound);
+            takeDamageParticles.Play();
         }
     }
 }

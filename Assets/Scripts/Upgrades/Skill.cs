@@ -110,7 +110,7 @@ public class Skill : ScriptableObject
         // Play sound effect
         if (skillSound != null && AudioManager.Instance != null)
         {
-            AudioManager.Instance.PlaySFX(skillSound);
+            AudioManager.Instance.PlaySound(skillSound);
         }
         
         // Spawn visual effect

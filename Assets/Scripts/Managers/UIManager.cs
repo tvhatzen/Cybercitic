@@ -113,8 +113,5 @@ public class UIManager : SingletonBase<UIManager>
     public void ShowResults() => GameState.Instance.ChangeState(GameState.GameStates.Results);
     public void QuitGame() => Application.Quit();
 
-    // toggle pause? 
-    
-
     #endregion
 }

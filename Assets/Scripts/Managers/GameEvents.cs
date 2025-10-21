@@ -1,16 +1,19 @@
 using System;  
 using UnityEngine;
 
-public class GameEvents : MonoBehaviour
+public class GameEvents : SingletonBase<GameEvents>
 {
+    #region Events
+
     // when the player enters an enemy’s combat zone
     public static event Action<Transform[]> OnPlayerEnterCombat;
 
     // when the player leaves the combat zone
     public static event Action OnPlayerExitCombat;
 
-    // when the player automatically attacks
+    // when the player automatically attacks / is damaged
     public static event Action<Transform> OnPlayerAttack;
+    public static event Action OnPlayerTakeDamage;
 
     // when the player's current target changes (provides old target and new target)
     public static event Action<Transform, Transform> OnPlayerTargetChanged;
@@ -23,7 +26,12 @@ public class GameEvents : MonoBehaviour
     // when purchasing an upgrade 
     public static event Action<Upgrade> onUpgradePurchased;
 
-    [Header("DEBUG")]
+    // from floor manager
+    public static event Action<int> OnFloorChanged; // notify UI 
+    public static event Action<GameObject> OnEnemySpawned;
+
+    #endregion
+
     public static bool debug = false;
 
     public static void PlayerEnteredCombat(Transform[] enemies)
@@ -42,6 +50,11 @@ public class GameEvents : MonoBehaviour
     {
         OnPlayerExitCombat?.Invoke();
         if(debug) Debug.Log("GameEvents: player exited combat");
+    }
+
+    public static void PlayerTookDamage()
+    {
+        OnPlayerTakeDamage?.Invoke();
     }
 
     public static void PlayerAttack(Transform target)
