@@ -47,6 +47,27 @@ public class GameState : SingletonBase<GameState>
 
     public void StartFromMainMenu()
     {
+        // Reset all upgrades for a fresh start from main menu
+        if (UpgradeManager.Instance != null)
+        {
+            UpgradeManager.Instance.ResetAllUpgrades();
+            if(debug) Debug.Log("All upgrades reset for fresh start from main menu");
+        }
+        
+        // Reset run stats for a fresh start
+        if (RunStatsTracker.Instance != null)
+        {
+            RunStatsTracker.Instance.ResetStats();
+            if(debug) Debug.Log("Run stats reset for fresh start from main menu");
+        }
+        
+        // Reset all skills for a fresh start
+        if (PlayerSkills.Instance != null)
+        {
+            PlayerSkills.Instance.ResetAllSkills();
+            if(debug) Debug.Log("All skills reset for fresh start from main menu");
+        }
+        
         if (!tutorialShown)
         {
             tutorialShown = true;
@@ -72,6 +93,12 @@ public class GameState : SingletonBase<GameState>
             // Only reset to floor 1 if this is called from death/retry
             floorManager.ResetToFloor1();
         }
+        else if (!fromDeath && floorManager != null)
+        {
+            // Reset to floor 1 for a fresh start from main menu
+            floorManager.ResetToFloor1();
+            if(debug) Debug.Log("Floor reset to 1 for fresh start from main menu");
+        }
 
         // change state to playing
         ChangeState(GameStates.Playing);
@@ -88,7 +115,27 @@ public class GameState : SingletonBase<GameState>
         if(debug) Debug.Log("Boss died — switching to Win screen");
 
         ChangeState(GameStates.Win);
-        ResetPlayer();
+        
+        // Reset all upgrades for a completely new run after winning
+        if (UpgradeManager.Instance != null)
+        {
+            UpgradeManager.Instance.ResetAllUpgrades();
+            if(debug) Debug.Log("All upgrades reset for new run after win");
+        }
+        
+        // Reset run stats for a fresh start
+        if (RunStatsTracker.Instance != null)
+        {
+            RunStatsTracker.Instance.ResetStats();
+            if(debug) Debug.Log("Run stats reset for new run after win");
+        }
+        
+        // Reset all skills for a fresh start
+        if (PlayerSkills.Instance != null)
+        {
+            PlayerSkills.Instance.ResetAllSkills();
+            if(debug) Debug.Log("All skills reset for new run after win");
+        }
     }
 
     private void ResetPlayer()

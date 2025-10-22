@@ -286,7 +286,7 @@ public class FloorManager : SingletonBase<FloorManager>
         // reset skill cooldowns when respawning
         if (PlayerSkills.Instance != null)
         {
-            //PlayerSkills.Instance.ResetAllSkillCooldowns(); // TESTING: dont reset skill cooldown when respawning
+            PlayerSkills.Instance.ResetAllSkillCooldowns();
             if (debug) Debug.Log("[FloorManager] Reset all skill cooldowns on player spawn");
         }
 

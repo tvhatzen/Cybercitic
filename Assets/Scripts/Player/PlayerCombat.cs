@@ -21,6 +21,7 @@ public class PlayerCombat : MonoBehaviour
     public Transform CurrentTarget { get; private set; }
 
     private PlayerMovement movement;
+    private FrameBasedPlayerAnimator frameAnimator;
     private readonly List<Transform> enemiesInRange = new List<Transform>();
     private bool gatheringEnemies;
     private Coroutine gatherRoutine;
@@ -31,6 +32,7 @@ public class PlayerCombat : MonoBehaviour
     void Awake()
     {
         movement = GetComponent<PlayerMovement>();
+        frameAnimator = GetComponent<FrameBasedPlayerAnimator>();
     }
 
     void Update()
@@ -51,7 +53,25 @@ public class PlayerCombat : MonoBehaviour
             // Fire event if target changed
             if (newTarget != CurrentTarget)
             {
-                GameEvents.PlayerTargetChanged(CurrentTarget, newTarget);
+                // Check if CurrentTarget is still valid before passing it to the event
+                Transform oldTarget = null;
+                if (CurrentTarget != null)
+                {
+                    // Additional check to ensure the Transform hasn't been destroyed
+                    try
+                    {
+                        string name = CurrentTarget.name; // This will throw if destroyed
+                        oldTarget = CurrentTarget;
+                    }
+                    catch (System.Exception)
+                    {
+                        // Transform was destroyed, set to null
+                        oldTarget = null;
+                        CurrentTarget = null;
+                    }
+                }
+                
+                GameEvents.PlayerTargetChanged(oldTarget, newTarget);
                 previousTarget = CurrentTarget;
                 CurrentTarget = newTarget;
             }
@@ -123,6 +143,13 @@ public class PlayerCombat : MonoBehaviour
 
             // stop movement when combat begins
             movement.CanMove = false;
+            
+            // Stop movement animation and prepare for combat
+            if (frameAnimator != null)
+            {
+                frameAnimator.StopCurrentAnimation();
+                if (debug) Debug.Log("[PlayerCombat] Stopped movement animation for combat");
+            }
 
             // pick initial closest target
             CurrentTarget = FindClosestEnemy();
@@ -147,13 +174,33 @@ public class PlayerCombat : MonoBehaviour
             // Fire target changed event (from current target to null)
             if (CurrentTarget != null)
             {
-                GameEvents.PlayerTargetChanged(CurrentTarget, null);
+                // Check if CurrentTarget is still valid before passing it to the event
+                Transform oldTarget = null;
+                try
+                {
+                    string name = CurrentTarget.name; // This will throw if destroyed
+                    oldTarget = CurrentTarget;
+                }
+                catch (System.Exception)
+                {
+                    // Transform was destroyed, set to null
+                    oldTarget = null;
+                }
+                
+                GameEvents.PlayerTargetChanged(oldTarget, null);
             }
             
             CurrentTarget = null;
 
             // allow movement again
             movement.CanMove = true;
+            
+            // Resume movement animation when exiting combat
+            if (frameAnimator != null && movement.IsMoving())
+            {
+                frameAnimator.PlayRunAnimation();
+                if (debug) Debug.Log("[PlayerCombat] Resumed running animation after combat");
+            }
 
             if (gatherRoutine != null)
             {

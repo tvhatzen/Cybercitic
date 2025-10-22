@@ -95,6 +95,7 @@ GameObject:
   - component: {fileID: 7237819879296602304}
   - component: {fileID: 3032767640868300122}
   - component: {fileID: 5174850044127445237}
+  - component: {fileID: 3149356929928338088}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -168,7 +169,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 0.22027414, g: 0.8490566, b: 0.83923185, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -176,7 +177,7 @@ SpriteRenderer:
   m_Size: {x: 0.16, y: 0.16}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!143 &6201989232763626291
@@ -308,7 +309,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fallbackMoveSpeed: 5
-  debug: 0
+  enableMovementAnimations: 1
+  movementThreshold: 0.1
+  debug: 1
 --- !u!114 &7237819879296602304
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -355,14 +358,225 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetingIcon: {fileID: 0}
   iconOffset: {x: 0, y: 0.5, z: 0}
+  frameAnimator: {fileID: 3149356929928338088}
   animator: {fileID: 0}
   attackTriggerName: Attack
   damagedTriggerName: Damage
   attackParticles: {fileID: 0}
   takeDamageParticles: {fileID: 3625109293735009957}
-  damagedSound: {fileID: 0}
-  combatEnterSound: {fileID: 0}
-  combatExitSound: {fileID: 0}
+  debug: 0
+--- !u!114 &3149356929928338088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1431616184263147312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3dd66224e1d6994092ed7b9c32ccadc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationSequences:
+  - animationName: Running
+    frames:
+    - frameName: Running_f1
+      duration: 0.1
+      bodyPartFrames:
+      - bodyPart: 0
+        spriteRenderer: {fileID: 5988893342598707982}
+        baseSprite: {fileID: 21300000, guid: f7ae1487f60c69e4dae8bb6166af7afd, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 3494b6d45027eba4bbdb9ebf35b3ea02, type: 3}
+        - {fileID: 21300000, guid: 0e16250e25484ae448a3cd8c472c48b1, type: 3}
+        - {fileID: 21300000, guid: 8ee34efa8615ab34dbffdab66aa95ce3, type: 3}
+      - bodyPart: 1
+        spriteRenderer: {fileID: 1356289828779756073}
+        baseSprite: {fileID: 21300000, guid: e9cccbc4c25356949a580e52d5b6bc3b, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 809514166efdf3f49a2d05c59ee7ea67, type: 3}
+        - {fileID: 21300000, guid: 4b151c66f82dfd54394eea45a28e97a8, type: 3}
+        - {fileID: 21300000, guid: cd5e62ff20aeac2439dbe1057c7e3145, type: 3}
+      - bodyPart: 2
+        spriteRenderer: {fileID: 1458429442712546983}
+        baseSprite: {fileID: 21300000, guid: cff5d4d793483b040933b3be7c57c81d, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 4f0fd063621a717469456130bbecc9b4, type: 3}
+        - {fileID: 21300000, guid: 8256125c9bec30046bb0f1ea5baa44f2, type: 3}
+        - {fileID: 21300000, guid: d55991e03b3903f4c80deb30195b49d3, type: 3}
+      - bodyPart: 3
+        spriteRenderer: {fileID: 5156828601371856698}
+        baseSprite: {fileID: 21300000, guid: 3abca2c2f4b87c1428ef935d311cc5ca, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 36b3f1c0018bd8842bd35ecb3b18c9b3, type: 3}
+        - {fileID: 21300000, guid: 851dbfdfcdf5fcf42a3dc66c1f1ec70f, type: 3}
+        - {fileID: 21300000, guid: b91fe8f4d1ae6ed428ace60758271be5, type: 3}
+      - bodyPart: 4
+        spriteRenderer: {fileID: 7939351310454977686}
+        baseSprite: {fileID: 21300000, guid: b5bc61ed11171f54a9045b1cbb438127, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: e2b18c678b9e98f41bffc9fc4016917d, type: 3}
+        - {fileID: 21300000, guid: 28c38d736bfea2b46b7d84036a7d5883, type: 3}
+        - {fileID: 21300000, guid: edeceabeba13b6348a70503e71157e8a, type: 3}
+    - frameName: Running_f2
+      duration: 0.1
+      bodyPartFrames:
+      - bodyPart: 0
+        spriteRenderer: {fileID: 5988893342598707982}
+        baseSprite: {fileID: 21300000, guid: abf5ea9b165973840897734cf7a631ca, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 1d72b10f23e60bd40ba840807e108382, type: 3}
+        - {fileID: 21300000, guid: 5b5081de8900c914bae535537c401fe0, type: 3}
+        - {fileID: 21300000, guid: 8c7e3be9843f6074e915ce762836af0b, type: 3}
+      - bodyPart: 1
+        spriteRenderer: {fileID: 1356289828779756073}
+        baseSprite: {fileID: 21300000, guid: c7f3ff689657afe43af84797604757bc, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 5332845dfa8d509449d1f3d5dec71f43, type: 3}
+        - {fileID: 21300000, guid: 319963960930e8e4e96e0f95b47a3484, type: 3}
+        - {fileID: 21300000, guid: 09717a90e0866464e9e9439751bb652b, type: 3}
+      - bodyPart: 2
+        spriteRenderer: {fileID: 1458429442712546983}
+        baseSprite: {fileID: 21300000, guid: eff25973415c8164fa8b0af94e352c59, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 45277b93104264446bc21937ebb7752b, type: 3}
+        - {fileID: 21300000, guid: 4518fee379913504f8aa7ca729433b78, type: 3}
+        - {fileID: 21300000, guid: 5011f708d36ce1e40b6a17aa660c935e, type: 3}
+      - bodyPart: 3
+        spriteRenderer: {fileID: 5156828601371856698}
+        baseSprite: {fileID: 21300000, guid: e967cb07b10f2dc45b62e130a01a235c, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 0c19748e146998a4cb7ccafbd31014fc, type: 3}
+        - {fileID: 21300000, guid: 45e682348ec22fb47adf623ff78b9b8d, type: 3}
+        - {fileID: 21300000, guid: 2db5743f08b772a4a8a52cdf67b303fc, type: 3}
+      - bodyPart: 4
+        spriteRenderer: {fileID: 7939351310454977686}
+        baseSprite: {fileID: 21300000, guid: 8225ecefac652644d8c90921ea0aea09, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 562503c784ac8b342904cb6f0e598ee1, type: 3}
+        - {fileID: 21300000, guid: 275b3c3023cd4e341a2c4fe4656ffd93, type: 3}
+        - {fileID: 21300000, guid: de799a4f44770054884d0c51f1378eb8, type: 3}
+    - frameName: Running_f3
+      duration: 0.1
+      bodyPartFrames:
+      - bodyPart: 0
+        spriteRenderer: {fileID: 5988893342598707982}
+        baseSprite: {fileID: 21300000, guid: 87ff32f91a9b08848b012dd2f52ca7b3, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: da22f28af325f354fa10ef8efd0ab756, type: 3}
+        - {fileID: 21300000, guid: 29c1022034969be4cb974a1e4861e350, type: 3}
+        - {fileID: 21300000, guid: 058d217318f470e4cbf971ca8b4a683e, type: 3}
+      - bodyPart: 1
+        spriteRenderer: {fileID: 1356289828779756073}
+        baseSprite: {fileID: 21300000, guid: 7a44135e10e3acf46a21d8ebbf37ddc7, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 810c92f258c09de4fa2cb451fab00d58, type: 3}
+        - {fileID: 21300000, guid: 9ecdb3999cbdebf40b8172d9dc90f440, type: 3}
+        - {fileID: 21300000, guid: bf90008b7661a3f44b186ed9cb163c83, type: 3}
+      - bodyPart: 2
+        spriteRenderer: {fileID: 1458429442712546983}
+        baseSprite: {fileID: 21300000, guid: 5b8bb512c4366c14196b5d6032fce918, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 1d403482c203ac149b7f0b41cdd9cd75, type: 3}
+        - {fileID: 21300000, guid: 0384696795c89074896f40cdd765aa37, type: 3}
+        - {fileID: 21300000, guid: 196d0b2d3f40a3c4abc32f7217bd5901, type: 3}
+      - bodyPart: 3
+        spriteRenderer: {fileID: 5156828601371856698}
+        baseSprite: {fileID: 21300000, guid: b66df70ce78903e4c9f3276bab992a39, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 50afb31d4ffb3df41b3a9aa1ca6a0cfc, type: 3}
+        - {fileID: 21300000, guid: e6e9f207a74e96347bfd031d621e31ec, type: 3}
+        - {fileID: 21300000, guid: 58209c5f780c3a747ab37cca3681ea9a, type: 3}
+      - bodyPart: 4
+        spriteRenderer: {fileID: 7939351310454977686}
+        baseSprite: {fileID: 21300000, guid: cc25c5b93f0386644abf12a9919cb4fa, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 2aa8cf18b6b134149888cc5fcaec7557, type: 3}
+        - {fileID: 21300000, guid: fc2c2dd48463e1540a373d14869e7e67, type: 3}
+        - {fileID: 21300000, guid: 365f10adba5a93e4bb82056a6099f89f, type: 3}
+    - frameName: Running_f4
+      duration: 0.1
+      bodyPartFrames:
+      - bodyPart: 0
+        spriteRenderer: {fileID: 5988893342598707982}
+        baseSprite: {fileID: 21300000, guid: 9a5c4b8d81d1e0d4b8bec0580ca50a8c, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: cb162bb4bf8252f498f58e518b419f44, type: 3}
+        - {fileID: 21300000, guid: 1d6aa2cf2a1eaff46804ad9736ed6623, type: 3}
+        - {fileID: 21300000, guid: 4b86d9b9e4e543e49b0260e2621f9d3b, type: 3}
+      - bodyPart: 1
+        spriteRenderer: {fileID: 1356289828779756073}
+        baseSprite: {fileID: 21300000, guid: d2af11aaad053484aa5e13b635de0474, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 070d377411b481041a1874c1a496d50f, type: 3}
+        - {fileID: 21300000, guid: ec1bff7ee33ab7b4fbfd7f21f700884f, type: 3}
+        - {fileID: 21300000, guid: 3aa42c5c3a0bb414fa9c21cc6e501802, type: 3}
+      - bodyPart: 2
+        spriteRenderer: {fileID: 1458429442712546983}
+        baseSprite: {fileID: 21300000, guid: 615db5ad1ed5b8b4e98c07f4d87b956d, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: fe52509c34f37734e8bd22da143ae677, type: 3}
+        - {fileID: 21300000, guid: df14c56c250760443bf07b93c6e5253c, type: 3}
+        - {fileID: 21300000, guid: 93142116fac23124eb753f1283354910, type: 3}
+      - bodyPart: 3
+        spriteRenderer: {fileID: 5156828601371856698}
+        baseSprite: {fileID: 21300000, guid: 7ef623fa758b53b46bd770fb52be0237, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: e9124bae189de5346a76473ff7303457, type: 3}
+        - {fileID: 21300000, guid: f7374284d62a1554b96cd9f8ec2f6278, type: 3}
+        - {fileID: 21300000, guid: 443cdba18d73f93459132312b9fb37f5, type: 3}
+      - bodyPart: 4
+        spriteRenderer: {fileID: 7939351310454977686}
+        baseSprite: {fileID: 21300000, guid: 710cd0dbd1d854f4b8afbd094b268144, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 41c7f3c264962cf449702c53a08cf526, type: 3}
+        - {fileID: 21300000, guid: 9a3ea3dc796c55340a8312ac5921411a, type: 3}
+        - {fileID: 21300000, guid: 7bd5322dba1b2c74782bb3365187a5f5, type: 3}
+    loop: 1
+  - animationName: Attack
+    frames:
+    - frameName: Attack_f1
+      duration: 0.1
+      bodyPartFrames:
+      - bodyPart: 0
+        spriteRenderer: {fileID: 5988893342598707982}
+        baseSprite: {fileID: 21300000, guid: 87e071879fc6e6e44a2862acf650729d, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 9c18fea0a61cf4943be2166c1a93eb24, type: 3}
+        - {fileID: 21300000, guid: f8ff481395699df4486ce77bee57157b, type: 3}
+        - {fileID: 21300000, guid: f84c6ea7bb9e62543b8187746213e466, type: 3}
+      - bodyPart: 1
+        spriteRenderer: {fileID: 1356289828779756073}
+        baseSprite: {fileID: 21300000, guid: 7a44135e10e3acf46a21d8ebbf37ddc7, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 810c92f258c09de4fa2cb451fab00d58, type: 3}
+        - {fileID: 21300000, guid: e6e9f207a74e96347bfd031d621e31ec, type: 3}
+        - {fileID: 21300000, guid: 58209c5f780c3a747ab37cca3681ea9a, type: 3}
+      - bodyPart: 2
+        spriteRenderer: {fileID: 1458429442712546983}
+        baseSprite: {fileID: 21300000, guid: 74b7666a71029534597266570a6f5eb6, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 4829c22385b54a54197a33c57f1c4a96, type: 3}
+        - {fileID: 21300000, guid: 8019fa10a3e342341997e31643173ede, type: 3}
+        - {fileID: 21300000, guid: b7b0d7b4496d0724a90e1ff3edc48da2, type: 3}
+      - bodyPart: 3
+        spriteRenderer: {fileID: 5156828601371856698}
+        baseSprite: {fileID: 21300000, guid: afa7a31b479f4994a835b19e75f021c7, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 4dcb825deaca6964591447888051d7ec, type: 3}
+        - {fileID: 21300000, guid: 25c975eedbda8a14190a3366efbb7890, type: 3}
+        - {fileID: 21300000, guid: cd66ed5f2af683940b8d29337ec4867d, type: 3}
+      - bodyPart: 4
+        spriteRenderer: {fileID: 7939351310454977686}
+        baseSprite: {fileID: 21300000, guid: 0d8967fa676ca6a43aa6ed528ea4fb86, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 9911b1b4d834bda499c54d483f4b3f76, type: 3}
+        - {fileID: 21300000, guid: 26f53313ae30d1c4e8e767b501efc909, type: 3}
+        - {fileID: 21300000, guid: 81f87bf9ae500a14492e5e93b992bf66, type: 3}
+    loop: 1
+  currentAnimation: 
+  isPlaying: 0
+  currentFrameIndex: 0
   debug: 1
 --- !u!1 &1538942524082916767
 GameObject:
@@ -398,7 +612,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 29.6}
+  m_AnchoredPosition: {x: 0, y: 21.2}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1569880783845910802
@@ -432,14 +646,14 @@ MonoBehaviour:
   m_text: health
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: e73a58f6e2794ae7b1b7e50b7fb811b0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4285559037
-  m_fontColor: {r: 0.99371064, g: 0.4406074, b: 0.4406074, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -464,10 +678,10 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 1
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 1024
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
-  m_wordSpacing: 0
+  m_characterSpacing: -5.87
+  m_wordSpacing: -1.24
   m_lineSpacing: 0
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
@@ -494,7 +708,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 23.495026, y: 0, z: 25.765419, w: 20.995378}
+  m_margin: {x: 71.192375, y: 18.77475, z: 71.539665, w: 13.320529}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -530,11 +744,11 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 33063509545777158}
-  - {fileID: 5222360579485423386}
-  - {fileID: 5593707035958837272}
   - {fileID: 4402992223894774506}
+  - {fileID: 5593707035958837272}
   - {fileID: 3483008400610512974}
   - {fileID: 5033096746197110924}
+  - {fileID: 5222360579485423386}
   m_Father: {fileID: 5781737063218651057}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4109324063603768526
@@ -699,7 +913,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: d5117ff26e8286b47b194122c2a5bbbd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -991,8 +1205,8 @@ RectTransform:
   m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7555581779319229144}
   - {fileID: 984579820417333651}
+  - {fileID: 7555581779319229144}
   m_Father: {fileID: 5781737063218651057}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1111,7 +1325,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: f7ae1487f60c69e4dae8bb6166af7afd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

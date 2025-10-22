@@ -1125,6 +1125,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3149356929928338088, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: debug
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3149356929928338088, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: isPlaying
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3149356929928338088, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: currentAnimation
+      value: Idle
+      objectReference: {fileID: 0}
+    - target: {fileID: 5174850044127445237, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: debug
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5174850044127445237, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: iconOffset.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5174850044127445237, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: targetingIcon
       value: 
@@ -1255,7 +1275,7 @@ PrefabInstance:
       objectReference: {fileID: 1339922552}
     - target: {fileID: 7801801497178132509, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: debug
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7801801497178132509, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: fallbackMoveSpeed
@@ -2772,6 +2792,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5303155290636701237, guid: b7dc3439ccd6bed419c9f2dcf34325d7, type: 3}
+      propertyPath: debug
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5303155290636701237, guid: b7dc3439ccd6bed419c9f2dcf34325d7, type: 3}
       propertyPath: useCountUpAnimation
       value: 0
       objectReference: {fileID: 0}
@@ -2902,7 +2926,7 @@ PrefabInstance:
       objectReference: {fileID: 2050774743}
     - target: {fileID: 7020756677422726156, guid: 2c8fd6b88646b0245b48b6c62b17a003, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: GoToMenu
+      value: GoToMainMenuFromWin
       objectReference: {fileID: 0}
     - target: {fileID: 7020756677422726156, guid: 2c8fd6b88646b0245b48b6c62b17a003, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName

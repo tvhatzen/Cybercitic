@@ -98,6 +98,7 @@ public class UpgradeShopUI : MonoBehaviour
         if (UpgradeManager.Instance != null)
         {
             UpgradeManager.Instance.OnUpgradePurchased += OnUpgradePurchased;
+            UpgradeManager.Instance.OnAllUpgradesReset += OnAllUpgradesReset;
         }
         
         // hide details panel initially
@@ -111,7 +112,10 @@ public class UpgradeShopUI : MonoBehaviour
             CurrencyManager.Instance.OnCreditsChanged -= UpdateCreditsDisplay;
 
         if (UpgradeManager.Instance != null)
+        {
             UpgradeManager.Instance.OnUpgradePurchased -= OnUpgradePurchased;
+            UpgradeManager.Instance.OnAllUpgradesReset -= OnAllUpgradesReset;
+        }
 
         if (doneButton != null)
             doneButton.onClick.RemoveListener(OnDoneClicked);
@@ -346,6 +350,12 @@ public class UpgradeShopUI : MonoBehaviour
         if(debug) Debug.Log($"[UpgradeShopUI] Upgrade purchased: {upgrade.UpgradeName}");
     }
 
+    private void OnAllUpgradesReset()
+    {
+        if(debug) Debug.Log("[UpgradeShopUI] All upgrades reset - refreshing displays");
+        RefreshAllDisplays();
+    }
+
     private void UpdateCreditsDisplay(int credits)
     {
         if (creditsText != null)
@@ -383,5 +393,23 @@ public class UpgradeShopUI : MonoBehaviour
     }
 
     public void CloseShop() => OnDoneClicked();
+    
+    // Refresh all upgrade displays (useful after reset)
+    public void RefreshAllDisplays()
+    {
+        if(debug) Debug.Log("[UpgradeShopUI] Refreshing all upgrade displays");
+        
+        // update all button displays
+        foreach (var button in upgradeButtons.Values)
+        {
+            if (button != null)
+                button.UpdateDisplay();
+        }
+
+        // update equipped display
+        UpdateEquippedDisplay();
+        
+        if(debug) Debug.Log("[UpgradeShopUI] All displays refreshed");
+    }
 }
 

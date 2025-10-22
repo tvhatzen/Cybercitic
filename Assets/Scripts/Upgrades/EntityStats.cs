@@ -80,9 +80,22 @@ public class EntityStats : SingletonBase<EntityStats>
     {
         if (playerData != null)
         {
-            playerData.ResetToBase();
+            playerData.ResetToOriginalStats();
             OnStatsChanged?.Invoke(this);
         }
+        
+        // Clear all skills and upgrades
+        skills.Clear();
+        upgrades.Clear();
+        
+        // Also reset the health system to update UI
+        var healthSystem = GetComponent<HealthSystem>();
+        if (healthSystem != null)
+        {
+            healthSystem.ResetToOriginalStats();
+        }
+        
+        if (debug) Debug.Log("[EntityStats] All stats, skills, and upgrades reset to original values");
     }
 
     // add skill to the player's skill list

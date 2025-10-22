@@ -89,7 +89,7 @@ public class HealthSystem : MonoBehaviour
     {
         if (healthText != null && entityData != null)
         {
-            healthText.text = $"HP: {currentHealth} / {entityData.baseHealth}";
+            healthText.text = $"{currentHealth} / {entityData.baseHealth}";
         }
     }
 
@@ -111,6 +111,9 @@ public class HealthSystem : MonoBehaviour
             OnHealthChanged?.Invoke(currentHealth);
             UpdateHealthText();
             healthBar.UpdateHealthBar(entityData.baseHealth, currentHealth);
+            
+            // Reset sprite color to normal when respawning
+            ResetSpriteColor();
         }
     }
 
@@ -122,6 +125,9 @@ public class HealthSystem : MonoBehaviour
             OnHealthChanged?.Invoke(currentHealth);
             UpdateHealthText();
             healthBar.UpdateHealthBar(entityData.baseHealth, currentHealth);
+            
+            // Reset sprite color to normal
+            ResetSpriteColor();
         }
     }
 
@@ -144,7 +150,22 @@ public class HealthSystem : MonoBehaviour
                 }
             }
             
+            // Reset sprite color to normal
+            ResetSpriteColor();
+            
             if(debug) Debug.Log($"[HealthSystem] {name} reset to original stats - HP: {currentHealth}, ATK: {DamagePerHit}, Credits: {CurrencyManager.Instance.Credits}");
+        }
+    }
+
+    /// <summary>
+    /// Reset sprite color back to original (removes damage flash effect)
+    /// </summary>
+    public void ResetSpriteColor()
+    {
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = originalColor;
+            if (debug) Debug.Log($"[HealthSystem] {name} sprite color reset to original");
         }
     }
 

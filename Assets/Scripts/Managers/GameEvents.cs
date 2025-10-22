@@ -66,7 +66,12 @@ public class GameEvents : SingletonBase<GameEvents>
     public static void PlayerTargetChanged(Transform oldTarget, Transform newTarget)
     {
         OnPlayerTargetChanged?.Invoke(oldTarget, newTarget);
-        if(debug) Debug.Log($"GameEvents: player target changed from {oldTarget?.name ?? "none"} to {newTarget?.name ?? "none"}");
+        if(debug) 
+        {
+            string oldTargetName = (oldTarget != null) ? oldTarget.name : "none";
+            string newTargetName = (newTarget != null) ? newTarget.name : "none";
+            Debug.Log($"GameEvents: player target changed from {oldTargetName} to {newTargetName}");
+        }
     }
 
     public static void EntityDied(HealthSystem hs)

@@ -13,6 +13,7 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
     // Events
     public event Action<Upgrade> OnUpgradePurchased;
     public event Action<Upgrade> OnUpgradeUnlocked;
+    public event Action OnAllUpgradesReset;
 
     [Header("DEBUG")]
     public bool debug = false;
@@ -102,5 +103,9 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
         {
             EntityStats.Instance.ResetStats();
         }
+        
+        // Fire event to notify UI to refresh
+        OnAllUpgradesReset?.Invoke();
+        if(debug) Debug.Log("All upgrades reset - UI refresh event fired");
     }
 }

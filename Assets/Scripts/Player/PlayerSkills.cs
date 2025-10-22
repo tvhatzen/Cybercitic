@@ -197,6 +197,27 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
         }
     }
 
+    // Reset all equipped skills for a fresh start
+    public void ResetAllSkills()
+    {
+        if (debug) Debug.Log("[PlayerSkills] Resetting all equipped skills");
+        
+        // Clear all equipped skills
+        for (int i = 0; i < equippedSkills.Count; i++)
+        {
+            if (equippedSkills[i] != null)
+            {
+                equippedSkills[i].LockSkill();
+                equippedSkills[i] = null;
+            }
+        }
+        
+        // Clear the list
+        equippedSkills.Clear();
+        
+        if (debug) Debug.Log("[PlayerSkills] All skills cleared for fresh start");
+    }
+
     private void PlayParticles()
     {
         if (skillUseParticle != null)

@@ -112,6 +112,9 @@ public class UIManager : SingletonBase<UIManager>
     public void GoToUpgrade() => GameState.Instance.ChangeState(GameState.GameStates.Upgrade);
     public void ShowResults() => GameState.Instance.ChangeState(GameState.GameStates.Results);
     public void QuitGame() => Application.Quit();
+    
+    // Method to go to main menu from win screen - ensures fresh start
+    public void GoToMainMenuFromWin() =>GameState.Instance.ChangeState(GameState.GameStates.MainMenu);
 
     #endregion
 }

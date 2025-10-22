@@ -8,16 +8,27 @@ public class PlayerMovement : MonoBehaviour
 
     private CharacterController controller;
     private EntityData entityData;
+    private FrameBasedPlayerAnimator frameAnimator;
     
     [Header("Fallback Settings")]
     [SerializeField] private float fallbackMoveSpeed = 5f; // Fallback speed if EntityData is missing
-
+    
+    [Header("Animation Settings")]
+    [SerializeField] private bool enableMovementAnimations = true;
+    [SerializeField] private float movementThreshold = 0.1f; // Minimum movement to trigger running animation
+    
+    [Header("Debug")]
     public bool debug = false;
+    
+    // Animation state tracking
+    private bool isMoving = false;
+    private bool wasMoving = false;
 
     void Awake()
     {
         controller = GetComponent<CharacterController>();
         entityData = GetComponent<EntityData>();
+        frameAnimator = GetComponent<FrameBasedPlayerAnimator>();
         
         if (entityData == null)
         {
@@ -26,6 +37,11 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             if(debug) Debug.Log($"PlayerMovement: EntityData found with speed {entityData.currentSpeed}");
+        }
+        
+        if (frameAnimator == null && enableMovementAnimations)
+        {
+            if(debug) Debug.LogWarning("PlayerMovement: FrameBasedPlayerAnimator not found - movement animations disabled");
         }
     }
 
@@ -40,11 +56,28 @@ public class PlayerMovement : MonoBehaviour
                 Debug.Log($"PlayerMovement: EntityData found in Start with speed {entityData.currentSpeed}");
             }
         }
+        
+        // Start running animation immediately when player spawns
+        if (enableMovementAnimations && frameAnimator != null)
+        {
+            frameAnimator.PlayRunAnimation();
+            isMoving = true;
+            wasMoving = true;
+            if (debug) Debug.Log("[PlayerMovement] Started running animation on spawn");
+        }
     }
 
     void Update()
     {
-        if (!CanMove) return;
+        if (!CanMove) 
+        {
+            // Player is not allowed to move, stop running animation
+            if (isMoving && enableMovementAnimations)
+            {
+                StopRunningAnimation();
+            }
+            return;
+        }
 
         // Get movement speed with fallback
         float moveSpeed = GetMovementSpeed();
@@ -59,13 +92,15 @@ public class PlayerMovement : MonoBehaviour
         Vector3 move = Vector3.right * moveSpeed * Time.deltaTime;
         controller.Move(move);
 
+        // Update movement state for animation
+        UpdateMovementAnimation(moveSpeed);
+
         if (debug)
         {
             if (!CanMove) Debug.LogWarning("PlayerMovement: Can't move (CanMove = false)");
             else if (entityData == null) Debug.LogWarning("PlayerMovement: EntityData missing");
             else if (entityData.currentSpeed <= 0) Debug.LogWarning($"PlayerMovement: Speed invalid ({entityData.currentSpeed})");
         }
-
     }
 
     private float GetMovementSpeed()
@@ -110,6 +145,15 @@ public class PlayerMovement : MonoBehaviour
         // Re-enable movement
         CanMove = true;
         
+        // Start running animation when movement is re-enabled
+        if (enableMovementAnimations && frameAnimator != null)
+        {
+            frameAnimator.PlayRunAnimation();
+            isMoving = true;
+            wasMoving = true;
+            if (debug) Debug.Log("[PlayerMovement] Started running animation after spawn reset");
+        }
+        
         if (debug) Debug.Log("PlayerMovement: Movement re-enabled after spawn reset");
     }
 
@@ -123,5 +167,75 @@ public class PlayerMovement : MonoBehaviour
     public float GetCurrentSpeed()
     {
         return GetMovementSpeed();
+    }
+
+    /// <summary>
+    /// Update movement animation based on current movement state
+    /// </summary>
+    private void UpdateMovementAnimation(float moveSpeed)
+    {
+        if (!enableMovementAnimations || frameAnimator == null) return;
+
+        // Determine if player is moving based on speed
+        isMoving = moveSpeed > movementThreshold;
+
+        // Handle animation state changes
+        if (isMoving && !wasMoving)
+        {
+            // Started moving - play running animation
+            StartRunningAnimation();
+        }
+        else if (!isMoving && wasMoving)
+        {
+            // Stopped moving - stop animation
+            StopRunningAnimation();
+        }
+
+        // Update previous state
+        wasMoving = isMoving;
+    }
+
+    /// <summary>
+    /// Start the running animation
+    /// </summary>
+    private void StartRunningAnimation()
+    {
+        if (frameAnimator != null)
+        {
+            frameAnimator.PlayRunAnimation();
+            if (debug) Debug.Log("[PlayerMovement] Started running animation");
+        }
+    }
+
+    /// <summary>
+    /// Stop the running animation
+    /// </summary>
+    private void StopRunningAnimation()
+    {
+        if (frameAnimator != null)
+        {
+            frameAnimator.StopCurrentAnimation();
+            if (debug) Debug.Log("[PlayerMovement] Stopped running animation");
+        }
+    }
+
+    /// <summary>
+    /// Force stop all movement animations (useful for combat, death, etc.)
+    /// </summary>
+    public void ForceStopMovementAnimation()
+    {
+        if (frameAnimator != null)
+        {
+            frameAnimator.StopCurrentAnimation();
+            if (debug) Debug.Log("[PlayerMovement] Force stopped movement animation");
+        }
+    }
+
+    /// <summary>
+    /// Check if the player is currently moving
+    /// </summary>
+    public bool IsMoving()
+    {
+        return isMoving;
     }
 }
