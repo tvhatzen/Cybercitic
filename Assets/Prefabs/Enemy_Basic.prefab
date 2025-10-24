@@ -157,6 +157,8 @@ MonoBehaviour:
   spriteRenderer: {fileID: 3737664258124136096}
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.1
+  shakeDuration: 0.2
+  shakeMagnitude: 0.03
   debug: 0
 --- !u!114 &1744117801021150717
 MonoBehaviour:
@@ -740,6 +742,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _healthBarSprite: {fileID: 6107816067596259146}
+  _lerpSpeed: 5
+  _smoothTransition: 1
 --- !u!1001 &1800356585208325383
 PrefabInstance:
   m_ObjectHideFlags: 0

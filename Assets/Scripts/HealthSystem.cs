@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using TMPro;
 using System.Collections;
+using Random = UnityEngine.Random;
 
 public class HealthSystem : MonoBehaviour
 {
@@ -17,10 +18,16 @@ public class HealthSystem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI healthText;
     [SerializeField] private HealthBar healthBar;
 
-    [Header("Damage Flash Settings")]
+    [Header("Damage Flash")]
     [SerializeField] private SpriteRenderer spriteRenderer;  // make multiple for player sprites
     [SerializeField] private Color flashColor = Color.red;
     [SerializeField] private float flashDuration = 0.1f;
+
+    [Header("Damage Sprite Shake")]
+    private Vector3 originalPosition;
+    private bool isShaking = false;
+    public float shakeDuration = 0.5f;
+    public float shakeMagnitude = 0.1f;
 
     private EntityData entityData;
 
@@ -55,12 +62,17 @@ public class HealthSystem : MonoBehaviour
             
             if(debug) Debug.Log($"[HealthSystem] {name} initialized - HP: {currentHealth}/{entityData.baseHealth}, ATK: {DamagePerHit}");
         }
+
+        //originalPosition = gameObject.transform.position;
     }
 
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
         if(debug) Debug.Log(name + " takes " + amount + " damage. HP: " + currentHealth);
+
+        // store position
+        originalPosition = gameObject.transform.position;
 
         // play damage sound
         if (AudioManager.Instance != null)
@@ -85,7 +97,12 @@ public class HealthSystem : MonoBehaviour
 
         if (spriteRenderer != null)
         {
-            StartCoroutine(FlashSprite());
+            StartCoroutine(FlashSprite()); // flash red
+        }
+
+        if (!isShaking)
+        {
+            StartCoroutine(Shake()); // shake
         }
 
         if (currentHealth <= 0)
@@ -189,6 +206,33 @@ public class HealthSystem : MonoBehaviour
             spriteRenderer.color = originalColor;
             if (debug) Debug.Log($"[HealthSystem] {name} sprite color reset to original");
         }
+    }
+
+    // shake sprite at random distance when damaged
+    IEnumerator Shake()
+    {
+        isShaking = true;
+        float elapsed = 0f;
+
+        while(elapsed < shakeDuration)
+        {
+            // get random offset
+            float x = Random.Range(-1f, 1f) * shakeMagnitude;
+            float y = Random.Range(-1f, 1f) * shakeMagnitude;
+
+            // move sprite
+            transform.position = originalPosition + new Vector3(x,y,0f);
+
+            // increment elapsed time
+            elapsed += Time.deltaTime;
+
+            // wait for next frame
+            yield return null;
+        }
+
+        // Return to original position
+        transform.position = originalPosition;
+        isShaking = false;
     }
 
     private void Die()

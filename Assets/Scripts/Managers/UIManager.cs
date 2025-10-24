@@ -10,6 +10,7 @@ public class UIManager : SingletonBase<UIManager>
         Pause,
         Upgrade,
         Results,
+        Options,
         WinGame,
         LoseGame,
         Gameplay,
@@ -22,6 +23,7 @@ public class UIManager : SingletonBase<UIManager>
     public GameObject upgradeUI;
     public GameObject resultsUI;
     public GameObject gameplayUI;
+    public GameObject optionsUI;
     public GameObject winUI;
     public GameObject loseUI;
     public GameObject tutorialUI;
@@ -38,6 +40,7 @@ public class UIManager : SingletonBase<UIManager>
         pauseUI.SetActive(true);
         upgradeUI.SetActive(true);
         resultsUI.SetActive(true);
+        optionsUI.SetActive(true);
         winUI.SetActive(true);
         loseUI.SetActive(true);
 
@@ -65,6 +68,7 @@ public class UIManager : SingletonBase<UIManager>
             case GameState.GameStates.Paused: ShowScreen(MenuScreen.Pause, 0f); break;
             case GameState.GameStates.Upgrade: ShowScreen(MenuScreen.Upgrade, 0f); break;
             case GameState.GameStates.Results: ShowScreen(MenuScreen.Results, 0f); break;
+            case GameState.GameStates.Options: ShowScreen(MenuScreen.Options, 0f); break;
             case GameState.GameStates.Win: ShowScreen(MenuScreen.WinGame, 0f); break;
             case GameState.GameStates.Lose: ShowScreen(MenuScreen.LoseGame, 0f); break;
             default: ShowScreen(MenuScreen.None, 1f); break;
@@ -79,6 +83,7 @@ public class UIManager : SingletonBase<UIManager>
         pauseUI.SetActive(screen == MenuScreen.Pause);
         upgradeUI.SetActive(screen == MenuScreen.Upgrade);
         resultsUI.SetActive(screen == MenuScreen.Results);
+        optionsUI.SetActive(screen == MenuScreen.Options);
         winUI.SetActive(screen == MenuScreen.WinGame);
         loseUI.SetActive(screen == MenuScreen.LoseGame);
 
@@ -111,6 +116,7 @@ public class UIManager : SingletonBase<UIManager>
     public void ResumeGame() => GameState.Instance.ChangeState(GameState.GameStates.Playing);
     public void GoToUpgrade() => GameState.Instance.ChangeState(GameState.GameStates.Upgrade);
     public void ShowResults() => GameState.Instance.ChangeState(GameState.GameStates.Results);
+    public void ShowOptions() => GameState.Instance.ChangeState(GameState.GameStates.Options);
     public void QuitGame() => Application.Quit();
     public void GoToMainMenuFromWin() =>GameState.Instance.ChangeState(GameState.GameStates.MainMenu);
 

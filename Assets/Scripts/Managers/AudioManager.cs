@@ -15,12 +15,20 @@ public class AudioManager : SingletonBase<AudioManager>
 
     [Header("Music")]
     [SerializeField] private AudioClip backgroundMusic;
+    [SerializeField] private AudioClip floor1_5;
+    [SerializeField] private AudioClip floor6_10;
+    [SerializeField] private AudioClip floor11_15;
 
     [Header("UI")]
     [SerializeField] private AudioClip uiHover;
     [SerializeField] private AudioClip uiClick;
     [SerializeField] private AudioClip uiNotEnoughCredits;
     [SerializeField] private AudioClip uiPurchaseUpgrade;
+
+    [Header("Screens")]
+    [SerializeField] private AudioClip mainMenu;
+    [SerializeField] private AudioClip upgradeScreen;
+    [SerializeField] private AudioClip winScreen;
 
     [Header("Feedback")]
     [SerializeField] private AudioClip takeDamage;
@@ -44,13 +52,11 @@ public class AudioManager : SingletonBase<AudioManager>
     private void Start()
     {
         GameEvents.OnSoundRequested += HandleSoundRequest;
-        GameEvents.OnMusicRequested += HandleMusicRequest;
     }
 
     private void OnDestroy()
     {
         GameEvents.OnSoundRequested -= HandleSoundRequest;
-        GameEvents.OnMusicRequested -= HandleMusicRequest;
     }
 
     // event Bus handlers
@@ -58,12 +64,7 @@ public class AudioManager : SingletonBase<AudioManager>
     {
         PlaySound(soundName);
     }
-
-    private void HandleMusicRequest(AudioClip musicClip)
-    {
-        PlayMusic(musicClip);
-    }
-
+    
     // play music
     public void PlayMusic(AudioClip clip)
     {
@@ -73,6 +74,20 @@ public class AudioManager : SingletonBase<AudioManager>
             musicSource.loop = true; // loop the background music
             musicSource.Play();
             if (debug) Debug.Log("AudioManager: playing music - " + clip.name);
+        }
+    }
+
+    // play music by string name 
+    public void PlayMusicTrack(string trackName)
+    {
+        AudioClip clip = GetSoundClip(trackName);
+        if (clip != null)
+        {
+            PlayMusic(clip);
+        }
+        else
+        {
+            if (debug) Debug.LogWarning($"AudioManager: Sound '{trackName}' not found!");
         }
     }
 
@@ -148,7 +163,21 @@ public class AudioManager : SingletonBase<AudioManager>
                 return exitLevel;
             case "leveltransition":
                 return levelTransition;
-            
+
+            // music tracks
+            case "floor1_5":
+                return floor1_5;
+            case "floor6_10":
+                return floor6_10;
+            case "floor11_15":
+                return floor11_15;
+            case "mainMenu":
+                return mainMenu;
+            case "upgradeScreen":
+                return upgradeScreen;
+            case "winScreen":
+                return winScreen;
+
             default:
                 return null;
         }

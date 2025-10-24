@@ -13,6 +13,7 @@ public class GameState : SingletonBase<GameState>
         Paused,
         Upgrade,
         Results,
+        Options,
         Win,
         Lose
     }
