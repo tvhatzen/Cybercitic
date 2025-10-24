@@ -20,10 +20,6 @@ public class FloorManager : SingletonBase<FloorManager>
     public Transform bossSpawnPoint;
     public int bossFloorInterval = 5; // Boss every 5 floors (5, 10, 15, 20, etc.)
 
-    // Events are now handled by the centralized GameEvents system
-    // public static event Action<int> OnFloorChanged; // moved to GameEvents
-    // public static event Action<GameObject> OnEnemySpawned; // moved to GameEvents
-
     public int CurrentFloor { get; private set; } = 1;
 
     private bool hasSpawnedOnLoad = false;
@@ -66,10 +62,8 @@ public class FloorManager : SingletonBase<FloorManager>
     {
         IncrementFloor();
 
-        // reset player using singleton
         StartCoroutine(SpawnPlayerCoroutine());
 
-        // spawn enemies for the floor
         SpawnEnemies();
     }
 
@@ -81,23 +75,21 @@ public class FloorManager : SingletonBase<FloorManager>
         
         if (debug) Debug.Log($"[FloorManager] IncrementFloor - Floor changed from {oldFloor} to {CurrentFloor}");
         
-        // Use centralized Event Bus
         GameEvents.FloorChanged(CurrentFloor);
 
         _floorProgressBar.IncreaseProgressAmount(1);
 
-        // Use centralized Event Bus for floor cleared
         GameEvents.FloorCleared(CurrentFloor - 1); // previous floor was cleared
     }
 
     // reset to floor 1 for retry. keeps player upgrades but resets floor progression
-    public void ResetToFloor1() // right now after death/win, not resetting to floor 1 properly
+    public void ResetToFloor1() 
     {
         if (debug) Debug.Log("[FloorManager] Resetting to Floor 1 for retry");
 
         // Reset floor counter first
         CurrentFloor = 1;
-        // Use centralized Event Bus
+        
         GameEvents.FloorChanged(CurrentFloor);
 
         _floorProgressBar.ResetProgress(); 
@@ -106,23 +98,7 @@ public class FloorManager : SingletonBase<FloorManager>
 
         UpdateFloorUIBackup();
 
-        // Load the first scene (Gameplay) to ensure we start from the beginning
         SceneManager.LoadScene("Gameplay");
-    }
-
-    // restore players health to full (for retry after death)
-    private void RestorePlayerHealth()
-    {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-        {
-            HealthSystem playerHealth = player.GetComponent<HealthSystem>();
-            if (playerHealth != null)
-            {
-                playerHealth.ResetHealth();
-                if (debug) Debug.Log("[FloorManager] Player health restored to full");
-            }
-        }
     }
 
     // backup method to directly update FloorUI if event system has timing issues
@@ -335,7 +311,7 @@ public class FloorManager : SingletonBase<FloorManager>
 
         foreach (GameObject enemy in existingEnemies)
         {
-            enemy.GetComponent<EnemyVisualFeedback>()?.PlaySpawnEffect(); // not triggering ??
+            enemy.GetComponent<EnemyVisualFeedback>()?.PlaySpawnEffect(); 
         }
         
     }
@@ -381,7 +357,7 @@ public class FloorManager : SingletonBase<FloorManager>
                 GameObject prefab = enemyPrefabsForThisFloor[i];
                 Transform point = enemySpawnPoints[i];
 
-                // Check if spawn point exists before trying to use it
+                // check if spawn point exists
                 if (point == null)
                 {
                     if (debug) Debug.LogError($"[FloorManager] EnemySpawnPoint{i} is null - cannot spawn enemy!");
@@ -407,7 +383,6 @@ public class FloorManager : SingletonBase<FloorManager>
                     enemy.SetActive(true);
                 }
 
-                // Use centralized Event Bus
                 GameEvents.EnemySpawned(enemy);
             }
         }

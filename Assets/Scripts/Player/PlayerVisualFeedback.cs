@@ -14,9 +14,6 @@ public class PlayerVisualFeedback : MonoBehaviour
     [Tooltip("Frame-based animator for handling body part animations")]
     [SerializeField] private FrameBasedPlayerAnimator frameAnimator;
     
-    [Tooltip("Legacy animator component (optional)")]
-    [SerializeField] private Animator animator;
-    
     [Tooltip("Name of the attack animation trigger in the Animator")]
     [SerializeField] private string attackTriggerName = "Attack";
     [SerializeField] private string damagedTriggerName = "Damage";
@@ -25,28 +22,20 @@ public class PlayerVisualFeedback : MonoBehaviour
     [SerializeField] private ParticleSystem attackParticles;
     [SerializeField] private ParticleSystem takeDamageParticles;
 
-    private Transform currentTarget; // Track current target for icon positioning
+    private Transform currentTarget; // track current target for icon positioning
 
     [SerializeField] private bool debug = false;
 
     private void Awake()
     {
-        // If no frame animator is assigned, try to find one
         if (frameAnimator == null)
         {
             frameAnimator = GetComponent<FrameBasedPlayerAnimator>();
-        }
-        
-        // If no legacy animator is assigned, try to find one
-        if (animator == null)
-        {
-            animator = GetComponent<Animator>();
         }
     }
 
     private void OnEnable()
     {
-        // Subscribe to combat events
         GameEvents.OnPlayerAttack += HandlePlayerAttack;
         GameEvents.OnPlayerTakeDamage += HandlePlayerTakeDamage;
         GameEvents.OnPlayerTargetChanged += HandleTargetChanged;
@@ -54,7 +43,6 @@ public class PlayerVisualFeedback : MonoBehaviour
 
     private void OnDisable()
     {
-        // Unsubscribe from combat events
         GameEvents.OnPlayerAttack -= HandlePlayerAttack;
         GameEvents.OnPlayerTakeDamage -= HandlePlayerTakeDamage;
         GameEvents.OnPlayerTargetChanged -= HandleTargetChanged;
@@ -113,15 +101,9 @@ public class PlayerVisualFeedback : MonoBehaviour
     // ========== ATTACK ========== //
     private void PlayAttackAnimation()
     {
-        // Use frame animator if available
         if (frameAnimator != null)
         {
             frameAnimator.PlayAttackAnimation();
-        }
-        // Fallback to legacy animator
-        else if (animator != null && !string.IsNullOrEmpty(attackTriggerName))
-        {
-            animator.SetTrigger(attackTriggerName);
         }
     }
 
@@ -136,15 +118,9 @@ public class PlayerVisualFeedback : MonoBehaviour
     // ========== DAMAGE ========== //
     private void PlayDamagedAnimation()
     {
-        // Use frame animator if available
         if (frameAnimator != null)
         {
             frameAnimator.PlayDamageAnimation();
-        }
-        // Fallback to legacy animator
-        else if (animator != null && !string.IsNullOrEmpty(damagedTriggerName))
-        {
-            animator.SetTrigger(damagedTriggerName);
         }
     }
 

@@ -6,11 +6,9 @@ using System.Collections;
 public class HealthSystem : MonoBehaviour
 {
     private int currentHealth;
-    //[SerializeField] private float maxHealth = 100;
     public int CurrentHealth => currentHealth;
     public int DamagePerHit => entityData != null ? entityData.currentAttack : 0;
 
-    // Keep instance events for local subscriptions, but also trigger centralized events
     public event Action<HealthSystem> OnDeath; // notify when this entity dies
     public static event Action<GameObject> OnAnyDeath; // global death flag for any death
     public event Action<int> OnHealthChanged; // notify UI elements
@@ -64,7 +62,7 @@ public class HealthSystem : MonoBehaviour
         currentHealth -= amount;
         if(debug) Debug.Log(name + " takes " + amount + " damage. HP: " + currentHealth);
 
-        // Play damage sound
+        // play damage sound
         if (AudioManager.Instance != null)
         {
             if (CompareTag("Player"))
@@ -79,7 +77,7 @@ public class HealthSystem : MonoBehaviour
             }
         }
 
-        // Trigger both local and centralized events
+        // trigger both local and centralized events
         OnHealthChanged?.Invoke(currentHealth);
         GameEvents.HealthChanged(currentHealth);
         UpdateHealthText();
@@ -115,10 +113,10 @@ public class HealthSystem : MonoBehaviour
     {
         currentHealth = health;
 
-        // Update health UI
-            // Trigger both local and centralized events
-            OnHealthChanged?.Invoke(health);
-            GameEvents.HealthChanged(health);
+        // update health UI
+        OnHealthChanged?.Invoke(health);
+        GameEvents.HealthChanged(health);
+
         UpdateHealthText();
         healthBar.UpdateHealthBar(entityData.baseHealth, currentHealth);
     }
@@ -128,13 +126,13 @@ public class HealthSystem : MonoBehaviour
         if (entityData != null)
         {
             currentHealth = entityData.baseHealth;
-            // Trigger both local and centralized events
-        OnHealthChanged?.Invoke(currentHealth);
-        GameEvents.HealthChanged(currentHealth);
+
+            OnHealthChanged?.Invoke(currentHealth);
+            GameEvents.HealthChanged(currentHealth);
+
             UpdateHealthText();
             healthBar.UpdateHealthBar(entityData.baseHealth, currentHealth);
             
-            // Reset sprite color to normal when respawning
             ResetSpriteColor();
         }
     }
@@ -144,27 +142,28 @@ public class HealthSystem : MonoBehaviour
         if (entityData != null)
         {
             currentHealth = entityData.baseHealth;
-            // Trigger both local and centralized events
-        OnHealthChanged?.Invoke(currentHealth);
-        GameEvents.HealthChanged(currentHealth);
+            
+            OnHealthChanged?.Invoke(currentHealth);
+            GameEvents.HealthChanged(currentHealth);
+
             UpdateHealthText();
             healthBar.UpdateHealthBar(entityData.baseHealth, currentHealth);
             
-            // Reset sprite color to normal
             ResetSpriteColor();
         }
     }
 
-    // Reset all stats to original values (for new game after win)
+    // reset all stats to original values (for new game after win)
     public void ResetToOriginalStats()
     {
         if (entityData != null)
         {
             entityData.ResetToOriginalStats();
             currentHealth = entityData.currentHealth;
-            // Trigger both local and centralized events
-        OnHealthChanged?.Invoke(currentHealth);
-        GameEvents.HealthChanged(currentHealth);
+            
+            OnHealthChanged?.Invoke(currentHealth);
+            GameEvents.HealthChanged(currentHealth);
+
             UpdateHealthText();
 
             // also reset credits if player
@@ -176,16 +175,13 @@ public class HealthSystem : MonoBehaviour
                 }
             }
             
-            // Reset sprite color to normal
             ResetSpriteColor();
             
             if(debug) Debug.Log($"[HealthSystem] {name} reset to original stats - HP: {currentHealth}, ATK: {DamagePerHit}, Credits: {CurrencyManager.Instance.Credits}");
         }
     }
 
-    /// <summary>
-    /// Reset sprite color back to original (removes damage flash effect)
-    /// </summary>
+    // Reset sprite color back to original (removes damage flash effect)
     public void ResetSpriteColor()
     {
         if (spriteRenderer != null)
@@ -199,7 +195,7 @@ public class HealthSystem : MonoBehaviour
     {
         if(debug) Debug.Log(name + " died!");
 
-        // Play death sound
+        // play death sound
         if (AudioManager.Instance != null)
         {
             if (CompareTag("Player"))
@@ -214,7 +210,7 @@ public class HealthSystem : MonoBehaviour
             }
         }
 
-        // Trigger both local and centralized events
+        // trigger both local and centralized events
         OnDeath?.Invoke(this);
         OnAnyDeath?.Invoke(gameObject);
         GameEvents.EntityDeath(this);
@@ -235,7 +231,5 @@ public class HealthSystem : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-        //Destroy(gameObject); // Do death animation eventually
     }
 }

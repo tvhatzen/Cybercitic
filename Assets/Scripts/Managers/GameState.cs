@@ -16,8 +16,6 @@ public class GameState : SingletonBase<GameState>
         Win,
         Lose
     }
-    // Events are now handled by the centralized GameEvents system
-    // public static event Action<GameStates> OnGameStateChanged; // moved to GameEvents
     public GameStates CurrentState { get; private set; }
 
     [Header("Debug")]
@@ -37,32 +35,26 @@ public class GameState : SingletonBase<GameState>
 
     private void Start()
     {
-        StartCoroutine(InitializeState());
-    }
-
-    private IEnumerator InitializeState()
-    {
-        yield return null; // wait one frame
         ChangeState(GameStates.MainMenu);
     }
 
     public void StartFromMainMenu()
     {
-        // Reset all upgrades for a fresh start from main menu
+        // reset all upgrades for a fresh start from main menu
         if (UpgradeManager.Instance != null)
         {
             UpgradeManager.Instance.ResetAllUpgrades();
             if(debug) Debug.Log("All upgrades reset for fresh start from main menu");
         }
         
-        // Reset run stats for a fresh start
+        // reset run stats for a fresh start
         if (RunStatsTracker.Instance != null)
         {
             RunStatsTracker.Instance.ResetStats();
             if(debug) Debug.Log("Run stats reset for fresh start from main menu");
         }
         
-        // Reset all skills for a fresh start
+        // reset all skills for a fresh start
         if (PlayerSkills.Instance != null)
         {
             PlayerSkills.Instance.ResetAllSkills();
@@ -91,12 +83,12 @@ public class GameState : SingletonBase<GameState>
     {
         if (fromDeath && floorManager != null)
         {
-            // Only reset to floor 1 if this is called from death/retry
+            // only reset to floor 1 if this is called from death/retry
             floorManager.ResetToFloor1();
         }
         else if (!fromDeath && floorManager != null)
         {
-            // Reset to floor 1 for a fresh start from main menu
+            // reset to floor 1 for a fresh start from main menu
             floorManager.ResetToFloor1();
             if(debug) Debug.Log("Floor reset to 1 for fresh start from main menu");
         }
@@ -117,21 +109,21 @@ public class GameState : SingletonBase<GameState>
 
         ChangeState(GameStates.Win);
         
-        // Reset all upgrades for a completely new run after winning
+        // reset all upgrades for a completely new run after winning
         if (UpgradeManager.Instance != null)
         {
             UpgradeManager.Instance.ResetAllUpgrades();
             if(debug) Debug.Log("All upgrades reset for new run after win");
         }
         
-        // Reset run stats for a fresh start
+        // reset run stats for a fresh start
         if (RunStatsTracker.Instance != null)
         {
             RunStatsTracker.Instance.ResetStats();
             if(debug) Debug.Log("Run stats reset for new run after win");
         }
         
-        // Reset all skills for a fresh start
+        // reset all skills for a fresh start
         if (PlayerSkills.Instance != null)
         {
             PlayerSkills.Instance.ResetAllSkills();
@@ -173,7 +165,6 @@ public class GameState : SingletonBase<GameState>
 
         if(debug) Debug.Log($"Game state changed: {lastStateDebug} -> {currentStateDebug}");
 
-        // Use centralized Event Bus
         GameEvents.GameStateChanged(newState);
     }
 }

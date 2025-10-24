@@ -89,7 +89,6 @@ public class UpgradeShopUI : MonoBehaviour
     {
         LoadUpgrades();
 
-        // Subscribe to centralized Event Bus for credits
         GameEvents.OnCreditsChanged += UpdateCreditsDisplay;
         
         if (CurrencyManager.Instance != null)
@@ -99,7 +98,6 @@ public class UpgradeShopUI : MonoBehaviour
 
         if (UpgradeManager.Instance != null)
         {
-            // Subscribe to centralized Event Bus
             GameEvents.OnUpgradePurchased += OnUpgradePurchased;
             GameEvents.OnAllUpgradesReset += OnAllUpgradesReset;
         }
@@ -111,12 +109,10 @@ public class UpgradeShopUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        // Unsubscribe from centralized Event Bus
         GameEvents.OnCreditsChanged -= UpdateCreditsDisplay;
 
         if (UpgradeManager.Instance != null)
         {
-            // Unsubscribe from centralized Event Bus
             GameEvents.OnUpgradePurchased -= OnUpgradePurchased;
             GameEvents.OnAllUpgradesReset -= OnAllUpgradesReset;
         }
@@ -164,13 +160,13 @@ public class UpgradeShopUI : MonoBehaviour
 
     public void SelectUpgrade(Upgrade upgrade)
     {
-        // Deselect previous button
+        // deselect previous button
         if (selectedButton != null)
         {
             selectedButton.SetSelected(false);
         }
 
-        // Find and select new button
+        // find and select new button
         foreach (var button in upgradeButtons.Values)
         {
             if (button != null && button.Upgrade == upgrade)
@@ -398,7 +394,7 @@ public class UpgradeShopUI : MonoBehaviour
 
     public void CloseShop() => OnDoneClicked();
     
-    // Refresh all upgrade displays (useful after reset)
+    // refresh all upgrade displays (useful after reset)
     public void RefreshAllDisplays()
     {
         if(debug) Debug.Log("[UpgradeShopUI] Refreshing all upgrade displays");

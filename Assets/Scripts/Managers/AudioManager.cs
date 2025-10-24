@@ -43,19 +43,17 @@ public class AudioManager : SingletonBase<AudioManager>
 
     private void Start()
     {
-        // Subscribe to Event Bus for audio requests
         GameEvents.OnSoundRequested += HandleSoundRequest;
         GameEvents.OnMusicRequested += HandleMusicRequest;
     }
 
     private void OnDestroy()
     {
-        // Unsubscribe from Event Bus
         GameEvents.OnSoundRequested -= HandleSoundRequest;
         GameEvents.OnMusicRequested -= HandleMusicRequest;
     }
 
-    // Event Bus handlers
+    // event Bus handlers
     private void HandleSoundRequest(string soundName)
     {
         PlaySound(soundName);
@@ -66,19 +64,19 @@ public class AudioManager : SingletonBase<AudioManager>
         PlayMusic(musicClip);
     }
 
-    // Play music
+    // play music
     public void PlayMusic(AudioClip clip)
     {
         if (musicSource != null && clip != null)
         {
             musicSource.clip = clip;
-            musicSource.loop = true; // Loop the background music
+            musicSource.loop = true; // loop the background music
             musicSource.Play();
             if (debug) Debug.Log("AudioManager: playing music - " + clip.name);
         }
     }
 
-    // Play sound by AudioClip
+    // play sound by AudioClip
     public void PlaySound(AudioClip clip)
     {
         if(sfxSource != null && clip != null)
@@ -88,7 +86,7 @@ public class AudioManager : SingletonBase<AudioManager>
         }
     }
 
-    // Play sound by string name 
+    // play sound by string name 
     public void PlaySound(string soundName)
     {
         AudioClip clip = GetSoundClip(soundName);
@@ -102,12 +100,12 @@ public class AudioManager : SingletonBase<AudioManager>
         }
     }
 
-    // Get AudioClip by string name
+    // get AudioClip by string name
     private AudioClip GetSoundClip(string soundName)
     {
         switch (soundName.ToLower())
         {
-            // Player sounds
+            // player sounds
             case "attack":
                 return attack;
             case "damaged":
@@ -117,7 +115,7 @@ public class AudioManager : SingletonBase<AudioManager>
             case "useskill":
                 return useSkill;
             
-            // Enemy sounds
+            // enemy sounds
             case "enemyattack":
                 return enemyAttack;
             case "enemydamaged":
@@ -137,11 +135,11 @@ public class AudioManager : SingletonBase<AudioManager>
             case "uipurchaseupgrade":
                 return uiPurchaseUpgrade;
             
-            // Feedback sounds
+            // feedback sounds
             case "takedamage":
                 return takeDamage;
             
-            // Level sounds
+            // level sounds
             case "pickupcurrency":
                 return pickUpCurrency;
             case "enterlevel":

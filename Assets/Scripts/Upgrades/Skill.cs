@@ -25,13 +25,13 @@ public class Skill : ScriptableObject
     [SerializeField] private AudioClip skillSound;
     [SerializeField] private GameObject skillEffect;
     
-    // Runtime data
+    // runtime data
     [NonSerialized] public SkillStates currentState = SkillStates.ReadyToUse;
     [NonSerialized] public float currentCooldown = 0f;
     [NonSerialized] public int currentCharges = 0;
     [NonSerialized] public bool isUnlocked = false;
 
-    // Events
+    // events
     public event Action<Skill> OnSkillActivated;
     public event Action<Skill> OnSkillCooldownStarted;
     public event Action<Skill> OnSkillCooldownFinished;
@@ -77,7 +77,7 @@ public class Skill : ScriptableObject
         currentState = SkillStates.Casting;
         OnSkillActivated?.Invoke(this);
 
-        // Start the skill effect
+        // start the skill effect
         StartCoroutine(ExecuteSkill());
 
         return true;
@@ -107,26 +107,19 @@ public class Skill : ScriptableObject
     {
         if(debug) Debug.Log($"{skillName} effects applied!");
         
-        // Play sound effect
+        // play sound effect
         if (skillSound != null && AudioManager.Instance != null)
         {
             AudioManager.Instance.PlaySound(skillSound);
         }
         
-        // Spawn visual effect
-        if (skillEffect != null)
-        {
-            // handled by PlayerSkills component
-            // spawn at the player's position
-        }
-        
-        // Apply damage to enemies in range
+        // apply damage to enemies in range
         ApplyDamageToEnemies();
     }
 
     protected virtual void ApplyDamageToEnemies()
     {
-        // Find enemies in range and apply damage
+        // find enemies in range and apply damage
         Collider[] enemies = Physics.OverlapSphere(Vector3.zero, skillRange, LayerMask.GetMask("Enemy"));
         
         foreach (var enemy in enemies)
@@ -153,7 +146,7 @@ public class Skill : ScriptableObject
         if(debug) Debug.Log($"[Skill] {skillName} - Starting cooldown ({cooldownDuration}s)");
         OnSkillCooldownStarted?.Invoke(this);
         
-        // Start coroutine to handle cooldown
+        // start coroutine to handle cooldown
         StartCoroutine(HandleCooldown());
     }
 

@@ -44,7 +44,6 @@ public class UpgradeButtonUI : MonoBehaviour
     {
         if (upgrade == null) return;
 
-        // update level indicators
         UpdateLevelIndicators();
     }
 

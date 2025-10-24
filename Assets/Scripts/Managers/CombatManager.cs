@@ -5,6 +5,7 @@ using UnityEngine;
 public class CombatManager : SingletonBase<CombatManager>
 {
     private HealthSystem playerHealth;
+
     // track all enemies Healthsystem components currently in combat
     private readonly List<HealthSystem> activeEnemies = new List<HealthSystem>();
 

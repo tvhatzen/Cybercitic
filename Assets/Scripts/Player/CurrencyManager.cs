@@ -3,9 +3,6 @@ using UnityEngine;
 
 public class CurrencyManager : SingletonBase<CurrencyManager>
 {
-    // Events - now handled by GameEvents Event Bus
-    // public event Action<int> OnCreditsChanged;
-
     private int credits = 0;
     public int Credits => credits;
 
@@ -23,7 +20,6 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         credits += amount;
         if(debug) Debug.Log($"Player earned {amount} credits. Total = {credits}");
         
-        // Use centralized Event Bus
         GameEvents.CreditsChanged(credits);
         GameEvents.CreditsAdded(amount);
     }
@@ -34,7 +30,6 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
 
         credits -= amount;
         
-        // Use centralized Event Bus
         GameEvents.CreditsChanged(credits);
         GameEvents.CreditsSpent(amount);
         return true;
@@ -45,7 +40,6 @@ public class CurrencyManager : SingletonBase<CurrencyManager>
         credits = 0;
         if(debug) Debug.Log("Credits reset to 0");
         
-        // Use centralized Event Bus
         GameEvents.CreditsChanged(credits);
     }
 }

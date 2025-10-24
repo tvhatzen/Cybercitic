@@ -11,9 +11,6 @@ public class EntityStats : SingletonBase<EntityStats>
     public List<Skill> skills = new List<Skill>();
     public List<Upgrade> upgrades = new List<Upgrade>();
 
-    // Events are now handled by the centralized GameEvents system
-    // public event Action<EntityStats> OnStatsChanged; // moved to GameEvents
-
     private EntityData playerData;
 
     [Header("DEBUG")]
@@ -41,7 +38,7 @@ public class EntityStats : SingletonBase<EntityStats>
         if (playerData != null)
         {
             playerData.ModifyBaseStats(healthMod: amount);
-            // Use centralized Event Bus
+            
             GameEvents.StatsChanged(this);
             if(debug) Debug.Log($"Health modified by {amount}. New base: {playerData.baseHealth}");
         }
@@ -52,7 +49,7 @@ public class EntityStats : SingletonBase<EntityStats>
         if (playerData != null)
         {
             playerData.ModifyBaseStats(speedMod: amount);
-            // Use centralized Event Bus
+            
             GameEvents.StatsChanged(this);
             if(debug) Debug.Log($"Speed modified by {amount}. New base: {playerData.baseSpeed}");
         }
@@ -63,7 +60,7 @@ public class EntityStats : SingletonBase<EntityStats>
         if (playerData != null)
         {
             playerData.ModifyBaseStats(attackMod: amount);
-            // Use centralized Event Bus
+            
             GameEvents.StatsChanged(this);
             if(debug) Debug.Log($"Attack modified by {amount}. New base: {playerData.baseAttack}");
         }
@@ -74,7 +71,7 @@ public class EntityStats : SingletonBase<EntityStats>
         if (playerData != null)
         {
             playerData.ModifyBaseStats(dodgeMod: amount);
-            // Use centralized Event Bus
+            
             GameEvents.StatsChanged(this);
             if(debug) Debug.Log($"Dodge chance modified by {amount}. New base: {playerData.baseDodgeChance}");
         }
@@ -86,15 +83,15 @@ public class EntityStats : SingletonBase<EntityStats>
         if (playerData != null)
         {
             playerData.ResetToOriginalStats();
-            // Use centralized Event Bus
+            
             GameEvents.StatsChanged(this);
         }
         
-        // Clear all skills and upgrades
+        // clear all skills and upgrades
         skills.Clear();
         upgrades.Clear();
         
-        // Also reset the health system to update UI
+        // reset the health system to update UI
         var healthSystem = GetComponent<HealthSystem>();
         if (healthSystem != null)
         {

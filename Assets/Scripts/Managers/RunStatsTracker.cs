@@ -14,12 +14,6 @@ public class RunStatsTracker : SingletonBase<RunStatsTracker>
     [Header("Starting Values")]
     [SerializeField] private int startingCredits = 0;
 
-    // Events are now handled by the centralized GameEvents system
-    // public event Action<int> OnEnemyKilled; // moved to GameEvents
-    // public event Action<int> OnCreditsCollected; // moved to GameEvents
-    // public event Action<int> OnFloorCleared; // moved to GameEvents
-    // public event Action<string> OnSkillUnlocked; // moved to GameEvents
-
     public bool debug = false;
 
     // public properties
@@ -54,10 +48,10 @@ public class RunStatsTracker : SingletonBase<RunStatsTracker>
     {
         base.Awake();
         
-        // Subscribe to game events
+        // subscribe to game events
         HealthSystem.OnAnyDeath += OnEntityDied;
         
-        // Subscribe to centralized Event Bus
+        // subscribe to Event Bus
         GameEvents.OnCreditsChanged += OnCreditsChanged;
         GameEvents.OnFloorCleared += OnFloorClearedInternal;
         
@@ -71,14 +65,14 @@ public class RunStatsTracker : SingletonBase<RunStatsTracker>
     {
         HealthSystem.OnAnyDeath -= OnEntityDied;
         
-        // Unsubscribe from centralized Event Bus
+        // unsubscribe from Event Bus
         GameEvents.OnCreditsChanged -= OnCreditsChanged;
         GameEvents.OnFloorCleared -= OnFloorClearedInternal;
     }
 
     private void Start()
     {
-        // Record starting credits
+        // record starting credits
         if (CurrencyManager.Instance != null)
             startingCredits = CurrencyManager.Instance.Credits;
     }
@@ -123,7 +117,7 @@ public class RunStatsTracker : SingletonBase<RunStatsTracker>
         if (entity.CompareTag("Enemy") || entity.CompareTag("Boss"))
         {
             enemiesKilled++;
-            // Use centralized Event Bus
+            
             GameEvents.EnemyKilled(enemiesKilled);
             
             if(debug) Debug.Log($"[RunStatsTracker] Enemy killed! Total: {enemiesKilled}");
@@ -132,7 +126,6 @@ public class RunStatsTracker : SingletonBase<RunStatsTracker>
             if (entity.CompareTag("Boss"))
             {
                 beatBoss = true;
-                // unlock skill 
                 UnlockSkillForBoss();
             }
         }
@@ -146,11 +139,10 @@ public class RunStatsTracker : SingletonBase<RunStatsTracker>
         if (creditsCollected < 0)
             creditsCollected = 0; 
         
-        // Use centralized Event Bus
         GameEvents.CreditsCollected(creditsCollected);
     }
 
-    // Internal method to handle floor cleared events from Event Bus
+    // handle floor cleared events from Event Bus
     private void OnFloorClearedInternal(int floorNumber)
     {
         floorsCleared = floorNumber;
@@ -185,7 +177,6 @@ public class RunStatsTracker : SingletonBase<RunStatsTracker>
                 break;
         }
         
-        // Use centralized Event Bus
         GameEvents.RunSkillUnlocked(unlockedSkill);
         if(debug) Debug.Log($"[RunStatsTracker] Skill unlocked: {unlockedSkill}");
     }

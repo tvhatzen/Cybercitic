@@ -15,26 +15,25 @@ public class CurrencyPickUp : MonoBehaviour
     private bool isMagnetized = false;
     private Rigidbody rb;
 
-    [Header("DEBUG")]
     public bool debug = false;
 
     private void Start()
     {
-        // Find player
+        // find player
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
             playerTransform = player.transform;
         }
 
-        // Get or add Rigidbody for smooth movement
+        // get or add Rigidbody for smooth movement
         rb = GetComponent<Rigidbody>();
         if (rb == null)
         {
             rb = gameObject.AddComponent<Rigidbody>();
         }
         
-        // Configure Rigidbody for smooth magnet movement
+        // configure Rigidbody for smooth magnet movement
         rb.useGravity = false;
         rb.linearDamping = 5f; 
         rb.angularDamping = 5f;
@@ -46,14 +45,14 @@ public class CurrencyPickUp : MonoBehaviour
 
         float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
 
-        // Check if player is within pickup range
+        // check if player is within pickup range
         if (distanceToPlayer <= pickupRange)
         {
             CollectCurrency();
             return;
         }
 
-        // Check if player is within magnet range
+        // check if player is within magnet range
         if (distanceToPlayer <= magnetRange)
         {
             if (!isMagnetized)
@@ -62,11 +61,11 @@ public class CurrencyPickUp : MonoBehaviour
                 if(debug) Debug.Log($"[CurrencyPickUp] {name} magnetized to player!");
             }
 
-            // Move toward player
+            // move toward player
             Vector3 directionToPlayer = (playerTransform.position - transform.position).normalized;
             Vector3 magnetForce = directionToPlayer * magnetSpeed;
             
-            // Apply force or direct movement
+            // apply force or direct movement
             if (rb != null)
             {
                 rb.AddForce(magnetForce, ForceMode.Force);
@@ -107,33 +106,15 @@ public class CurrencyPickUp : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        // Draw magnet range
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, magnetRange);
         
-        // Draw pickup range
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, pickupRange);
     }
 
-    // Public methods
-    public void SetMagnetRange(float range)
-    {
-        magnetRange = range;
-    }
-
-    public void SetMagnetSpeed(float speed)
-    {
-        magnetSpeed = speed;
-    }
-
-    public void SetCreditsValue(int value)
-    {
-        creditsValue = value;
-    }
-
-    public void EnableMagnet(bool enable)
-    {
-        useMagnet = enable;
-    }
+    public void SetMagnetRange(float range) => magnetRange = range;
+    public void SetMagnetSpeed(float speed) => magnetSpeed = speed;
+    public void SetCreditsValue(int value) => creditsValue = value;
+    public void EnableMagnet(bool enable) => useMagnet = enable;
 }

@@ -21,8 +21,8 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
     {
         public UpgradeShopUI.BodyPart bodyPart;
         public SpriteRenderer spriteRenderer;
-        public Sprite baseSprite; // Base sprite (level 0)
-        public List<Sprite> upgradedSprites = new List<Sprite>(); // Upgraded sprites (level 1, 2, 3, etc.)
+        public Sprite baseSprite; // base sprite (level 0)
+        public List<Sprite> upgradedSprites = new List<Sprite>(); // upgraded sprites (level 1, 2, 3)
     }
 
     [System.Serializable]
@@ -63,10 +63,9 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
 
     private void Start()
     {
-        // Subscribe to upgrade events to update sprites when upgrades change
+        // subscribe to upgrade events to update sprites when upgrades change
         if (UpgradeManager.Instance != null)
         {
-            // Subscribe to centralized Event Bus
             GameEvents.OnUpgradePurchased += OnUpgradePurchased;
         }
     }
@@ -75,7 +74,6 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
     {
         if (UpgradeManager.Instance != null)
         {
-            // Unsubscribe from centralized Event Bus
             GameEvents.OnUpgradePurchased -= OnUpgradePurchased;
         }
     }
@@ -130,7 +128,7 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         currentAnimation = animationName;
         currentAnimationCoroutine = StartCoroutine(PlayAnimationSequence(animationLookup[animationName]));
         
-        // Notify Event Bus of animation change
+        // notify Event Bus of animation change
         GameEvents.AnimationChanged(animationName);
         
         if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Playing animation: {animationName}");
@@ -155,7 +153,7 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         currentAnimation = animationName;
         currentAnimationCoroutine = StartCoroutine(PlayAnimationSequenceOnce(animationLookup[animationName]));
         
-        // Notify Event Bus of animation change
+        // notify Event Bus of animation change
         GameEvents.AnimationChanged(animationName);
         
         if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Playing animation once: {animationName}");
@@ -180,17 +178,14 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
 
     /// <summary>
     /// Update all body part sprites based on current upgrade levels
-    /// This method is called when upgrades change, but doesn't interfere with animation frame cycling
     /// </summary>
     public void UpdateBodyPartSprites()
     {
         if (UpgradeManager.Instance == null) return;
 
-        // Only update sprites if we're not currently playing an animation
-        // The animation system will handle sprite updates during playback
+        // only update sprites if not currently playing an animation
         if (!isPlaying)
         {
-            // Set to the first frame of the current upgrade level
             SetIdleSprites();
         }
         
@@ -202,7 +197,7 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
     /// </summary>
     private void SetIdleSprites()
     {
-        // Use the first frame of the first available animation as default
+        // use the first frame of the first available animation as default
         foreach (var sequence in animationSequences)
         {
             if (sequence.frames.Count > 0)
@@ -249,12 +244,12 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
                 currentFrameIndex = i;
                 var frame = sequence.frames[i];
                 
-                // Update all body part sprites for this animation frame
+                // update all body part sprites for this animation frame
                 foreach (var bodyPartFrame in frame.bodyPartFrames)
                 {
                     if (bodyPartFrame.spriteRenderer != null)
                     {
-                        // Get the appropriate sprite for this animation frame and upgrade level
+                        // get the appropriate sprite for this animation frame and upgrade level
                         Sprite targetSprite = GetSpriteForAnimationFrame(bodyPartFrame, i);
                         if (targetSprite != null)
                         {
@@ -270,10 +265,10 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         isPlaying = false;
         currentAnimationCoroutine = null;
         
-        // If this was an attack animation and we're in combat, return to standing
+        // if this was an attack animation and we're in combat, return to standing
         if (sequence.animationName == "Attack")
         {
-            // Check if we're still in combat and should return to standing
+            // check if we're still in combat and should return to standing
             var playerCombat = GetComponent<PlayerCombat>();
             if (playerCombat != null && playerCombat.InCombat)
             {
@@ -282,7 +277,6 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
             }
         }
         
-        // Notify Event Bus of animation completion
         GameEvents.AnimationCompleted();
         
         if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Animation '{sequence.animationName}' completed");
@@ -293,18 +287,18 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         isPlaying = true;
         currentFrameIndex = 0;
 
-        // Play the animation once (ignore the loop setting)
+        // play the animation once (ignore the loop setting)
         for (int i = 0; i < sequence.frames.Count; i++)
         {
             currentFrameIndex = i;
             var frame = sequence.frames[i];
             
-            // Update all body part sprites for this animation frame
+            // update all body part sprites for this animation frame
             foreach (var bodyPartFrame in frame.bodyPartFrames)
             {
                 if (bodyPartFrame.spriteRenderer != null)
                 {
-                    // Get the appropriate sprite for this animation frame and upgrade level
+                    // get the appropriate sprite for this animation frame and upgrade level
                     Sprite targetSprite = GetSpriteForAnimationFrame(bodyPartFrame, i);
                     if (targetSprite != null)
                     {
@@ -313,16 +307,14 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
                 }
             }
             
-            // Use custom duration for Attack animation only on the last frame, otherwise use frame duration
+            // use custom duration for Attack animation only on the last frame, otherwise use frame duration
             float duration;
             if (sequence.animationName == "Attack" && i == sequence.frames.Count - 1)
             {
-                // Only hold the last frame (attack frame) for the custom duration
                 duration = attackDuration;
             }
             else
             {
-                // Use normal frame duration for all other frames
                 duration = frame.duration;
             }
             yield return new WaitForSeconds(duration);
@@ -331,20 +323,19 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         isPlaying = false;
         currentAnimationCoroutine = null;
         
-        // If this was an attack animation and we're in combat, return to standing
+        // if this was an attack animation and we're in combat, return to standing
         if (sequence.animationName == "Attack")
         {
             if (debug) Debug.Log("[FrameBasedPlayerAnimator] Attack animation sequence completed");
             
-            // Check if we're still in combat and should return to standing
+            // check if we're still in combat and should return to standing
             var playerCombat = GetComponent<PlayerCombat>();
             if (playerCombat != null && playerCombat.InCombat)
             {
                 if (debug) Debug.Log("[FrameBasedPlayerAnimator] Still in combat, transitioning to standing");
-                // Use a small delay to ensure the animation state is properly updated
                 yield return new WaitForEndOfFrame();
                 
-                // Update currentAnimation to Standing before playing it
+                // update currentAnimation to Standing before playing it
                 currentAnimation = "Standing";
                 PlayStandingAnimation();
                 if (debug) Debug.Log("[FrameBasedPlayerAnimator] Attack animation completed, returning to standing");
@@ -355,7 +346,7 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
             }
         }
         
-        // Notify Event Bus of animation completion
+        // notify Event Bus of animation completion
         GameEvents.AnimationCompleted();
         
         if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Animation '{sequence.animationName}' completed once");
@@ -382,28 +373,25 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
     /// </summary>
     private Sprite GetSpriteForAnimationFrame(BodyPartFrame bodyPartFrame, int animationFrameIndex)
     {
-        // Get the current upgrade level for this body part
+        // get the current upgrade level for this body part
         var upgrade = GetUpgradeForBodyPart(bodyPartFrame.bodyPart);
         int upgradeLevel = upgrade != null ? upgrade.CurrentLevel : 0;
 
-        // Get the sprite based on upgrade level
+        // get the sprite based on upgrade level
         if (upgradeLevel == 0)
         {
-            // Use base sprite (level 0)
             return bodyPartFrame.baseSprite;
         }
         else if (upgradeLevel > 0 && upgradeLevel <= bodyPartFrame.upgradedSprites.Count)
         {
-            // Use upgraded sprite for the current upgrade level
             return bodyPartFrame.upgradedSprites[upgradeLevel - 1];
         }
         else if (bodyPartFrame.upgradedSprites.Count > 0)
         {
-            // Use the highest available upgrade sprite
             return bodyPartFrame.upgradedSprites[bodyPartFrame.upgradedSprites.Count - 1];
         }
 
-        // Fallback to base sprite
+        // fallback to base sprite
         return bodyPartFrame.baseSprite;
     }
 
@@ -413,7 +401,6 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Upgrade purchased: {upgrade.UpgradeName}");
     }
 
-    // Public methods for common animations
     public void PlayAttackAnimation() => PlayAnimationOnce("Attack");
     public void PlayWalkAnimation() => PlayAnimation("Walk");
     public void PlayRunAnimation() => PlayAnimation("Running");
@@ -425,12 +412,10 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
     public void PlayDamageAnimation() => PlayAnimation("Damage");
     public void PlayDeathAnimation() => PlayAnimation("Death");
 
-    /// <summary>
-    /// Ensure the player is in the correct animation state for combat
-    /// </summary>
+    // Ensure the player is in the correct animation state for combat
     public void EnsureCombatAnimationState()
     {
-        // If we're in combat but not playing any animation, play standing
+        // if player is in combat but not playing any animation, play standing
         var playerCombat = GetComponent<PlayerCombat>();
         if (playerCombat != null && playerCombat.InCombat && !isPlaying && currentAnimation != "Standing")
         {
@@ -443,7 +428,7 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         }
     }
 
-    // Getters for debugging
+    // debugging
     public string GetCurrentAnimation() => currentAnimation;
     public bool IsPlaying() => isPlaying;
     public int GetCurrentFrameIndex() => currentFrameIndex;

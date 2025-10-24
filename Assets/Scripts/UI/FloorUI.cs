@@ -10,7 +10,6 @@ public class FloorUI : MonoBehaviour
 
     void OnEnable()
     {
-        // Subscribe to centralized Event Bus
         GameEvents.OnFloorChanged += UpdateFloorText;
         
         if (FloorManager.Instance != null)
@@ -31,6 +30,6 @@ public class FloorUI : MonoBehaviour
 
     public void UpdateFloorText(int floor)
     {
-        if (floorText != null) floorText.text = $"Floor {floor} / 5";
+        if (floorText != null) floorText.text = $" {floor} / 5";
     }
 }

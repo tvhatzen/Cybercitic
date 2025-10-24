@@ -38,7 +38,7 @@ public class Upgrade : ScriptableObject
     public int CurrentLevel => currentLevel;
     public int MaxLevel => maxUpgradeLevel;
     public bool IsMaxLevel => currentLevel >= maxUpgradeLevel;
-    public bool CanUpgrade => currentLevel < maxUpgradeLevel; // Can always upgrade if not at max level
+    public bool CanUpgrade => currentLevel < maxUpgradeLevel; 
     public UpgradeType GetUpgradeType() => upgradeType;
 
     [Header("DEBUG")]
@@ -73,7 +73,7 @@ public class Upgrade : ScriptableObject
         currentLevel++;
         if(debug) Debug.Log($"[Upgrade] {upgradeName} level increased from {oldLevel} to {currentLevel}");
         
-        // Mark as unlocked on first purchase
+        // mark as unlocked on first purchase
         if (!isUnlocked)
         {
             isUnlocked = true;

@@ -43,7 +43,6 @@ public class UIManager : SingletonBase<UIManager>
 
         ShowScreen(MenuScreen.MainMenu, 0f);
 
-        // Subscribe to centralized Event Bus
         GameEvents.OnGameStateChanged += HandleGameStateChanged;
     }
 
@@ -53,7 +52,6 @@ public class UIManager : SingletonBase<UIManager>
     }
     private void OnDestroy()
     {
-        // Unsubscribe from centralized Event Bus
         GameEvents.OnGameStateChanged -= HandleGameStateChanged;
     }
 
@@ -76,7 +74,7 @@ public class UIManager : SingletonBase<UIManager>
     private void ShowScreen(MenuScreen screen, float timescale)
     {
         mainMenuUI.SetActive(screen == MenuScreen.MainMenu);
-        tutorialUI.SetActive(screen == MenuScreen.Tutorial); // firing a null reference exception on scene change 
+        tutorialUI.SetActive(screen == MenuScreen.Tutorial);  
         gameplayUI.SetActive(screen == MenuScreen.Gameplay);
         pauseUI.SetActive(screen == MenuScreen.Pause);
         upgradeUI.SetActive(screen == MenuScreen.Upgrade);
@@ -114,8 +112,6 @@ public class UIManager : SingletonBase<UIManager>
     public void GoToUpgrade() => GameState.Instance.ChangeState(GameState.GameStates.Upgrade);
     public void ShowResults() => GameState.Instance.ChangeState(GameState.GameStates.Results);
     public void QuitGame() => Application.Quit();
-    
-    // Method to go to main menu from win screen - ensures fresh start
     public void GoToMainMenuFromWin() =>GameState.Instance.ChangeState(GameState.GameStates.MainMenu);
 
     #endregion

@@ -30,7 +30,6 @@ public class HealthBar : MonoBehaviour
         }
         else
         {
-            // Instant update
             _healthBarSprite.fillAmount = _targetFillAmount;
         }
     }
@@ -47,18 +46,17 @@ public class HealthBar : MonoBehaviour
             yield return null;
         }
         
-        // Ensure we end exactly at the target value
         _healthBarSprite.fillAmount = _targetFillAmount;
         _healthLerpCoroutine = null;
     }
     
-    // Method to instantly set health bar without animation
+    // instantly set health bar without animation
     public void SetHealthBarInstant(float maxHealth, float currentHealth)
     {
         _targetFillAmount = currentHealth / maxHealth;
         _healthBarSprite.fillAmount = _targetFillAmount;
         
-        // Stop any running coroutine
+        // stop any running coroutine
         if (_healthLerpCoroutine != null)
         {
             StopCoroutine(_healthLerpCoroutine);

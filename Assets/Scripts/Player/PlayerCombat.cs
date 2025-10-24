@@ -5,11 +5,6 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMovement))]
 public class PlayerCombat : MonoBehaviour
 {
-
-    // * add combat dodge chance upgrade. start at 15% to not take dmg from enemy attack
-    // * add defense upgrade. start with 10% reduced dmg from enemy.
-    // * add speed upgrade. reduce atk cooldown by 15% each upgrade.
-
     [Header("Combat")]
     public LayerMask enemyLayer;
     public float combatCheckRadius = 2f;
@@ -37,7 +32,6 @@ public class PlayerCombat : MonoBehaviour
 
     void Update()
     {
-        // Keep scanning every frame
         ScanEnemiesInRange();
 
         if (enemiesInRange.Count > 0)
@@ -50,22 +44,21 @@ public class PlayerCombat : MonoBehaviour
         {
             Transform newTarget = FindClosestEnemy();
             
-            // Fire event if target changed
+            // fire event if target changed
             if (newTarget != CurrentTarget)
             {
-                // Check if CurrentTarget is still valid before passing it to the event
+                // check if CurrentTarget is still valid before passing it to the event
                 Transform oldTarget = null;
                 if (CurrentTarget != null)
                 {
-                    // Additional check to ensure the Transform hasn't been destroyed
+                    // additional check to ensure the Transform hasn't been destroyed
                     try
                     {
-                        string name = CurrentTarget.name; // This will throw if destroyed
+                        string name = CurrentTarget.name; 
                         oldTarget = CurrentTarget;
                     }
                     catch (System.Exception)
                     {
-                        // Transform was destroyed, set to null
                         oldTarget = null;
                         CurrentTarget = null;
                     }
@@ -75,8 +68,6 @@ public class PlayerCombat : MonoBehaviour
                 previousTarget = CurrentTarget;
                 CurrentTarget = newTarget;
             }
-
-            // Animation state is now handled by FrameBasedPlayerAnimator.Update()
         }
     }
 
@@ -86,7 +77,7 @@ public class PlayerCombat : MonoBehaviour
 
         Collider[] hits = Physics.OverlapSphere(transform.position, combatCheckRadius, enemyLayer);
         
-        // Debug info
+        // debug info
         if (hits.Length > 0)
         {
             if(debug) Debug.Log($"[PlayerCombat] Found {hits.Length} colliders in range");
@@ -146,13 +137,10 @@ public class PlayerCombat : MonoBehaviour
             // stop movement when combat begins
             movement.CanMove = false;
             
-            // Animation is now handled by FrameBasedPlayerAnimator
-            if (debug) Debug.Log("[PlayerCombat] Entered combat - animation will be handled by FrameBasedPlayerAnimator");
-
             // pick initial closest target
             CurrentTarget = FindClosestEnemy();
 
-            // Fire target changed event (from null to first target)
+            // fire target changed event (from null to first target)
             GameEvents.PlayerTargetChanged(null, CurrentTarget);
 
             // pass the full array to GameEvents
@@ -169,19 +157,18 @@ public class PlayerCombat : MonoBehaviour
         {
             InCombat = false;
             
-            // Fire target changed event (from current target to null)
+            // fire target changed event (from current target to null)
             if (CurrentTarget != null)
             {
-                // Check if CurrentTarget is still valid before passing it to the event
+                // check if CurrentTarget is still valid before passing it to the event
                 Transform oldTarget = null;
                 try
                 {
-                    string name = CurrentTarget.name; // This will throw if destroyed
+                    string name = CurrentTarget.name; 
                     oldTarget = CurrentTarget;
                 }
                 catch (System.Exception)
                 {
-                    // Transform was destroyed, set to null
                     oldTarget = null;
                 }
                 
@@ -193,9 +180,6 @@ public class PlayerCombat : MonoBehaviour
             // allow movement again
             movement.CanMove = true;
             
-            // Animation is now handled by FrameBasedPlayerAnimator
-            if (debug) Debug.Log("[PlayerCombat] Exited combat - animation will be handled by FrameBasedPlayerAnimator");
-
             if (gatherRoutine != null)
             {
                 StopCoroutine(gatherRoutine);

@@ -14,24 +14,24 @@ public class SweepingStrike : Skill
         
         if(debug) Debug.Log($"Sweeping Strike activated! Sweeping {sweepAngle} degrees with {skillDamage + additionalDamage} damage!");
         
-        // Apply sweeping damage to enemies in arc
+        // apply sweeping damage to enemies in arc
         ApplySweepingDamage();
     }
 
     private void ApplySweepingDamage()
     {
-        // Get player position and forward direction
+        // get player position and forward direction
         Vector3 playerPos = Vector3.zero; 
         Vector3 playerForward = Vector3.forward; 
         
-        // Find all enemies in range
+        // find all enemies in range
         Collider[] enemies = Physics.OverlapSphere(playerPos, skillRange, LayerMask.GetMask("Enemy"));
         
         foreach (var enemy in enemies)
         {
             Vector3 directionToEnemy = (enemy.transform.position - playerPos).normalized;
             
-            // Check if enemy is within the sweep angle
+            // check if enemy is within the sweep angle
             float angle = Vector3.Angle(playerForward, directionToEnemy);
             if (angle <= sweepAngle / 2f)
             {

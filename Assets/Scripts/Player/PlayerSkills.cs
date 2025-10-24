@@ -13,16 +13,8 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
     [Header("Skill Slots")]
     [SerializeField] private List<Skill> equippedSkills = new List<Skill>();
 
-    // Events - now handled by GameEvents Event Bus
-    // public event Action<Skill> OnSkillActivated;
-    // public event Action<Skill> OnSkillUnlocked;
-
     [Header("Particle Effects")]
     [SerializeField] private ParticleSystem skillUseParticle;
-
-    [Header("Audio")]
-    [SerializeField] private AudioClip useSkillSound;
-    private AudioSource audioSource;
 
     public bool debug = false;
 
@@ -78,7 +70,6 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
         bool success = skill.Activate();
         if (success)
         {
-            // Use centralized Event Bus
             GameEvents.SkillActivated(skill);
             if(debug) Debug.Log($"[PlayerSkills] Successfully activated skill: {skill.SkillName}");
         }
@@ -98,7 +89,7 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
         if(debug) Debug.Log($"[PlayerSkills] Activating skill at index {skillIndex}: {skill.SkillName}");
 
         PlayParticles();
-        PlaySound();
+        AudioManager.Instance.PlaySound("useSkill");
 
         return ActivateSkill(skill);
     }
@@ -134,7 +125,6 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
         skill.Initialize();
         skill.UnlockSkill();
         
-        // Use centralized Event Bus
         GameEvents.SkillUnlocked(skill);
         if(debug) Debug.Log($"Equipped skill {skill.SkillName} to slot {slotIndex}");
     }
@@ -199,12 +189,12 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
         }
     }
 
-    // Reset all equipped skills for a fresh start
+    // reset all equipped skills for a fresh start
     public void ResetAllSkills()
     {
         if (debug) Debug.Log("[PlayerSkills] Resetting all equipped skills");
         
-        // Clear all equipped skills
+        // clear all equipped skills
         for (int i = 0; i < equippedSkills.Count; i++)
         {
             if (equippedSkills[i] != null)
@@ -214,7 +204,7 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
             }
         }
         
-        // Clear the list
+        // clear the list
         equippedSkills.Clear();
         
         if (debug) Debug.Log("[PlayerSkills] All skills cleared for fresh start");
@@ -225,14 +215,6 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
         if (skillUseParticle != null)
         {
             skillUseParticle.Play();
-        }
-    }
-
-    private void PlaySound()
-    {
-        if (audioSource != null && useSkillSound != null)
-        {
-            audioSource.PlayOneShot(useSkillSound);
         }
     }
 }

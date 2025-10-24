@@ -10,12 +10,6 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
     [Header("Shop Settings")]
     [SerializeField] private bool unlockAllUpgrades = false;
 
-    // Events are now handled by the centralized GameEvents system
-    // public event Action<Upgrade> OnUpgradePurchased; // moved to GameEvents
-    // public event Action<Upgrade> OnUpgradeUnlocked; // moved to GameEvents
-    // public event Action OnAllUpgradesReset; // moved to GameEvents
-
-    [Header("DEBUG")]
     public bool debug = false;
 
     private void Start()
@@ -56,7 +50,6 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
         bool success = upgrade.PurchaseUpgrade();
         if (success)
         {
-            // Use centralized Event Bus
             GameEvents.UpgradePurchased(upgrade);
             if(debug) Debug.Log($"Successfully purchased upgrade: {upgrade.UpgradeName}");
         }
@@ -69,7 +62,7 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
         if (upgrade == null) return;
         
         upgrade.UnlockUpgrade();
-        // Use centralized Event Bus
+        
         GameEvents.UpgradeUnlocked(upgrade);
         if(debug) Debug.Log($"Unlocked upgrade: {upgrade.UpgradeName}");
     }
@@ -90,7 +83,7 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
         return allUpgrades.Find(upgrade => upgrade != null && upgrade.UpgradeName == upgradeName);
     }
 
-    // Reset all upgrades 
+    // reset all upgrades 
     public void ResetAllUpgrades()
     {
         foreach (var upgrade in allUpgrades)
@@ -106,8 +99,7 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
             EntityStats.Instance.ResetStats();
         }
         
-        // Fire event to notify UI to refresh
-        // Use centralized Event Bus
+        // fire event to notify UI to refresh
         GameEvents.AllUpgradesReset();
         if(debug) Debug.Log("All upgrades reset - UI refresh event fired");
     }

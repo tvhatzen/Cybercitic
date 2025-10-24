@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+// *** will need to change to use sprites 
+
 // display for equipped upgrades in the left panel - 3 square level indicators
 public class EquippedUpgradeDisplay : MonoBehaviour
 {

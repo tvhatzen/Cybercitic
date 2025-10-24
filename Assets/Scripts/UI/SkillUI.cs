@@ -48,14 +48,12 @@ public class SkillUI : MonoBehaviour
 
     private void SubscribeToEvents()
     {
-        // Subscribe to centralized Event Bus
         GameEvents.OnSkillActivated += OnSkillActivated;
         GameEvents.OnSkillUnlocked += OnSkillUnlocked;
     }
 
     private void UnsubscribeFromEvents()
     {
-        // Unsubscribe from centralized Event Bus
         GameEvents.OnSkillActivated -= OnSkillActivated;
         GameEvents.OnSkillUnlocked -= OnSkillUnlocked;
     }
@@ -128,7 +126,7 @@ public class SkillUI : MonoBehaviour
         UnlockAllTestSkills();
     }
 
-    // Test method to clear all skills 
+    // test method to clear all skills 
     public void ClearAllSkills()
     {
         for (int i = 0; i < skillButtons.Count; i++)

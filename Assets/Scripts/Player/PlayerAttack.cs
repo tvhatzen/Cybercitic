@@ -24,21 +24,20 @@ public class PlayerAttack : MonoBehaviour
             {
                 nextAttack = Time.time + attackCooldown;
                 AttackTarget(combat.CurrentTarget);
-                // later have damage / animation 
             }
         }
     }
 
     private void AttackTarget(Transform target)
     {
-        // Play attack animation only if not already playing an attack
+        // play attack animation only if not already playing an attack
         if (frameAnimator != null && !frameAnimator.IsPlaying())
         {
             frameAnimator.PlayAttackAnimation();
             if (debug) Debug.Log("[PlayerAttack] Playing attack animation");
         }
 
-        // Play attack sound via Event Bus
+        // play attack sound via Event Bus
         GameEvents.RequestSound("attack");
         if (debug) Debug.Log("[PlayerAttack] Requesting attack sound via Event Bus");
 
@@ -52,7 +51,7 @@ public class PlayerAttack : MonoBehaviour
             if (playerHealth != null)
             {
                 int damage = playerHealth.DamagePerHit;
-                health.TakeDamage(damage); // use PLAYER's damage
+                health.TakeDamage(damage); 
                 
                 var playerData = GetComponent<EntityData>();
                 if(debug) Debug.Log($"[PlayerAttack] Player attacks {target.name} for {damage} damage (EntityData.currentAttack: {playerData?.currentAttack})");

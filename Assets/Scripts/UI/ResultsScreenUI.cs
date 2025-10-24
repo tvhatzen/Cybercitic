@@ -3,8 +3,11 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 
-/// results screen to display run statistics
-/// shows enemies killed, credits collected, floors cleared
+// *** eventually set up coroutine to count up the text variables.
+
+// results screen to display run statistics
+// shows enemies killed, credits collected, floors cleared
+
 public class ResultsScreenUI : MonoBehaviour
 {
     [Header("UI References")]
@@ -77,7 +80,7 @@ public class ResultsScreenUI : MonoBehaviour
             return;
         }
 
-        // Get stats from tracker
+        // get stats from tracker
         targetFloors = RunStatsTracker.Instance.FloorsCleared;
         targetEnemies = RunStatsTracker.Instance.EnemiesKilled;
         targetCredits = RunStatsTracker.Instance.CreditsCollected;
@@ -145,6 +148,7 @@ public class ResultsScreenUI : MonoBehaviour
         else
             gameObject.SetActive(false);
     }
+
     private void OnDestroy()
     {
         // Clean up button listeners

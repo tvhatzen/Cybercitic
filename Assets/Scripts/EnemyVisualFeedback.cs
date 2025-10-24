@@ -16,7 +16,7 @@ public class EnemyVisualFeedback : MonoBehaviour
 
     private HealthSystem healthSystem;
     private bool isTargeted = false;
-    private int lastKnownHealth; // Track health to detect damage
+    private int lastKnownHealth; // track health to detect damage
 
     [SerializeField] private bool debug = false;
 
@@ -24,19 +24,19 @@ public class EnemyVisualFeedback : MonoBehaviour
     {
         healthSystem = GetComponent<HealthSystem>();
 
-        // Store original material (use sharedMaterial to avoid creating instances)
+        // store original material
         if (targetRenderer != null)
         {
             originalMaterial = targetRenderer.sharedMaterial;
         }
 
-        // Ensure all particle systems don't play on awake
+        // ensure all particle systems don't play on awake
         DisableParticleAutoPlay();
     }
 
     private void Start()
     {
-        // Initialize last known health
+        // initialize last known health
         if (healthSystem != null)
         {
             lastKnownHealth = healthSystem.CurrentHealth;
@@ -45,7 +45,7 @@ public class EnemyVisualFeedback : MonoBehaviour
 
     private void DisableParticleAutoPlay()
     {
-        // Disable Play on Awake for all particle systems
+        // disable Play on Awake for all particle systems
         if (damageParticles != null)
         {
             var main = damageParticles.main;
@@ -70,10 +70,8 @@ public class EnemyVisualFeedback : MonoBehaviour
 
     private void OnEnable()
     {
-        // Subscribe to GameEvents
         GameEvents.OnPlayerTargetChanged += HandleTargetChanged;
 
-        // Subscribe to HealthSystem events
         if (healthSystem != null)
         {
             healthSystem.OnHealthChanged += HandleHealthChanged;
@@ -83,29 +81,27 @@ public class EnemyVisualFeedback : MonoBehaviour
 
     private void OnDisable()
     {
-        // Unsubscribe from GameEvents
         GameEvents.OnPlayerTargetChanged -= HandleTargetChanged;
 
-        // Unsubscribe from HealthSystem events
         if (healthSystem != null)
         {
             healthSystem.OnHealthChanged -= HandleHealthChanged;
             healthSystem.OnDeath -= HandleDeath;
         }
 
-        // Remove outline when disabled
+        // remove outline when disabled
         RemoveOutline();
     }
 
     private void HandleTargetChanged(Transform oldTarget, Transform newTarget)
     {
-        // Check if this enemy is the new target
+        // check if this enemy is the new target
         if (newTarget != null && newTarget.root == transform.root)
         {
             ShowOutline();
             if (debug) Debug.Log($"[EnemyVisualFeedback] {name} is now targeted");
         }
-        // Check if this enemy was the old target
+        // check if this enemy was the old target
         else if (oldTarget != null && oldTarget.root == transform.root)
         {
             RemoveOutline();
@@ -115,13 +111,13 @@ public class EnemyVisualFeedback : MonoBehaviour
 
     private void HandleHealthChanged(int newHealth)
     {
-        // Only play damage effect if health decreased (took damage)
+        // only play damage effect if health decreased (took damage)
         if (newHealth < lastKnownHealth && newHealth > 0)
         {
             PlayDamageEffect();
         }
         
-        // Update last known health for next comparison
+        // update last known health for next comparison
         lastKnownHealth = newHealth;
     }
 
@@ -135,7 +131,7 @@ public class EnemyVisualFeedback : MonoBehaviour
     {
         if (targetRenderer != null && outlineMaterial != null && !isTargeted)
         {
-            // Apply outline material (create instance to avoid modifying shared material)
+            // apply outline material (create instance to avoid modifying shared material)
             targetRenderer.material = outlineMaterial;
             isTargeted = true;
             
@@ -147,7 +143,7 @@ public class EnemyVisualFeedback : MonoBehaviour
     {
         if (targetRenderer != null && originalMaterial != null && isTargeted)
         {
-            // Restore original material (use sharedMaterial to restore the original reference)
+            // restore original material (use sharedMaterial to restore the original reference)
             targetRenderer.sharedMaterial = originalMaterial;
             isTargeted = false;
             
@@ -166,31 +162,31 @@ public class EnemyVisualFeedback : MonoBehaviour
 
     private void PlayDamageEffect()
     {
-        // Play damage particles
+        // play damage particles
         if (damageParticles != null)
         {
             damageParticles.Play();
         }
 
         // Play damage sound
-        
+        AudioManager.Instance.PlaySound("enemyDamaged");
 
         if (debug) Debug.Log($"[EnemyVisualFeedback] Playing damage effect for {name}");
     }
 
     private void PlayDeathEffect()
     {
-        // Play death particles
+        // play death particles
         if (deathParticles != null)
         {
-            // Detach particles so they continue after object is destroyed
+            // detach particles so they continue after object is destroyed
             deathParticles.transform.SetParent(null);
             deathParticles.Play();
             Destroy(deathParticles.gameObject, deathParticles.main.duration);
         }
 
-        // Play death sound
-        
+        // play death sound
+        AudioManager.Instance.PlaySound("enemyDie");
 
         if (debug) Debug.Log($"[EnemyVisualFeedback] Playing death effect for {name}");
     }

@@ -7,10 +7,9 @@ public class Currency_UI : MonoBehaviour
 
     private void Start()
     {
-        // Subscribe to centralized Event Bus
         GameEvents.OnCreditsChanged += UpdateUI;
         
-        // Initialize UI with current credits
+        // initialize UI with current credits
         if (CurrencyManager.Instance != null)
         {
             UpdateUI(CurrencyManager.Instance.Credits);
@@ -19,13 +18,12 @@ public class Currency_UI : MonoBehaviour
 
     private void OnDestroy()
     {
-        // Unsubscribe from centralized Event Bus
         GameEvents.OnCreditsChanged -= UpdateUI;
     }
 
     private void UpdateUI(int credits)
     {
         if (creditsText != null)
-            creditsText.text = $"Credits: {credits}";
+            creditsText.text = $"{credits}";
     }
 }

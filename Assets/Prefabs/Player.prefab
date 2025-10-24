@@ -264,7 +264,6 @@ MonoBehaviour:
   skill3Key: 51
   equippedSkills: []
   skillUseParticle: {fileID: 3625109293735009957}
-  useSkillSound: {fileID: 0}
   debug: 0
 --- !u!114 &5544270215821477331
 MonoBehaviour:
@@ -359,7 +358,6 @@ MonoBehaviour:
   targetingIcon: {fileID: 0}
   iconOffset: {x: 0, y: 0.5, z: 0}
   frameAnimator: {fileID: 3149356929928338088}
-  animator: {fileID: 0}
   attackTriggerName: Attack
   damagedTriggerName: Damage
   attackParticles: {fileID: 0}
@@ -618,7 +616,7 @@ MonoBehaviour:
   currentAnimation: 
   isPlaying: 0
   currentFrameIndex: 0
-  attackDuration: 0.3
+  attackDuration: 0.15
   isInCombat: 0
   isMoving: 0
   debug: 0
@@ -1294,6 +1292,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _healthBarSprite: {fileID: 8302557397850825270}
+  _lerpSpeed: 5
+  _smoothTransition: 1
 --- !u!1 &7301856246928765941
 GameObject:
   m_ObjectHideFlags: 0

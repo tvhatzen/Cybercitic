@@ -32,13 +32,11 @@ public class PlayerController : MonoBehaviour
     void OnEnable()
     {
         HealthSystem.OnAnyDeath += OnAnyEntityDeath;
-        // Subscribe to centralized Event Bus
         GameEvents.OnEnemySpawned += RegisterEnemy;
     }
     void OnDisable()
     {
         HealthSystem.OnAnyDeath -= OnAnyEntityDeath;
-        // Unsubscribe from centralized Event Bus
         GameEvents.OnEnemySpawned -= RegisterEnemy;
     }
 
@@ -53,7 +51,6 @@ public class PlayerController : MonoBehaviour
         // only move if not actually in combat, can still move while gathering enemies
         if (!inCombat || gatheringEnemies)
         {
-            // left to right auto move
             transform.position += Vector3.right * moveSpeed * Time.deltaTime;
         }
 
@@ -82,7 +79,6 @@ public class PlayerController : MonoBehaviour
         enemiesInRange.Clear();
 
         Collider[] hits = Physics.OverlapSphere(transform.position, combatCheckRadius, enemyLayer);
-        // Debug.Log($"Found {hits.Length} colliders in combat radius");
 
         foreach (var hit in hits)
         {
