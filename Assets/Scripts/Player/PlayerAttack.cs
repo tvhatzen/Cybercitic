@@ -6,10 +6,15 @@ public class PlayerAttack : MonoBehaviour
     private float nextAttack;
 
     private PlayerCombat combat;
+    private FrameBasedPlayerAnimator frameAnimator;
 
     public bool debug = false;
 
-    void Awake() => combat = GetComponent<PlayerCombat>();
+    void Awake() 
+    {
+        combat = GetComponent<PlayerCombat>();
+        frameAnimator = GetComponent<FrameBasedPlayerAnimator>();
+    }
 
     void Update()
     {
@@ -26,6 +31,17 @@ public class PlayerAttack : MonoBehaviour
 
     private void AttackTarget(Transform target)
     {
+        // Play attack animation only if not already playing an attack
+        if (frameAnimator != null && !frameAnimator.IsPlaying())
+        {
+            frameAnimator.PlayAttackAnimation();
+            if (debug) Debug.Log("[PlayerAttack] Playing attack animation");
+        }
+
+        // Play attack sound via Event Bus
+        GameEvents.RequestSound("attack");
+        if (debug) Debug.Log("[PlayerAttack] Requesting attack sound via Event Bus");
+
         GameEvents.PlayerAttack(target);
 
         // apply damage using PLAYER damage

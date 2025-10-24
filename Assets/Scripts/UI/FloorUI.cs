@@ -10,7 +10,8 @@ public class FloorUI : MonoBehaviour
 
     void OnEnable()
     {
-        FloorManager.OnFloorChanged += UpdateFloorText;
+        // Subscribe to centralized Event Bus
+        GameEvents.OnFloorChanged += UpdateFloorText;
         
         if (FloorManager.Instance != null)
         {
@@ -19,7 +20,7 @@ public class FloorUI : MonoBehaviour
         }
     }
 
-    void OnDisable() => FloorManager.OnFloorChanged -= UpdateFloorText;
+    void OnDisable() => GameEvents.OnFloorChanged -= UpdateFloorText;
 
     void Start()
     {

@@ -32,12 +32,14 @@ public class PlayerController : MonoBehaviour
     void OnEnable()
     {
         HealthSystem.OnAnyDeath += OnAnyEntityDeath;
-        FloorManager.OnEnemySpawned += RegisterEnemy;
+        // Subscribe to centralized Event Bus
+        GameEvents.OnEnemySpawned += RegisterEnemy;
     }
     void OnDisable()
     {
         HealthSystem.OnAnyDeath -= OnAnyEntityDeath;
-        FloorManager.OnEnemySpawned -= RegisterEnemy;
+        // Unsubscribe from centralized Event Bus
+        GameEvents.OnEnemySpawned -= RegisterEnemy;
     }
 
     private void RegisterEnemy(GameObject enemy)

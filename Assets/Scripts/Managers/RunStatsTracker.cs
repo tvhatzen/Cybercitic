@@ -14,11 +14,11 @@ public class RunStatsTracker : SingletonBase<RunStatsTracker>
     [Header("Starting Values")]
     [SerializeField] private int startingCredits = 0;
 
-    // events
-    public event Action<int> OnEnemyKilled;
-    public event Action<int> OnCreditsCollected;
-    public event Action<int> OnFloorCleared;
-    public event Action<string> OnSkillUnlocked;
+    // Events are now handled by the centralized GameEvents system
+    // public event Action<int> OnEnemyKilled; // moved to GameEvents
+    // public event Action<int> OnCreditsCollected; // moved to GameEvents
+    // public event Action<int> OnFloorCleared; // moved to GameEvents
+    // public event Action<string> OnSkillUnlocked; // moved to GameEvents
 
     public bool debug = false;
 
@@ -57,9 +57,12 @@ public class RunStatsTracker : SingletonBase<RunStatsTracker>
         // Subscribe to game events
         HealthSystem.OnAnyDeath += OnEntityDied;
         
+        // Subscribe to centralized Event Bus
+        GameEvents.OnCreditsChanged += OnCreditsChanged;
+        GameEvents.OnFloorCleared += OnFloorClearedInternal;
+        
         if (CurrencyManager.Instance != null)
         {
-            CurrencyManager.Instance.OnCreditsChanged += OnCreditsChanged;
             startingCredits = CurrencyManager.Instance.Credits;
         }
     }
@@ -68,10 +71,9 @@ public class RunStatsTracker : SingletonBase<RunStatsTracker>
     {
         HealthSystem.OnAnyDeath -= OnEntityDied;
         
-        if (CurrencyManager.Instance != null)
-        {
-            CurrencyManager.Instance.OnCreditsChanged -= OnCreditsChanged;
-        }
+        // Unsubscribe from centralized Event Bus
+        GameEvents.OnCreditsChanged -= OnCreditsChanged;
+        GameEvents.OnFloorCleared -= OnFloorClearedInternal;
     }
 
     private void Start()
@@ -121,7 +123,8 @@ public class RunStatsTracker : SingletonBase<RunStatsTracker>
         if (entity.CompareTag("Enemy") || entity.CompareTag("Boss"))
         {
             enemiesKilled++;
-            OnEnemyKilled?.Invoke(enemiesKilled);
+            // Use centralized Event Bus
+            GameEvents.EnemyKilled(enemiesKilled);
             
             if(debug) Debug.Log($"[RunStatsTracker] Enemy killed! Total: {enemiesKilled}");
 
@@ -143,13 +146,14 @@ public class RunStatsTracker : SingletonBase<RunStatsTracker>
         if (creditsCollected < 0)
             creditsCollected = 0; 
         
-        OnCreditsCollected?.Invoke(creditsCollected);
+        // Use centralized Event Bus
+        GameEvents.CreditsCollected(creditsCollected);
     }
 
-    public void FloorCleared(int floorNumber)
+    // Internal method to handle floor cleared events from Event Bus
+    private void OnFloorClearedInternal(int floorNumber)
     {
         floorsCleared = floorNumber;
-        OnFloorCleared?.Invoke(floorsCleared);
         
         if(debug) Debug.Log($"[RunStatsTracker] Floor {floorNumber} cleared! Total floors: {floorsCleared}");
     }
@@ -181,7 +185,8 @@ public class RunStatsTracker : SingletonBase<RunStatsTracker>
                 break;
         }
         
-        OnSkillUnlocked?.Invoke(unlockedSkill);
+        // Use centralized Event Bus
+        GameEvents.RunSkillUnlocked(unlockedSkill);
         if(debug) Debug.Log($"[RunStatsTracker] Skill unlocked: {unlockedSkill}");
     }
 

@@ -89,16 +89,19 @@ public class UpgradeShopUI : MonoBehaviour
     {
         LoadUpgrades();
 
+        // Subscribe to centralized Event Bus for credits
+        GameEvents.OnCreditsChanged += UpdateCreditsDisplay;
+        
         if (CurrencyManager.Instance != null)
         {
             UpdateCreditsDisplay(CurrencyManager.Instance.Credits);
-            CurrencyManager.Instance.OnCreditsChanged += UpdateCreditsDisplay;
         }
 
         if (UpgradeManager.Instance != null)
         {
-            UpgradeManager.Instance.OnUpgradePurchased += OnUpgradePurchased;
-            UpgradeManager.Instance.OnAllUpgradesReset += OnAllUpgradesReset;
+            // Subscribe to centralized Event Bus
+            GameEvents.OnUpgradePurchased += OnUpgradePurchased;
+            GameEvents.OnAllUpgradesReset += OnAllUpgradesReset;
         }
         
         // hide details panel initially
@@ -108,13 +111,14 @@ public class UpgradeShopUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (CurrencyManager.Instance != null)
-            CurrencyManager.Instance.OnCreditsChanged -= UpdateCreditsDisplay;
+        // Unsubscribe from centralized Event Bus
+        GameEvents.OnCreditsChanged -= UpdateCreditsDisplay;
 
         if (UpgradeManager.Instance != null)
         {
-            UpgradeManager.Instance.OnUpgradePurchased -= OnUpgradePurchased;
-            UpgradeManager.Instance.OnAllUpgradesReset -= OnAllUpgradesReset;
+            // Unsubscribe from centralized Event Bus
+            GameEvents.OnUpgradePurchased -= OnUpgradePurchased;
+            GameEvents.OnAllUpgradesReset -= OnAllUpgradesReset;
         }
 
         if (doneButton != null)

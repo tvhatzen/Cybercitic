@@ -7,17 +7,20 @@ public class Currency_UI : MonoBehaviour
 
     private void Start()
     {
+        // Subscribe to centralized Event Bus
+        GameEvents.OnCreditsChanged += UpdateUI;
+        
+        // Initialize UI with current credits
         if (CurrencyManager.Instance != null)
         {
-            CurrencyManager.Instance.OnCreditsChanged += UpdateUI;
             UpdateUI(CurrencyManager.Instance.Credits);
         }
     }
 
     private void OnDestroy()
     {
-        if (CurrencyManager.Instance != null)
-            CurrencyManager.Instance.OnCreditsChanged -= UpdateUI;
+        // Unsubscribe from centralized Event Bus
+        GameEvents.OnCreditsChanged -= UpdateUI;
     }
 
     private void UpdateUI(int credits)

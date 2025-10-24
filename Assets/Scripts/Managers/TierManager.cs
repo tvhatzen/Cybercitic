@@ -17,7 +17,8 @@ public class TierManager : SingletonBase<TierManager>
     [SerializeField] private Color tier5Color = new Color(1f, 1f, 0.5f);     // yellow
     [SerializeField] private Color tier6PlusColor = new Color(1f, 0.5f, 0.5f); // red
 
-    public event Action<int> OnTierChanged;
+    // Events are now handled by the centralized GameEvents system
+    // public event Action<int> OnTierChanged; // moved to GameEvents
 
     public int CurrentTier => currentTier;
     public int BossesDefeated => bossesDefeated;
@@ -47,7 +48,8 @@ public class TierManager : SingletonBase<TierManager>
         bossesDefeated++;
         currentTier = bossesDefeated + 1; // tier starts at 1, becomes 2 after first boss
         
-        OnTierChanged?.Invoke(currentTier);
+        // Use centralized Event Bus
+        GameEvents.TierChanged(currentTier);
         if(debug) Debug.Log($"Tier increased! Now at Tier {currentTier} (Bosses defeated: {bossesDefeated})");
     }
 
@@ -56,7 +58,8 @@ public class TierManager : SingletonBase<TierManager>
     {
         currentTier = 1;
         bossesDefeated = 0;
-        OnTierChanged?.Invoke(currentTier);
+        // Use centralized Event Bus
+        GameEvents.TierChanged(currentTier);
         if(debug) Debug.Log("Tier reset to 1");
     }
 

@@ -36,13 +36,15 @@ public class EnemyTierVisual : MonoBehaviour
         
         // subscribe to tier changes
         if (TierManager.Instance != null)
-            TierManager.Instance.OnTierChanged += OnTierChanged;
+            // Subscribe to centralized Event Bus
+            GameEvents.OnTierChanged += OnTierChanged;
     }
 
     private void OnDestroy()
     {
         if (TierManager.Instance != null)
-            TierManager.Instance.OnTierChanged -= OnTierChanged;
+            // Unsubscribe from centralized Event Bus
+            GameEvents.OnTierChanged -= OnTierChanged;
     }
 
     private void OnTierChanged(int newTier)

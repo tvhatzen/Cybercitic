@@ -75,6 +75,8 @@ public class PlayerCombat : MonoBehaviour
                 previousTarget = CurrentTarget;
                 CurrentTarget = newTarget;
             }
+
+            // Animation state is now handled by FrameBasedPlayerAnimator.Update()
         }
     }
 
@@ -144,12 +146,8 @@ public class PlayerCombat : MonoBehaviour
             // stop movement when combat begins
             movement.CanMove = false;
             
-            // Stop movement animation and prepare for combat
-            if (frameAnimator != null)
-            {
-                frameAnimator.StopCurrentAnimation();
-                if (debug) Debug.Log("[PlayerCombat] Stopped movement animation for combat");
-            }
+            // Animation is now handled by FrameBasedPlayerAnimator
+            if (debug) Debug.Log("[PlayerCombat] Entered combat - animation will be handled by FrameBasedPlayerAnimator");
 
             // pick initial closest target
             CurrentTarget = FindClosestEnemy();
@@ -195,12 +193,8 @@ public class PlayerCombat : MonoBehaviour
             // allow movement again
             movement.CanMove = true;
             
-            // Resume movement animation when exiting combat
-            if (frameAnimator != null && movement.IsMoving())
-            {
-                frameAnimator.PlayRunAnimation();
-                if (debug) Debug.Log("[PlayerCombat] Resumed running animation after combat");
-            }
+            // Animation is now handled by FrameBasedPlayerAnimator
+            if (debug) Debug.Log("[PlayerCombat] Exited combat - animation will be handled by FrameBasedPlayerAnimator");
 
             if (gatherRoutine != null)
             {

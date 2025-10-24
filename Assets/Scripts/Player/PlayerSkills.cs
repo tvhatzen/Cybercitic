@@ -13,9 +13,9 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
     [Header("Skill Slots")]
     [SerializeField] private List<Skill> equippedSkills = new List<Skill>();
 
-    // Events
-    public event Action<Skill> OnSkillActivated;
-    public event Action<Skill> OnSkillUnlocked;
+    // Events - now handled by GameEvents Event Bus
+    // public event Action<Skill> OnSkillActivated;
+    // public event Action<Skill> OnSkillUnlocked;
 
     [Header("Particle Effects")]
     [SerializeField] private ParticleSystem skillUseParticle;
@@ -78,7 +78,8 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
         bool success = skill.Activate();
         if (success)
         {
-            OnSkillActivated?.Invoke(skill);
+            // Use centralized Event Bus
+            GameEvents.SkillActivated(skill);
             if(debug) Debug.Log($"[PlayerSkills] Successfully activated skill: {skill.SkillName}");
         }
 
@@ -133,7 +134,8 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
         skill.Initialize();
         skill.UnlockSkill();
         
-        OnSkillUnlocked?.Invoke(skill);
+        // Use centralized Event Bus
+        GameEvents.SkillUnlocked(skill);
         if(debug) Debug.Log($"Equipped skill {skill.SkillName} to slot {slotIndex}");
     }
 

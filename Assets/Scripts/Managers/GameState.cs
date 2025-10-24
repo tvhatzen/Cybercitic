@@ -16,7 +16,8 @@ public class GameState : SingletonBase<GameState>
         Win,
         Lose
     }
-    public static event Action<GameStates> OnGameStateChanged;
+    // Events are now handled by the centralized GameEvents system
+    // public static event Action<GameStates> OnGameStateChanged; // moved to GameEvents
     public GameStates CurrentState { get; private set; }
 
     [Header("Debug")]
@@ -172,6 +173,7 @@ public class GameState : SingletonBase<GameState>
 
         if(debug) Debug.Log($"Game state changed: {lastStateDebug} -> {currentStateDebug}");
 
-        OnGameStateChanged?.Invoke(newState);
+        // Use centralized Event Bus
+        GameEvents.GameStateChanged(newState);
     }
 }

@@ -70,7 +70,7 @@ public class PlayerVisualFeedback : MonoBehaviour
         PlayAttackAnimation();
         PlayAttackParticles();
         if( AudioManager.Instance != null)
-            AudioManager.Instance.PlaySound(AudioManager.attack);
+            AudioManager.Instance.PlaySound("attack");
 
         if (debug) Debug.Log($"[PlayerVisualFeedback] Playing attack visuals for target: {target?.name ?? "none"}");
     }

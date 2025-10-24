@@ -71,11 +71,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!CanMove) 
         {
-            // Player is not allowed to move, stop running animation
-            if (isMoving && enableMovementAnimations)
-            {
-                StopRunningAnimation();
-            }
+            // Animation is now handled by FrameBasedPlayerAnimator
             return;
         }
 
@@ -92,8 +88,8 @@ public class PlayerMovement : MonoBehaviour
         Vector3 move = Vector3.right * moveSpeed * Time.deltaTime;
         controller.Move(move);
 
-        // Update movement state for animation
-        UpdateMovementAnimation(moveSpeed);
+        // Animation is now handled by FrameBasedPlayerAnimator
+        // UpdateMovementAnimation(moveSpeed);
 
         if (debug)
         {
@@ -184,11 +180,17 @@ public class PlayerMovement : MonoBehaviour
         {
             // Started moving - play running animation
             StartRunningAnimation();
+            
+            // Notify Event Bus of movement start
+            GameEvents.PlayerStartedMoving();
         }
         else if (!isMoving && wasMoving)
         {
             // Stopped moving - stop animation
             StopRunningAnimation();
+            
+            // Notify Event Bus of movement stop
+            GameEvents.PlayerStoppedMoving();
         }
 
         // Update previous state

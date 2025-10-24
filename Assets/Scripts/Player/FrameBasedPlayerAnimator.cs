@@ -41,6 +41,13 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
     [SerializeField] private bool isPlaying = false;
     [SerializeField] private int currentFrameIndex = 0;
     
+    [Header("Animation Settings")]
+    [SerializeField] private float attackDuration = 0.5f;
+    
+    [Header("Animation State Management")]
+    [SerializeField] private bool isInCombat = false;
+    [SerializeField] private bool isMoving = false;
+    
     [Header("Debug")]
     [SerializeField] private bool debug = false;
 
@@ -59,7 +66,8 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         // Subscribe to upgrade events to update sprites when upgrades change
         if (UpgradeManager.Instance != null)
         {
-            UpgradeManager.Instance.OnUpgradePurchased += OnUpgradePurchased;
+            // Subscribe to centralized Event Bus
+            GameEvents.OnUpgradePurchased += OnUpgradePurchased;
         }
     }
 
@@ -67,7 +75,8 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
     {
         if (UpgradeManager.Instance != null)
         {
-            UpgradeManager.Instance.OnUpgradePurchased -= OnUpgradePurchased;
+            // Unsubscribe from centralized Event Bus
+            GameEvents.OnUpgradePurchased -= OnUpgradePurchased;
         }
     }
 
@@ -114,13 +123,42 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
 
         if (isPlaying)
         {
+            if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Stopping current animation to play: {animationName}");
             StopCurrentAnimation();
         }
 
         currentAnimation = animationName;
         currentAnimationCoroutine = StartCoroutine(PlayAnimationSequence(animationLookup[animationName]));
         
+        // Notify Event Bus of animation change
+        GameEvents.AnimationChanged(animationName);
+        
         if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Playing animation: {animationName}");
+    }
+
+    /// <summary>
+    /// Play an animation sequence with forced non-looping behavior
+    /// </summary>
+    public void PlayAnimationOnce(string animationName)
+    {
+        if (!animationLookup.ContainsKey(animationName))
+        {
+            if (debug) Debug.LogWarning($"[FrameBasedPlayerAnimator] Animation '{animationName}' not found");
+            return;
+        }
+
+        if (isPlaying)
+        {
+            StopCurrentAnimation();
+        }
+
+        currentAnimation = animationName;
+        currentAnimationCoroutine = StartCoroutine(PlayAnimationSequenceOnce(animationLookup[animationName]));
+        
+        // Notify Event Bus of animation change
+        GameEvents.AnimationChanged(animationName);
+        
+        if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Playing animation once: {animationName}");
     }
 
     /// <summary>
@@ -232,7 +270,95 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         isPlaying = false;
         currentAnimationCoroutine = null;
         
+        // If this was an attack animation and we're in combat, return to standing
+        if (sequence.animationName == "Attack")
+        {
+            // Check if we're still in combat and should return to standing
+            var playerCombat = GetComponent<PlayerCombat>();
+            if (playerCombat != null && playerCombat.InCombat)
+            {
+                PlayStandingAnimation();
+                if (debug) Debug.Log("[FrameBasedPlayerAnimator] Attack animation completed, returning to standing");
+            }
+        }
+        
+        // Notify Event Bus of animation completion
+        GameEvents.AnimationCompleted();
+        
         if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Animation '{sequence.animationName}' completed");
+    }
+
+    private IEnumerator PlayAnimationSequenceOnce(AnimationSequence sequence)
+    {
+        isPlaying = true;
+        currentFrameIndex = 0;
+
+        // Play the animation once (ignore the loop setting)
+        for (int i = 0; i < sequence.frames.Count; i++)
+        {
+            currentFrameIndex = i;
+            var frame = sequence.frames[i];
+            
+            // Update all body part sprites for this animation frame
+            foreach (var bodyPartFrame in frame.bodyPartFrames)
+            {
+                if (bodyPartFrame.spriteRenderer != null)
+                {
+                    // Get the appropriate sprite for this animation frame and upgrade level
+                    Sprite targetSprite = GetSpriteForAnimationFrame(bodyPartFrame, i);
+                    if (targetSprite != null)
+                    {
+                        bodyPartFrame.spriteRenderer.sprite = targetSprite;
+                    }
+                }
+            }
+            
+            // Use custom duration for Attack animation only on the last frame, otherwise use frame duration
+            float duration;
+            if (sequence.animationName == "Attack" && i == sequence.frames.Count - 1)
+            {
+                // Only hold the last frame (attack frame) for the custom duration
+                duration = attackDuration;
+            }
+            else
+            {
+                // Use normal frame duration for all other frames
+                duration = frame.duration;
+            }
+            yield return new WaitForSeconds(duration);
+        }
+
+        isPlaying = false;
+        currentAnimationCoroutine = null;
+        
+        // If this was an attack animation and we're in combat, return to standing
+        if (sequence.animationName == "Attack")
+        {
+            if (debug) Debug.Log("[FrameBasedPlayerAnimator] Attack animation sequence completed");
+            
+            // Check if we're still in combat and should return to standing
+            var playerCombat = GetComponent<PlayerCombat>();
+            if (playerCombat != null && playerCombat.InCombat)
+            {
+                if (debug) Debug.Log("[FrameBasedPlayerAnimator] Still in combat, transitioning to standing");
+                // Use a small delay to ensure the animation state is properly updated
+                yield return new WaitForEndOfFrame();
+                
+                // Update currentAnimation to Standing before playing it
+                currentAnimation = "Standing";
+                PlayStandingAnimation();
+                if (debug) Debug.Log("[FrameBasedPlayerAnimator] Attack animation completed, returning to standing");
+            }
+            else
+            {
+                if (debug) Debug.Log("[FrameBasedPlayerAnimator] Not in combat, not transitioning to standing");
+            }
+        }
+        
+        // Notify Event Bus of animation completion
+        GameEvents.AnimationCompleted();
+        
+        if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Animation '{sequence.animationName}' completed once");
     }
 
     private Upgrade GetUpgradeForBodyPart(UpgradeShopUI.BodyPart bodyPart)
@@ -288,11 +414,34 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
     }
 
     // Public methods for common animations
-    public void PlayAttackAnimation() => PlayAnimation("Attack");
+    public void PlayAttackAnimation() => PlayAnimationOnce("Attack");
     public void PlayWalkAnimation() => PlayAnimation("Walk");
     public void PlayRunAnimation() => PlayAnimation("Running");
+    public void PlayStandingAnimation() 
+    {
+        if (debug) Debug.Log("[FrameBasedPlayerAnimator] PlayStandingAnimation called");
+        PlayAnimation("Standing");
+    }
     public void PlayDamageAnimation() => PlayAnimation("Damage");
     public void PlayDeathAnimation() => PlayAnimation("Death");
+
+    /// <summary>
+    /// Ensure the player is in the correct animation state for combat
+    /// </summary>
+    public void EnsureCombatAnimationState()
+    {
+        // If we're in combat but not playing any animation, play standing
+        var playerCombat = GetComponent<PlayerCombat>();
+        if (playerCombat != null && playerCombat.InCombat && !isPlaying && currentAnimation != "Standing")
+        {
+            if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Ensuring standing animation in combat. Current: {currentAnimation}");
+            PlayStandingAnimation();
+        }
+        else if (debug && playerCombat != null && playerCombat.InCombat)
+        {
+            if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Not ensuring standing - isPlaying: {isPlaying}, currentAnimation: {currentAnimation}");
+        }
+    }
 
     // Getters for debugging
     public string GetCurrentAnimation() => currentAnimation;

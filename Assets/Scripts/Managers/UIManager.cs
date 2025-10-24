@@ -43,7 +43,8 @@ public class UIManager : SingletonBase<UIManager>
 
         ShowScreen(MenuScreen.MainMenu, 0f);
 
-        GameState.OnGameStateChanged += HandleGameStateChanged;
+        // Subscribe to centralized Event Bus
+        GameEvents.OnGameStateChanged += HandleGameStateChanged;
     }
 
     private void Update()
@@ -52,7 +53,8 @@ public class UIManager : SingletonBase<UIManager>
     }
     private void OnDestroy()
     {
-        GameState.OnGameStateChanged -= HandleGameStateChanged;
+        // Unsubscribe from centralized Event Bus
+        GameEvents.OnGameStateChanged -= HandleGameStateChanged;
     }
 
     private void HandleGameStateChanged(GameState.GameStates state)

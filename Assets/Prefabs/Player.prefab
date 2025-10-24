@@ -311,7 +311,7 @@ MonoBehaviour:
   fallbackMoveSpeed: 5
   enableMovementAnimations: 1
   movementThreshold: 0.1
-  debug: 1
+  debug: 0
 --- !u!114 &7237819879296602304
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -573,11 +573,55 @@ MonoBehaviour:
         - {fileID: 21300000, guid: 9911b1b4d834bda499c54d483f4b3f76, type: 3}
         - {fileID: 21300000, guid: 26f53313ae30d1c4e8e767b501efc909, type: 3}
         - {fileID: 21300000, guid: 81f87bf9ae500a14492e5e93b992bf66, type: 3}
-    loop: 1
+    loop: 0
+  - animationName: Standing
+    frames:
+    - frameName: Standing_f1
+      duration: 0.1
+      bodyPartFrames:
+      - bodyPart: 0
+        spriteRenderer: {fileID: 5988893342598707982}
+        baseSprite: {fileID: 21300000, guid: d22e3a253af30f84f8ce40e856c171ef, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: af593b7ac26362240bbeda46a34a51ef, type: 3}
+        - {fileID: 21300000, guid: 87308097cd7c03240b8791f5df6e2308, type: 3}
+        - {fileID: 21300000, guid: ae655f1ed330ac44ab62859a906ae4ea, type: 3}
+      - bodyPart: 1
+        spriteRenderer: {fileID: 1356289828779756073}
+        baseSprite: {fileID: 21300000, guid: d5117ff26e8286b47b194122c2a5bbbd, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 96d0f6e56d280d942817a354bd9f2e0c, type: 3}
+        - {fileID: 21300000, guid: c70ea1d9e9e795f4ab00aa834ec84c1f, type: 3}
+        - {fileID: 21300000, guid: 4845d21bf292c944b85e3b1338f8d22b, type: 3}
+      - bodyPart: 2
+        spriteRenderer: {fileID: 1458429442712546983}
+        baseSprite: {fileID: 21300000, guid: b812a3b28a9fecd409f1b29daef5d5f5, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 88c70967dd8a30a439ccf203f5f2ef9f, type: 3}
+        - {fileID: 21300000, guid: 58ccdbbe5cedb04468a446f34f5d8620, type: 3}
+        - {fileID: 21300000, guid: 3cdc633721d89994fa8c41b683ef44fe, type: 3}
+      - bodyPart: 3
+        spriteRenderer: {fileID: 5156828601371856698}
+        baseSprite: {fileID: 21300000, guid: 19562aa322a171343ad6e99842c19735, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 1aede6cfcbd3a264b864f447d535e7ad, type: 3}
+        - {fileID: 21300000, guid: 4c21d494d74c13444a61a35553ca3260, type: 3}
+        - {fileID: 21300000, guid: dd154ceacecc92845a43e3780ef64731, type: 3}
+      - bodyPart: 4
+        spriteRenderer: {fileID: 7939351310454977686}
+        baseSprite: {fileID: 21300000, guid: 497a96da9bb51f443aba7660e4dadbb8, type: 3}
+        upgradedSprites:
+        - {fileID: 21300000, guid: 0327574b4125f52428f318dfa2ef66e8, type: 3}
+        - {fileID: 21300000, guid: 592ae2ceee609e548b4b8a17fdf47b0b, type: 3}
+        - {fileID: 21300000, guid: 2c01818a0ff55a74aae67a8f5aa92960, type: 3}
+    loop: 0
   currentAnimation: 
   isPlaying: 0
   currentFrameIndex: 0
-  debug: 1
+  attackDuration: 0.3
+  isInCombat: 0
+  isMoving: 0
+  debug: 0
 --- !u!1 &1538942524082916767
 GameObject:
   m_ObjectHideFlags: 0

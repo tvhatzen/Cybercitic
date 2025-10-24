@@ -48,20 +48,16 @@ public class SkillUI : MonoBehaviour
 
     private void SubscribeToEvents()
     {
-        if (PlayerSkills.Instance != null)
-        {
-            PlayerSkills.Instance.OnSkillActivated += OnSkillActivated;
-            PlayerSkills.Instance.OnSkillUnlocked += OnSkillUnlocked;
-        }
+        // Subscribe to centralized Event Bus
+        GameEvents.OnSkillActivated += OnSkillActivated;
+        GameEvents.OnSkillUnlocked += OnSkillUnlocked;
     }
 
     private void UnsubscribeFromEvents()
     {
-        if (PlayerSkills.Instance != null)
-        {
-            PlayerSkills.Instance.OnSkillActivated -= OnSkillActivated;
-            PlayerSkills.Instance.OnSkillUnlocked -= OnSkillUnlocked;
-        }
+        // Unsubscribe from centralized Event Bus
+        GameEvents.OnSkillActivated -= OnSkillActivated;
+        GameEvents.OnSkillUnlocked -= OnSkillUnlocked;
     }
 
     private void OnSkillActivated(Skill skill)

@@ -20,8 +20,9 @@ public class FloorManager : SingletonBase<FloorManager>
     public Transform bossSpawnPoint;
     public int bossFloorInterval = 5; // Boss every 5 floors (5, 10, 15, 20, etc.)
 
-    public static event Action<int> OnFloorChanged; // notify UI 
-    public static event Action<GameObject> OnEnemySpawned;
+    // Events are now handled by the centralized GameEvents system
+    // public static event Action<int> OnFloorChanged; // moved to GameEvents
+    // public static event Action<GameObject> OnEnemySpawned; // moved to GameEvents
 
     public int CurrentFloor { get; private set; } = 1;
 
@@ -80,15 +81,13 @@ public class FloorManager : SingletonBase<FloorManager>
         
         if (debug) Debug.Log($"[FloorManager] IncrementFloor - Floor changed from {oldFloor} to {CurrentFloor}");
         
-        OnFloorChanged?.Invoke(CurrentFloor);
+        // Use centralized Event Bus
+        GameEvents.FloorChanged(CurrentFloor);
 
         _floorProgressBar.IncreaseProgressAmount(1);
 
-        // tell run stats tracker
-        if (RunStatsTracker.Instance != null)
-        {
-            RunStatsTracker.Instance.FloorCleared(CurrentFloor - 1); // previous floor was cleared
-        }
+        // Use centralized Event Bus for floor cleared
+        GameEvents.FloorCleared(CurrentFloor - 1); // previous floor was cleared
     }
 
     // reset to floor 1 for retry. keeps player upgrades but resets floor progression
@@ -98,7 +97,8 @@ public class FloorManager : SingletonBase<FloorManager>
 
         // Reset floor counter first
         CurrentFloor = 1;
-        OnFloorChanged?.Invoke(CurrentFloor);
+        // Use centralized Event Bus
+        GameEvents.FloorChanged(CurrentFloor);
 
         _floorProgressBar.ResetProgress(); 
 
@@ -366,8 +366,8 @@ public class FloorManager : SingletonBase<FloorManager>
         if (!boss.activeInHierarchy)
             boss.SetActive(true);
 
-        // fire event for boss
-        OnEnemySpawned?.Invoke(boss);
+        // Use centralized Event Bus
+        GameEvents.EnemySpawned(boss);
 
         if (debug) Debug.Log($"Spawned BOSS for floor {CurrentFloor}");
     }
@@ -407,8 +407,8 @@ public class FloorManager : SingletonBase<FloorManager>
                     enemy.SetActive(true);
                 }
 
-                // fire event for each enemy
-                OnEnemySpawned?.Invoke(enemy);
+                // Use centralized Event Bus
+                GameEvents.EnemySpawned(enemy);
             }
         }
 

@@ -1161,6 +1161,18 @@ PrefabInstance:
       propertyPath: currentAnimation
       value: Idle
       objectReference: {fileID: 0}
+    - target: {fileID: 3149356929928338088, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: attackHoldDuration
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3149356929928338088, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: animationSequences.Array.data[1].loop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3149356929928338088, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: animationSequences.Array.data[1].frames.Array.data[0].duration
+      value: 0.8
+      objectReference: {fileID: 0}
     - target: {fileID: 3483008400610512974, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

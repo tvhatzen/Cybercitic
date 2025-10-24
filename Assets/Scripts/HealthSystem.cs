@@ -10,6 +10,7 @@ public class HealthSystem : MonoBehaviour
     public int CurrentHealth => currentHealth;
     public int DamagePerHit => entityData != null ? entityData.currentAttack : 0;
 
+    // Keep instance events for local subscriptions, but also trigger centralized events
     public event Action<HealthSystem> OnDeath; // notify when this entity dies
     public static event Action<GameObject> OnAnyDeath; // global death flag for any death
     public event Action<int> OnHealthChanged; // notify UI elements
@@ -63,7 +64,24 @@ public class HealthSystem : MonoBehaviour
         currentHealth -= amount;
         if(debug) Debug.Log(name + " takes " + amount + " damage. HP: " + currentHealth);
 
+        // Play damage sound
+        if (AudioManager.Instance != null)
+        {
+            if (CompareTag("Player"))
+            {
+                AudioManager.Instance.PlaySound("damaged");
+                if (debug) Debug.Log("[HealthSystem] Playing player damage sound");
+            }
+            else
+            {
+                AudioManager.Instance.PlaySound("enemydamaged");
+                if (debug) Debug.Log("[HealthSystem] Playing enemy damage sound");
+            }
+        }
+
+        // Trigger both local and centralized events
         OnHealthChanged?.Invoke(currentHealth);
+        GameEvents.HealthChanged(currentHealth);
         UpdateHealthText();
         healthBar.UpdateHealthBar(entityData.baseHealth, currentHealth);
 
@@ -98,7 +116,9 @@ public class HealthSystem : MonoBehaviour
         currentHealth = health;
 
         // Update health UI
-        OnHealthChanged?.Invoke(health);
+            // Trigger both local and centralized events
+            OnHealthChanged?.Invoke(health);
+            GameEvents.HealthChanged(health);
         UpdateHealthText();
         healthBar.UpdateHealthBar(entityData.baseHealth, currentHealth);
     }
@@ -108,7 +128,9 @@ public class HealthSystem : MonoBehaviour
         if (entityData != null)
         {
             currentHealth = entityData.baseHealth;
-            OnHealthChanged?.Invoke(currentHealth);
+            // Trigger both local and centralized events
+        OnHealthChanged?.Invoke(currentHealth);
+        GameEvents.HealthChanged(currentHealth);
             UpdateHealthText();
             healthBar.UpdateHealthBar(entityData.baseHealth, currentHealth);
             
@@ -122,7 +144,9 @@ public class HealthSystem : MonoBehaviour
         if (entityData != null)
         {
             currentHealth = entityData.baseHealth;
-            OnHealthChanged?.Invoke(currentHealth);
+            // Trigger both local and centralized events
+        OnHealthChanged?.Invoke(currentHealth);
+        GameEvents.HealthChanged(currentHealth);
             UpdateHealthText();
             healthBar.UpdateHealthBar(entityData.baseHealth, currentHealth);
             
@@ -138,7 +162,9 @@ public class HealthSystem : MonoBehaviour
         {
             entityData.ResetToOriginalStats();
             currentHealth = entityData.currentHealth;
-            OnHealthChanged?.Invoke(currentHealth);
+            // Trigger both local and centralized events
+        OnHealthChanged?.Invoke(currentHealth);
+        GameEvents.HealthChanged(currentHealth);
             UpdateHealthText();
 
             // also reset credits if player
@@ -173,9 +199,25 @@ public class HealthSystem : MonoBehaviour
     {
         if(debug) Debug.Log(name + " died!");
 
+        // Play death sound
+        if (AudioManager.Instance != null)
+        {
+            if (CompareTag("Player"))
+            {
+                AudioManager.Instance.PlaySound("die");
+                if (debug) Debug.Log("[HealthSystem] Playing player death sound");
+            }
+            else
+            {
+                AudioManager.Instance.PlaySound("enemydie");
+                if (debug) Debug.Log("[HealthSystem] Playing enemy death sound");
+            }
+        }
+
+        // Trigger both local and centralized events
         OnDeath?.Invoke(this);
         OnAnyDeath?.Invoke(gameObject);
-
+        GameEvents.EntityDeath(this);
         GameEvents.EntityDied(this);
 
         // if its the player, show Results

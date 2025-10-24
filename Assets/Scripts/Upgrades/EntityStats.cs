@@ -11,7 +11,8 @@ public class EntityStats : SingletonBase<EntityStats>
     public List<Skill> skills = new List<Skill>();
     public List<Upgrade> upgrades = new List<Upgrade>();
 
-    public event Action<EntityStats> OnStatsChanged;
+    // Events are now handled by the centralized GameEvents system
+    // public event Action<EntityStats> OnStatsChanged; // moved to GameEvents
 
     private EntityData playerData;
 
@@ -40,7 +41,8 @@ public class EntityStats : SingletonBase<EntityStats>
         if (playerData != null)
         {
             playerData.ModifyBaseStats(healthMod: amount);
-            OnStatsChanged?.Invoke(this);
+            // Use centralized Event Bus
+            GameEvents.StatsChanged(this);
             if(debug) Debug.Log($"Health modified by {amount}. New base: {playerData.baseHealth}");
         }
     }
@@ -50,7 +52,8 @@ public class EntityStats : SingletonBase<EntityStats>
         if (playerData != null)
         {
             playerData.ModifyBaseStats(speedMod: amount);
-            OnStatsChanged?.Invoke(this);
+            // Use centralized Event Bus
+            GameEvents.StatsChanged(this);
             if(debug) Debug.Log($"Speed modified by {amount}. New base: {playerData.baseSpeed}");
         }
     }
@@ -60,7 +63,8 @@ public class EntityStats : SingletonBase<EntityStats>
         if (playerData != null)
         {
             playerData.ModifyBaseStats(attackMod: amount);
-            OnStatsChanged?.Invoke(this);
+            // Use centralized Event Bus
+            GameEvents.StatsChanged(this);
             if(debug) Debug.Log($"Attack modified by {amount}. New base: {playerData.baseAttack}");
         }
     }
@@ -70,7 +74,8 @@ public class EntityStats : SingletonBase<EntityStats>
         if (playerData != null)
         {
             playerData.ModifyBaseStats(dodgeMod: amount);
-            OnStatsChanged?.Invoke(this);
+            // Use centralized Event Bus
+            GameEvents.StatsChanged(this);
             if(debug) Debug.Log($"Dodge chance modified by {amount}. New base: {playerData.baseDodgeChance}");
         }
     }
@@ -81,7 +86,8 @@ public class EntityStats : SingletonBase<EntityStats>
         if (playerData != null)
         {
             playerData.ResetToOriginalStats();
-            OnStatsChanged?.Invoke(this);
+            // Use centralized Event Bus
+            GameEvents.StatsChanged(this);
         }
         
         // Clear all skills and upgrades
