@@ -14,6 +14,7 @@ public class GameState : SingletonBase<GameState>
         Upgrade,
         Results,
         Options,
+        Credits,
         Win,
         Lose
     }

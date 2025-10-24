@@ -752,6 +752,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6401901404455555370}
     m_Modifications:
+    - target: {fileID: 190982491605831248, guid: 289411e4b05369042ad757f70182c9fc, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2426261466547207457, guid: 289411e4b05369042ad757f70182c9fc, type: 3}
       propertyPath: m_Name
       value: DamageParticles

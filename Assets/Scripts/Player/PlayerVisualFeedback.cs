@@ -65,8 +65,8 @@ public class PlayerVisualFeedback : MonoBehaviour
 
     private void HandlePlayerTakeDamage()
     {
-        PlayDamagedAnimation();
         PlayDamagedParticles();
+        PlayDamagedAnimation();
     }
 
     private void HandleTargetChanged(Transform oldTarget, Transform newTarget)
@@ -112,6 +112,7 @@ public class PlayerVisualFeedback : MonoBehaviour
         if (attackParticles != null)
         {
             attackParticles.Play();
+            Debug.Log("Playing player attack particles");
         }
     }
 
