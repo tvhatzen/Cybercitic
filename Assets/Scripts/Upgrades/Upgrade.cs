@@ -105,6 +105,9 @@ public class Upgrade : ScriptableObject
             case UpgradeType.Attack:
                 EntityStats.Instance.ModifyAttack(Mathf.RoundToInt(statIncrease * 100));
                 break;
+            case UpgradeType.Defense:
+                EntityStats.Instance.ModifyDefense(statIncrease);
+                break;
             case UpgradeType.DodgeChance:
                 EntityStats.Instance.ModifyDodgeChance(statIncrease);
                 break;

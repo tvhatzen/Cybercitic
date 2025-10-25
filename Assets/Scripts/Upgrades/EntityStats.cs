@@ -77,6 +77,17 @@ public class EntityStats : SingletonBase<EntityStats>
         }
     }
 
+    public void ModifyDefense(float amount)
+    {
+        if (playerData != null)
+        {
+            playerData.ModifyBaseStats(defenseMod: amount);
+            
+            GameEvents.StatsChanged(this);
+            if(debug) Debug.Log($"Defense modified by {amount}. New base: {playerData.baseDefense}");
+        }
+    }
+
     // reset all stats to base values
     public void ResetStats()
     {
