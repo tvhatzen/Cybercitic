@@ -293,7 +293,7 @@ public class HealthSystem : MonoBehaviour
             gameObject.SetActive(false);
             GameState.Instance.OnPlayerDeath();
         }
-        else if (CompareTag("Boss"))
+        else if (CompareTag("Boss") && FloorManager.Instance.IsFinalFloor()) // check if is final boss floor 
         {
             GameState.Instance.OnBossDeath();
         }

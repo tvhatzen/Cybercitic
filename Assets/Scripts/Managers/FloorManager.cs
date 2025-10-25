@@ -10,7 +10,6 @@ public class FloorManager : SingletonBase<FloorManager>
     public GameObject playerPrefab;
     public Transform playerSpawnPoint;
 
-
     [Header("Enemies")]
     public List<GameObject> enemyPrefabsForThisFloor;
     public List<Transform> enemySpawnPoints;
@@ -19,6 +18,7 @@ public class FloorManager : SingletonBase<FloorManager>
     public GameObject bossPrefab;
     public Transform bossSpawnPoint;
     public int bossFloorInterval = 5; // Boss every 5 floors (5, 10, 15, 20, etc.)
+    public bool isFinalFloor = false;
 
     public int CurrentFloor { get; private set; } = 1;
 
@@ -409,6 +409,7 @@ public class FloorManager : SingletonBase<FloorManager>
 
     // check if current floor is boss floor
     public bool IsBossFloor() { return CurrentFloor % bossFloorInterval == 0; }
+    public bool IsFinalFloor() { return CurrentFloor == 15; }
 
     // reset all enemy combat states to ensure they can attack again after respawn
     private void ResetAllEnemyCombatStates()

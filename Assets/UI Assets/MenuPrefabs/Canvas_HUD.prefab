@@ -177,7 +177,9 @@ MonoBehaviour:
   unlockAllSkillsOnStart: 1
   testSkills:
   - {fileID: 11400000, guid: c7e2318ea9b8a71448b6758afe178809, type: 2}
-  debug: 0
+  - {fileID: 11400000, guid: 96215e4c0ebad41468707bb8ab9751ef, type: 2}
+  - {fileID: 11400000, guid: 5cd98970d1809cb42a216b227c1365be, type: 2}
+  debug: 1
 --- !u!1 &292962103432916016
 GameObject:
   m_ObjectHideFlags: 0
@@ -1372,7 +1374,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 68.8, y: -45.8}
+  m_AnchoredPosition: {x: 68.8, y: -43.8}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6586746878615719308
@@ -1430,14 +1432,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 42
-  m_fontSizeBase: 42
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
-  m_HorizontalAlignment: 2
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -1468,7 +1470,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 28.63263, y: 0, z: 30.573853, w: 0}
+  m_margin: {x: 28.63263, y: 0, z: 8.86084, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

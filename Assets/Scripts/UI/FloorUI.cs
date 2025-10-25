@@ -30,6 +30,6 @@ public class FloorUI : MonoBehaviour
 
     public void UpdateFloorText(int floor)
     {
-        if (floorText != null) floorText.text = $" {floor} / 5";
+        if (floorText != null) floorText.text = $" {floor} / 15";
     }
 }

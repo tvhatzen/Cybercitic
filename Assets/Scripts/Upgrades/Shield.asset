@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f0f048a40312d884eaeef32a5eb8de10, type: 3}
-  m_Name: SweepingStrike
+  m_Name: Shield
   m_EditorClassIdentifier: 
-  skillName: Sweeping Strike
-  skillDescription: A wide area of damage swept across all enemies
-  skillIcon: {fileID: -1758860212, guid: 16906a7cc7ea88e4b844bc945ef5f44f, type: 3}
-  castIcon: {fileID: -438391433, guid: 2f02fa3e29d405341bc349b2a4062656, type: 3}
-  cooldownDuration: 5
-  castingTime: 1
-  skillDuration: 2
-  skillDamage: 15
-  skillRange: 6
+  skillName: Shield
+  skillDescription: A protective barrier that reduces damage taken
+  skillIcon: {fileID: -1766650257, guid: 1ef95398fed720748a1e42397148fa42, type: 3}
+  castIcon: {fileID: -1718372198, guid: 4ca170498a1ab704dba4645e75c33aa2, type: 3}
+  cooldownDuration: 12
+  castingTime: 3
+  skillDuration: 8
+  skillDamage: 0
+  skillRange: 4
   maxCharges: 1
   skillSound: {fileID: 0}
   skillEffect: {fileID: 0}

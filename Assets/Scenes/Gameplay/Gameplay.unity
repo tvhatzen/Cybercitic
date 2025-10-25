@@ -1435,7 +1435,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3149356929928338088, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: debug
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3149356929928338088, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: isPlaying
@@ -1503,7 +1503,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5174850044127445237, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: iconOffset.y
-      value: 1
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 5174850044127445237, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: targetingIcon
@@ -1543,7 +1543,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5669860155023522084, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: equippedSkills.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5669860155023522084, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: 'equippedSkills.Array.data[0]'
@@ -3102,7 +3102,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5588327119793023583, guid: d2e7b04e94b04de42a69d329c3b3d6cc, type: 3}
       propertyPath: m_fontSize
-      value: 46
+      value: 38
       objectReference: {fileID: 0}
     - target: {fileID: 5588327119793023583, guid: d2e7b04e94b04de42a69d329c3b3d6cc, type: 3}
       propertyPath: m_margin.x
@@ -3118,7 +3118,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5588327119793023583, guid: d2e7b04e94b04de42a69d329c3b3d6cc, type: 3}
       propertyPath: m_fontSizeBase
-      value: 46
+      value: 38
       objectReference: {fileID: 0}
     - target: {fileID: 5588327119793023583, guid: d2e7b04e94b04de42a69d329c3b3d6cc, type: 3}
       propertyPath: m_overrideHtmlColors
@@ -3616,6 +3616,7 @@ MonoBehaviour:
   bossPrefab: {fileID: 4060379348875191879, guid: 029b3d4fc54acbe48950001290aeaac7, type: 3}
   bossSpawnPoint: {fileID: 1884654317}
   bossFloorInterval: 5
+  isFinalFloor: 0
   debug: 0
   _floorProgressBar: {fileID: 1581502389}
 --- !u!1 &1804209158

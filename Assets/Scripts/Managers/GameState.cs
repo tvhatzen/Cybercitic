@@ -106,7 +106,7 @@ public class GameState : SingletonBase<GameState>
     }
 
     public void OnBossDeath()
-    {
+    {        
         if(debug) Debug.Log("Boss died — switching to Win screen");
 
         ChangeState(GameStates.Win);

@@ -412,7 +412,7 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
     public void PlayDamageAnimation() => PlayAnimation("Damage");
     public void PlayDeathAnimation() => PlayAnimation("Death");
 
-    // Ensure the player is in the correct animation state for combat
+    // ensure the player is in the correct animation state for combat
     public void EnsureCombatAnimationState()
     {
         // if player is in combat but not playing any animation, play standing
@@ -433,3 +433,5 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
     public bool IsPlaying() => isPlaying;
     public int GetCurrentFrameIndex() => currentFrameIndex;
 }
+// *** When upgrading core/rightarm/left leg but not right leg,
+// right leg in attack animation is showing two legs and its the first upgrade color 
