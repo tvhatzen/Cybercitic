@@ -16,9 +16,8 @@ MonoBehaviour:
   upgradeDescription: 'fast botty '
   icon: {fileID: 21300000, guid: ac4884089c578e74ca315d00f6319051, type: 3}
   iconLocked: {fileID: 21300000, guid: 432e85e03baa08c4ab4377c0da84f182, type: 3}
-  baseCost: 85
+  baseCost: 100
   maxUpgradeLevel: 3
   costMultiplier: 1.5
   upgradeType: 4
   statIncreasePerLevel: 0.1
-  debug: 0

@@ -177,9 +177,7 @@ MonoBehaviour:
   unlockAllSkillsOnStart: 1
   testSkills:
   - {fileID: 11400000, guid: c7e2318ea9b8a71448b6758afe178809, type: 2}
-  - {fileID: 11400000, guid: 96215e4c0ebad41468707bb8ab9751ef, type: 2}
-  - {fileID: 11400000, guid: 5cd98970d1809cb42a216b227c1365be, type: 2}
-  debug: 1
+  debug: 0
 --- !u!1 &292962103432916016
 GameObject:
   m_ObjectHideFlags: 0
@@ -350,7 +348,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1, y: 0}
+  m_AnchoredPosition: {x: 786.1, y: 171}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2882526513075414992
@@ -425,7 +423,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 787, y: 171.5}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4150710036810029717
@@ -798,7 +796,7 @@ MonoBehaviour:
   readyColor: {r: 1, g: 1, b: 1, a: 1}
   cooldownColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   castingColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  debug: 1
+  debug: 0
 --- !u!1 &2143977607778938077
 GameObject:
   m_ObjectHideFlags: 0
@@ -1044,7 +1042,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1, y: 0}
+  m_AnchoredPosition: {x: 787, y: 171.5}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6909475905246183910
@@ -1621,7 +1619,7 @@ MonoBehaviour:
   readyColor: {r: 1, g: 1, b: 1, a: 1}
   cooldownColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   castingColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  debug: 1
+  debug: 0
 --- !u!1 &3819282763530701603
 GameObject:
   m_ObjectHideFlags: 0
@@ -1656,7 +1654,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 787, y: 171.5}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4744045830691060614
@@ -1867,7 +1865,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0, y: 0}
+  m_AnchoredPosition: {x: 786.1, y: 171}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4924167057517063598
@@ -2078,7 +2076,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 786.1, y: 171}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2218825206917546096
@@ -2264,7 +2262,7 @@ MonoBehaviour:
   readyColor: {r: 1, g: 1, b: 1, a: 1}
   cooldownColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   castingColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  debug: 1
+  debug: 0
 --- !u!1 &9059911745739638712
 GameObject:
   m_ObjectHideFlags: 0

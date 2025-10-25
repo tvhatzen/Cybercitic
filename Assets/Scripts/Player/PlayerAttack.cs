@@ -5,16 +5,13 @@ public class PlayerAttack : MonoBehaviour
     [Header("Attack Settings")]
     public float baseAttackCooldown = 1f;
     [Tooltip("How much speed affects attack cooldown. Higher values = more speed impact.")]
-    public float speedMultiplier = 0.1f;
-
+    public float speedMultiplier = 0.5f;
+    
     private float nextAttack;
 
     private PlayerCombat combat;
     private FrameBasedPlayerAnimator frameAnimator;
     private EntityData playerData;
-
-    // speed mutiplier testing variable
-    public float SpeedMultiplier => playerData != null ? playerData.currentSpeedMultiplier : 0;
 
     public bool debug = false;
 
@@ -43,19 +40,16 @@ public class PlayerAttack : MonoBehaviour
         }
     }
     
-    // attack cooldown based on player's speed upgrade
     private float CalculateAttackCooldown()
     {
         if (playerData == null)
         {
             return baseAttackCooldown;
         }
-
+        
         // Speed reduces cooldown: higher speed = faster attacks
         // Formula: cooldown = baseCooldown / (1 + speed * speedMultiplier)
-        float speedBonus = playerData.currentSpeed * SpeedMultiplier;
-        Debug.Log($"current speed multiplier: {SpeedMultiplier}");
-
+        float speedBonus = playerData.currentSpeed * speedMultiplier;
         float dynamicCooldown = baseAttackCooldown / (1f + speedBonus);
         
         // Ensure minimum cooldown to prevent instant attacks

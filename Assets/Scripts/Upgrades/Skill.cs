@@ -63,7 +63,6 @@ public class Skill : ScriptableObject
         currentState = isUnlocked ? SkillStates.ReadyToUse : SkillStates.Locked;
         currentCooldown = 0f;
         currentCharges = maxCharges;
-        Debug.Log("Skill: Initialize");
     }
 
     public virtual bool Activate()
@@ -170,14 +169,14 @@ public class Skill : ScriptableObject
         currentState = SkillStates.ReadyToUse;
         currentCharges = maxCharges;
         OnSkillCooldownFinished?.Invoke(this);
-        if(debug) Debug.Log($"Skill: {skillName} is ready to use again!");
+        if(debug) Debug.Log($"{skillName} is ready to use again!");
     }
 
     public virtual void UnlockSkill()
     {
         isUnlocked = true;
         currentState = SkillStates.ReadyToUse;
-        if(debug) Debug.Log($"Skill: Unlocked skill: {skillName}");
+        if(debug) Debug.Log($"Unlocked skill: {skillName}");
     }
 
     public virtual void LockSkill()

@@ -104,14 +104,14 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
             slotIndex = FindEmptySlot();
             if (slotIndex == -1)
             {
-                if(debug) Debug.LogWarning("PlayerSkills: No empty skill slots available!");
+                if(debug) Debug.LogWarning("No empty skill slots available!");
                 return;
             }
         }
 
         if (slotIndex < 0 || slotIndex >= 4)
         {
-            if(debug) Debug.LogWarning($"PlayerSkills: Invalid skill slot index: {slotIndex}");
+            if(debug) Debug.LogWarning($"Invalid skill slot index: {slotIndex}");
             return;
         }
         // add to player equipped skills
@@ -125,8 +125,8 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
         skill.Initialize();
         skill.UnlockSkill();
         
-        GameEvents.SkillUnlocked(skill); // FIXME: causing skills to stay locked when unlocked at start
-        if(debug) Debug.Log($"PlayerSkills: Equipped skill {skill.SkillName} to slot {slotIndex}");
+        GameEvents.SkillUnlocked(skill);
+        if(debug) Debug.Log($"Equipped skill {skill.SkillName} to slot {slotIndex}");
     }
 
     public void UnequipSkill(int slotIndex)

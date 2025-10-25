@@ -14,14 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillName: Sweeping Strike
   skillDescription: this is a description...
-  skillIcon: {fileID: -1758860212, guid: 16906a7cc7ea88e4b844bc945ef5f44f, type: 3}
-  castIcon: {fileID: -438391433, guid: 2f02fa3e29d405341bc349b2a4062656, type: 3}
+  skillIcon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  castIcon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   cooldownDuration: 5
-  castingTime: 0.5
+  castingTime: 1
   skillDuration: 2
-  skillDamage: 25
-  skillRange: 6
+  skillDamage: 50
+  skillRange: 5
   maxCharges: 1
   skillSound: {fileID: 0}
   skillEffect: {fileID: 0}
-  debug: 0
