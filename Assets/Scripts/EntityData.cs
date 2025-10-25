@@ -10,33 +10,39 @@ public class EntityData : MonoBehaviour
     [Header("Base Stats")]
     [Tooltip("Base health value for this entity")]
     public int baseHealth = 100;
-    
+
     [Tooltip("Base movement speed")]
     public float baseSpeed = 5f;
-    
+
+    [Tooltip("Base movement speed")]
+    public float baseSpeedMultiplier = 5f;
+
     [Tooltip("Base attack damage")]
     public int baseAttack = 10;
-    
-    [Tooltip("Base dodge chance (0-1)")]
+
+    [Tooltip("PLAYER : Base dodge chance (0-1)")]
     public float baseDodgeChance = 0.1f;
-    
-    [Tooltip("Base defense - reduces incoming damage (0-1, where 0.3 = 30% damage reduction)")]
+
+    [Tooltip("PLAYER: Base defense - reduces incoming damage")]
     public float baseDefense = 0f;
 
     [Header("Current Stats")]
     [Tooltip("Current health - will be set to baseHealth on start")]
     public int currentHealth;
-    
+
     [Tooltip("Current speed - can be modified by buffs/debuffs")]
     public float currentSpeed;
-    
+
+    [Tooltip("Current speed multiplier - can be modified by buffs/debuffs")]
+    public float currentSpeedMultiplier;
+
     [Tooltip("Current attack - can be modified by upgrades")]
     public int currentAttack;
-    
-    [Tooltip("Current dodge chance - can be modified by upgrades")]
+
+    [Tooltip("PLAYER: Current dodge chance - can be modified by upgrades")]
     public float currentDodgeChance;
-    
-    [Tooltip("Current defense - can be modified by upgrades")]
+
+    [Tooltip("PLAYER: Current defense - can be modified by upgrades")]
     public float currentDefense;
 
     // store original base stats to reset to after a win
@@ -93,10 +99,10 @@ public class EntityData : MonoBehaviour
         baseAttack = originalBaseAttack;
         baseDodgeChance = originalBaseDodgeChance;
         baseDefense = originalBaseDefense;
-        
+
         InitializeStats();
-        
-        if(debug) Debug.Log($"[EntityData] {name} reset to original stats - HP: {baseHealth}, ATK: {baseAttack}, Speed: {baseSpeed}, Dodge: {baseDodgeChance}, Defense: {baseDefense}");
+
+        if (debug) Debug.Log($"[EntityData] {name} reset to original stats - HP: {baseHealth}, ATK: {baseAttack}, Speed: {baseSpeed}, SpeedMultiplier: {baseSpeedMultiplier}, Dodge: {baseDodgeChance}, Defense: {baseDefense}");
     }
 
     // scale stats by a multiplier (for enemy progression)
@@ -108,20 +114,21 @@ public class EntityData : MonoBehaviour
     }
 
     // modify base stats (for permanent upgrades)
-    public void ModifyBaseStats(int healthMod = 0, int attackMod = 0, float speedMod = 0f, float dodgeMod = 0f, float defenseMod = 0f)
+    public void ModifyBaseStats(int healthMod = 0, int attackMod = 0, float speedMod = 0f, float speedMultiplier = 0f, float dodgeMod = 0f, float defenseMod = 0f)
     {
         baseHealth += healthMod;
         baseAttack += attackMod;
         baseSpeed += speedMod;
+        baseSpeedMultiplier += speedMultiplier;
         baseDodgeChance = Mathf.Clamp01(baseDodgeChance + dodgeMod);
         baseDefense = Mathf.Clamp01(baseDefense + defenseMod);
-        
+
         // update current stats too
         currentHealth += healthMod;
         currentAttack += attackMod;
         currentSpeed += speedMod;
+        currentSpeedMultiplier += speedMultiplier;
         currentDodgeChance = Mathf.Clamp01(currentDodgeChance + dodgeMod);
         currentDefense = Mathf.Clamp01(currentDefense + defenseMod);
     }
 }
-

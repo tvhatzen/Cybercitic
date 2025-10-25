@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f0f048a40312d884eaeef32a5eb8de10, type: 3}
-  m_Name: SweepingStrike
+  m_Name: PiercingShot
   m_EditorClassIdentifier: 
-  skillName: Sweeping Strike
+  skillName: Piercing Shot
   skillDescription: this is a description...
-  skillIcon: {fileID: -1758860212, guid: 16906a7cc7ea88e4b844bc945ef5f44f, type: 3}
-  castIcon: {fileID: -438391433, guid: 2f02fa3e29d405341bc349b2a4062656, type: 3}
-  cooldownDuration: 5
-  castingTime: 0.5
-  skillDuration: 2
-  skillDamage: 25
-  skillRange: 6
+  skillIcon: {fileID: -1842379148, guid: 0d84c7ae1c2ce5a458dd7d157992a828, type: 3}
+  castIcon: {fileID: -1842379148, guid: 0d84c7ae1c2ce5a458dd7d157992a828, type: 3}
+  cooldownDuration: 8
+  castingTime: 2
+  skillDuration: 1
+  skillDamage: 50
+  skillRange: 1
   maxCharges: 1
   skillSound: {fileID: 0}
   skillEffect: {fileID: 0}
