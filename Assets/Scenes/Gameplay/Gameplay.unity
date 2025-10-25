@@ -2028,19 +2028,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3208495456754636252, guid: daa8428dff4e7d44b87a0a3a6db1d8e7, type: 3}
       propertyPath: m_margin.w
-      value: 106.823456
+      value: 37.227413
       objectReference: {fileID: 0}
     - target: {fileID: 3208495456754636252, guid: daa8428dff4e7d44b87a0a3a6db1d8e7, type: 3}
       propertyPath: m_margin.x
-      value: 98.3217
+      value: 60.95774
       objectReference: {fileID: 0}
     - target: {fileID: 3208495456754636252, guid: daa8428dff4e7d44b87a0a3a6db1d8e7, type: 3}
       propertyPath: m_margin.y
-      value: 70.82948
+      value: 40.70583
       objectReference: {fileID: 0}
     - target: {fileID: 3208495456754636252, guid: daa8428dff4e7d44b87a0a3a6db1d8e7, type: 3}
       propertyPath: m_margin.z
-      value: 99.34544
+      value: 61.02333
       objectReference: {fileID: 0}
     - target: {fileID: 3208495456754636252, guid: daa8428dff4e7d44b87a0a3a6db1d8e7, type: 3}
       propertyPath: m_fontStyle
@@ -2140,7 +2140,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7649588671196898586, guid: daa8428dff4e7d44b87a0a3a6db1d8e7, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7920672774011841652, guid: daa8428dff4e7d44b87a0a3a6db1d8e7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
