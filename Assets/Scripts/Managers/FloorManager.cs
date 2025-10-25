@@ -266,6 +266,17 @@ public class FloorManager : SingletonBase<FloorManager>
             if (debug) Debug.Log("[FloorManager] Reset all skill cooldowns on player spawn");
         }
 
+        // reset combat state when respawning
+        var combat = playerGO.GetComponent<PlayerCombat>();
+        if (combat != null)
+        {
+            combat.ForceResetCombatState();
+            if (debug) Debug.Log("[FloorManager] Reset player combat state on respawn");
+        }
+
+        // reset all enemy combat states to ensure they can attack again
+        ResetAllEnemyCombatStates();
+
         yield return null;
         
         // make sure EntityData component exists 
@@ -398,6 +409,24 @@ public class FloorManager : SingletonBase<FloorManager>
 
     // check if current floor is boss floor
     public bool IsBossFloor() { return CurrentFloor % bossFloorInterval == 0; }
+
+    // reset all enemy combat states to ensure they can attack again after respawn
+    private void ResetAllEnemyCombatStates()
+    {
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach (GameObject enemy in enemies)
+        {
+            EnemyCombat enemyCombat = enemy.GetComponent<EnemyCombat>();
+            if (enemyCombat != null)
+            {
+                // Force disable combat to reset state
+                enemyCombat.SendMessage("DisableCombat", SendMessageOptions.DontRequireReceiver);
+                if (debug) Debug.Log($"[FloorManager] Reset combat state for enemy: {enemy.name}");
+            }
+        }
+        
+        if (debug) Debug.Log($"[FloorManager] Reset combat states for {enemies.Length} enemies");
+    }
 }
 //  create more general spawner 
 // list of spawners
