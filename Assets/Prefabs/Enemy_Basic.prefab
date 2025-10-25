@@ -133,12 +133,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseHealth: 20
   baseSpeed: 1
-  baseAttack: 2
-  baseDodgeChance: 0.1
+  baseAttack: 4
+  baseDodgeChance: 0
+  baseDefense: 0
   currentHealth: 0
   currentSpeed: 0
   currentAttack: 0
   currentDodgeChance: 0
+  currentDefense: 0
   debug: 0
 --- !u!114 &2559679550886762718
 MonoBehaviour:
@@ -188,7 +190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currencyPrefab: {fileID: 4788816608471098415, guid: 243313326fb77f84080086ce389d2827, type: 3}
-  creditsOnDeath: 10
+  creditsOnDeath: 9
   possibleDrops: []
   debug: 0
 --- !u!114 &6979624915023291407

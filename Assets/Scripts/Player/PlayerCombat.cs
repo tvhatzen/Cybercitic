@@ -219,4 +219,23 @@ public class PlayerCombat : MonoBehaviour
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, combatCheckRadius);
     }
+
+    // Public method to force reset combat state (used during respawn)
+    public void ForceResetCombatState()
+    {
+        if (InCombat)
+        {
+            InCombat = false;
+            CurrentTarget = null;
+            movement.CanMove = true;
+            
+            if (gatherRoutine != null)
+            {
+                StopCoroutine(gatherRoutine);
+                gatherRoutine = null;
+            }
+            
+            if(debug) Debug.Log("[PlayerCombat] Combat state forcefully reset");
+        }
+    }
 }
