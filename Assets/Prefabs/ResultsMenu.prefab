@@ -333,8 +333,8 @@ MonoBehaviour:
   skillNameText: {fileID: 1325602463719519881}
   continueButton: {fileID: 1376144276262393175}
   useCountUpAnimation: 1
-  countUpDuration: 1
-  debug: 1
+  countUpDuration: 3
+  debug: 0
 --- !u!1 &4555901829229381723
 GameObject:
   m_ObjectHideFlags: 0

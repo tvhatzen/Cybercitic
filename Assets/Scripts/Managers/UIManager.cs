@@ -65,16 +65,36 @@ public class UIManager : SingletonBase<UIManager>
     {
         switch (state)
         {
-            case GameState.GameStates.MainMenu: ShowScreen(MenuScreen.MainMenu, 0f); break;
+            case GameState.GameStates.MainMenu: 
+                ShowScreen(MenuScreen.MainMenu, 0f);
+                AudioManager.Instance.PlayMusicTrack("mainMenu");
+                break;
+
             case GameState.GameStates.Tutorial: ShowScreen(MenuScreen.Tutorial, 0f); break;
-            case GameState.GameStates.Playing: ShowScreen(MenuScreen.Gameplay, 1f); break;
+
+            case GameState.GameStates.Playing: 
+                ShowScreen(MenuScreen.Gameplay, 1f);
+                FloorManager.Instance.PlayBackgroundMusic();
+                break;
+
             case GameState.GameStates.Paused: ShowScreen(MenuScreen.Pause, 0f); break;
-            case GameState.GameStates.Upgrade: ShowScreen(MenuScreen.Upgrade, 0f); break;
+
+            case GameState.GameStates.Upgrade: 
+                ShowScreen(MenuScreen.Upgrade, 0f);
+                AudioManager.Instance.PlayMusicTrack("upgradeScreen");
+                break;
+
             case GameState.GameStates.Results: ShowScreen(MenuScreen.Results, 0f); break;
             case GameState.GameStates.Options: ShowScreen(MenuScreen.Options, 0f); break;
             case GameState.GameStates.Credits: ShowScreen(MenuScreen.Credits, 0f); break;
-            case GameState.GameStates.Win: ShowScreen(MenuScreen.WinGame, 0f); break;
+
+            case GameState.GameStates.Win: 
+                ShowScreen(MenuScreen.WinGame, 0f);
+                AudioManager.Instance.PlayMusicTrack("winScreen"); 
+                break;
+
             case GameState.GameStates.Lose: ShowScreen(MenuScreen.LoseGame, 0f); break;
+
             default: ShowScreen(MenuScreen.None, 1f); break;
         }
     }
@@ -122,7 +142,8 @@ public class UIManager : SingletonBase<UIManager>
     public void GoToUpgrade() => GameState.Instance.ChangeState(GameState.GameStates.Upgrade);
     public void ShowResults() => GameState.Instance.ChangeState(GameState.GameStates.Results);
     public void ShowOptions() => GameState.Instance.ChangeState(GameState.GameStates.Options);
-    public void ShowCredits() => GameState.Instance.ChangeState(GameState.GameStates.Credits);
+    public void ShowCredits() => creditsUI.SetActive(true);
+    public void CloseCredits() => creditsUI.SetActive(false);
     public void QuitGame() => Application.Quit();
     public void GoToMainMenuFromWin() =>GameState.Instance.ChangeState(GameState.GameStates.MainMenu);
 

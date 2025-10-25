@@ -179,7 +179,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c7e2318ea9b8a71448b6758afe178809, type: 2}
   - {fileID: 11400000, guid: 96215e4c0ebad41468707bb8ab9751ef, type: 2}
   - {fileID: 11400000, guid: 5cd98970d1809cb42a216b227c1365be, type: 2}
-  debug: 1
+  debug: 0
 --- !u!1 &292962103432916016
 GameObject:
   m_ObjectHideFlags: 0
@@ -647,7 +647,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 8103743837434101720}
   m_Direction: 2
   m_MinValue: 0
-  m_MaxValue: 4
+  m_MaxValue: 14
   m_WholeNumbers: 0
   m_Value: 0
   m_OnValueChanged:
@@ -1470,7 +1470,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 28.63263, y: 0, z: 8.86084, w: 0}
+  m_margin: {x: 28.63263, y: 0, z: -33.438843, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

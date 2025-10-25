@@ -275,7 +275,7 @@ public class UpgradeShopUI : MonoBehaviour
         }
         else if (canAfford && canUpgrade)
         {
-            purchaseButtonText.text = $"PURCHASE [{cost} ȼ]";
+            purchaseButtonText.text = $"PURCHASE: {cost} ȼ";
             purchaseButtonText.color = canPurchaseColor;
             if (buttonImage != null)
                 buttonImage.color = canPurchaseColor;
@@ -292,7 +292,7 @@ public class UpgradeShopUI : MonoBehaviour
         else // Can't afford
         {
             int needed = cost - currentCredits;
-            purchaseButtonText.text = $"NEED MORE CREDITS [{needed} ȼ]";
+            purchaseButtonText.text = $"NEED MORE CREDITS: {needed} ȼ";
             purchaseButtonText.color = cannotAffordColor;
             if (buttonImage != null)
                 buttonImage.color = cannotAffordColor;

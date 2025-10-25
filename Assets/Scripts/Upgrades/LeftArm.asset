@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: LeftArm
   m_EditorClassIdentifier: 
   upgradeName: Left Arm
-  upgradeDescription: big damage >:)
+  upgradeDescription: Increased Attack Power
   icon: {fileID: 21300000, guid: d28e56b09b552e2418e7d79bf6167f2f, type: 3}
   iconLocked: {fileID: 21300000, guid: 4fc99b3566c30c74d97be3a7d7f54226, type: 3}
   baseCost: 85
   maxUpgradeLevel: 3
   costMultiplier: 1.5
   upgradeType: 2
-  statIncreasePerLevel: 0.1
+  statIncreasePerLevel: 0.15
   debug: 0

@@ -136,25 +136,4 @@ public class SceneLoader : MonoBehaviour
         // Ensure final position
         transitionRectTransform.anchoredPosition = endPosition;
     }
-    
-    // Public method to set transition image color
-    public void SetTransitionColor(Color color)
-    {
-        if (transitionImage != null)
-        {
-            transitionImage.color = color;
-        }
-    }
-    
-    // Public method to set transition duration
-    public void SetTransitionDuration(float duration)
-    {
-        transitionDuration = Mathf.Max(0.1f, duration);
-    }
-    
-    // Public method to check if currently transitioning
-    public bool IsTransitioning()
-    {
-        return isTransitioning;
-    }
 }

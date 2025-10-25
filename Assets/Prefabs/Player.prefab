@@ -660,7 +660,7 @@ MonoBehaviour:
   attackDuration: 0.15
   isInCombat: 0
   isMoving: 0
-  debug: 1
+  debug: 0
 --- !u!1 &1538942524082916767
 GameObject:
   m_ObjectHideFlags: 0

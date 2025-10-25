@@ -207,7 +207,7 @@ public class FloorManager : SingletonBase<FloorManager>
         {
             if (debug) Debug.Log($"[FloorManager] Current GameState: {GameState.Instance.CurrentState}, changing to Playing");
             GameState.Instance.ChangeState(GameState.GameStates.Playing);
-        }
+        }        
 
         // reset player position whenever a new floor scene loads
         hasSpawnedOnLoad = true;
@@ -428,7 +428,17 @@ public class FloorManager : SingletonBase<FloorManager>
         
         if (debug) Debug.Log($"[FloorManager] Reset combat states for {enemies.Length} enemies");
     }
+
+    public void PlayBackgroundMusic()
+    {
+        // play floor background music
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayMusicTrack("floor1_5");
+        }
+    }
 }
 //  create more general spawner 
 // list of spawners
 // fires off signal to player spawner to run that logic separately
+// set music for floor. is floor is before or onn boss floor interval its the same, then changes

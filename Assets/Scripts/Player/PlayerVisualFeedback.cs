@@ -49,8 +49,8 @@ public class PlayerVisualFeedback : MonoBehaviour
     }
 
     private void LateUpdate()
-    {
-        UpdateTargetingIcon();
+    {        
+        UpdateTargetingIcon();        
     }
 
     private void HandlePlayerAttack(Transform target)
@@ -91,7 +91,7 @@ public class PlayerVisualFeedback : MonoBehaviour
             targetingIcon.SetActive(true);
             targetingIcon.transform.position = currentTarget.position + iconOffset;
         }
-        else
+        else if (currentTarget == null || currentTarget.CompareTag("Boss"))
         {
             // no target, hide the icon
             targetingIcon.SetActive(false);

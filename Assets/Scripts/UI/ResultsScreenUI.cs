@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 // *** eventually set up coroutine to count up the text variables.
 
@@ -22,7 +23,7 @@ public class ResultsScreenUI : MonoBehaviour
     
     [Header("Optional - Animated Display")]
     [SerializeField] private bool useCountUpAnimation = true;
-    [SerializeField] private float countUpDuration = 1f;
+    [SerializeField] private float countUpDuration = 2f;
     
     private int targetFloors;
     private int targetEnemies;
@@ -50,24 +51,38 @@ public class ResultsScreenUI : MonoBehaviour
             
             if (floorsText != null)
             {
-                int currentFloors = Mathf.RoundToInt(Mathf.Lerp(0, targetFloors, progress));
-                floorsText.text = $"Floors Cleared: {currentFloors}";
+                StartCoroutine(AnimateCountUp(targetFloors));
+                floorsText.text = $"Floors Cleared: {targetFloors}";
             }
             if (enemiesText != null)
             {
-                int currentEnemies = Mathf.RoundToInt(Mathf.Lerp(0, targetEnemies, progress));
-                enemiesText.text = $"Enemies Killed: {currentEnemies}";
+                StartCoroutine(AnimateCountUp(targetEnemies));
+                enemiesText.text = $"Enemies Killed: {targetEnemies}";
             }
             if (creditsText != null)
             {
-                int currentCredits = Mathf.RoundToInt(Mathf.Lerp(0, targetCredits, progress));
-                creditsText.text = $"Credits Collected: {currentCredits} ȼ";
+                StartCoroutine(AnimateCountUp(targetCredits));
+                creditsText.text = $"Credits Collected: {targetCredits} ȼ";
             }
             
             if (progress >= 1f)
             {
                 isCountingUp = false;
             }
+        }
+    }
+
+    IEnumerator AnimateCountUp(int targetCount)
+    {
+        float startTime = Time.time;
+        int currentCount = 0;
+
+        while(Time.time < startTime)
+        {
+            float elapsedPercentage = (Time.time - startTime) / countUpDuration;
+            currentCount = Mathf.RoundToInt(Mathf.Lerp(0, targetCount, elapsedPercentage));
+            
+            yield return null;
         }
     }
 
@@ -89,24 +104,11 @@ public class ResultsScreenUI : MonoBehaviour
 
         if(debug) Debug.Log($"[ResultsScreenUI] Got stats - Floors: {targetFloors}, Enemies: {targetEnemies}, Credits: {targetCredits}");
 
-        
-        if (floorsText != null)
-        {
-            floorsText.text = $"Floors Cleared: {targetFloors}";
-            if(debug) Debug.Log($"[ResultsScreenUI] Set floors text: {floorsText.text}");
-        }
+        if (floorsText != null) { floorsText.text = $"Floors Cleared: {targetFloors}"; }
                 
-        if (enemiesText != null)
-        {
-            enemiesText.text = $"Enemies Killed: {targetEnemies}";
-            if(debug) Debug.Log($"[ResultsScreenUI] Set enemies text: {enemiesText.text}");
-        }
+        if (enemiesText != null) { enemiesText.text = $"Enemies Killed: {targetEnemies}"; }
                 
-        if (creditsText != null)
-        {
-            creditsText.text = $"Credits Collected: {targetCredits} ȼ";
-            if(debug) Debug.Log($"[ResultsScreenUI] Set credits text: {creditsText.text}");
-        }
+        if (creditsText != null) { creditsText.text = $"Credits Collected: {targetCredits} ȼ"; }
 
         // display skill unlocked panel
         if (skillUnlockedPanel != null)
@@ -151,7 +153,7 @@ public class ResultsScreenUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        // Clean up button listeners
+        // clean up button listeners
         if (continueButton != null)
             continueButton.onClick.RemoveListener(OnContinueClicked);
     }

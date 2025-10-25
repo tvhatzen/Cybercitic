@@ -1,5 +1,8 @@
 using UnityEngine;
 
+// dynamically add audio listener component to anything using the PlaySound / music methods
+// will need a transform as well to place the source
+
 public class AudioManager : SingletonBase<AudioManager>
 {
     #region Clips
