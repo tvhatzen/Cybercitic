@@ -154,7 +154,7 @@ Transform:
   m_GameObject: {fileID: 254944114}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.98, y: 0, z: -1}
+  m_LocalPosition: {x: 5.66, y: 0, z: -0.838}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1212,6 +1212,14 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 3032767640868300122, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: debug
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3032767640868300122, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: speedMultiplier
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 3149356929928338088, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: debug
       value: 0
@@ -1305,6 +1313,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5669860155023522084, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: debug
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5669860155023522084, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: skill1Key
       value: 49
       objectReference: {fileID: 0}
@@ -1322,12 +1334,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5669860155023522084, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: equippedSkills.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5669860155023522084, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: 'equippedSkills.Array.data[0]'
       value: 
       objectReference: {fileID: 11400000, guid: c7e2318ea9b8a71448b6758afe178809, type: 2}
+    - target: {fileID: 5669860155023522084, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: 'equippedSkills.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 96215e4c0ebad41468707bb8ab9751ef, type: 2}
+    - target: {fileID: 5669860155023522084, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: 'equippedSkills.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 5cd98970d1809cb42a216b227c1365be, type: 2}
     - target: {fileID: 5781737063218651057, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1432,6 +1452,30 @@ PrefabInstance:
       propertyPath: targetingIcon
       value: 
       objectReference: {fileID: 1339922552}
+    - target: {fileID: 7323873510990202161, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: m_Size.x
+      value: 0.37431872
+      objectReference: {fileID: 0}
+    - target: {fileID: 7323873510990202161, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: m_Size.y
+      value: 0.58229804
+      objectReference: {fileID: 0}
+    - target: {fileID: 7323873510990202161, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: m_Size.z
+      value: 0.40723243
+      objectReference: {fileID: 0}
+    - target: {fileID: 7323873510990202161, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: m_Center.x
+      value: -0.029365152
+      objectReference: {fileID: 0}
+    - target: {fileID: 7323873510990202161, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: m_Center.y
+      value: 0.13709551
+      objectReference: {fileID: 0}
+    - target: {fileID: 7323873510990202161, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: m_Center.z
+      value: -0.010853276
+      objectReference: {fileID: 0}
     - target: {fileID: 7801801497178132509, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: debug
       value: 0
@@ -1447,6 +1491,30 @@ PrefabInstance:
     - target: {fileID: 7939351310454977686, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: m_SortingOrder
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8364269315205024833, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: m_Size.x
+      value: 0.38424802
+      objectReference: {fileID: 0}
+    - target: {fileID: 8364269315205024833, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: m_Size.y
+      value: 0.5552881
+      objectReference: {fileID: 0}
+    - target: {fileID: 8364269315205024833, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: m_Size.z
+      value: 0.5974046
+      objectReference: {fileID: 0}
+    - target: {fileID: 8364269315205024833, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: m_Center.x
+      value: -0.028603166
+      objectReference: {fileID: 0}
+    - target: {fileID: 8364269315205024833, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: m_Center.y
+      value: 0.19764411
+      objectReference: {fileID: 0}
+    - target: {fileID: 8364269315205024833, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: m_Center.z
+      value: 0.031165779
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2357,6 +2425,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7962549765882829063, guid: d2e7b04e94b04de42a69d329c3b3d6cc, type: 3}
+      propertyPath: debug
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7962549765882829063, guid: d2e7b04e94b04de42a69d329c3b3d6cc, type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
@@ -2601,7 +2673,7 @@ Transform:
   m_GameObject: {fileID: 1749541839}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.02, y: 0, z: 1}
+  m_LocalPosition: {x: 5.321, y: 0, z: 0.815}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2861,7 +2933,7 @@ Transform:
   m_GameObject: {fileID: 1884654316}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.73, y: 0, z: 0}
+  m_LocalPosition: {x: 4.761, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3527,7 +3599,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skills: []
   upgrades: []
-  debug: 0
+  debug: 1
 --- !u!114 &2134808715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3540,14 +3612,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d430ce667a15f3458c8febf575d45d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseHealth: 50
-  baseSpeed: 4
+  baseHealth: 30
+  baseSpeed: 3
+  baseSpeedMultiplier: 0.1
   baseAttack: 5
-  baseDodgeChance: 0.1
+  baseDodgeChance: 0
+  baseDefense: 0
   currentHealth: 0
   currentSpeed: 0
+  currentSpeedMultiplier: 0
   currentAttack: 0
   currentDodgeChance: 0
+  currentDefense: 0
   debug: 0
 --- !u!224 &2134808726 stripped
 RectTransform:

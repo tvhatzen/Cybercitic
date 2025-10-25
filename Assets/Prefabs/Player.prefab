@@ -302,7 +302,7 @@ MonoBehaviour:
   skill3Key: 51
   equippedSkills: []
   skillUseParticle: {fileID: 6290629163846926190}
-  debug: 0
+  debug: 1
 --- !u!114 &5544270215821477331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -381,7 +381,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57dd9c77b0afc374db4c21c98742801c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackCooldown: 1
+  baseAttackCooldown: 1
+  speedMultiplier: 0.1
   debug: 0
 --- !u!114 &5174850044127445237
 MonoBehaviour:

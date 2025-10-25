@@ -97,11 +97,11 @@ public class SkillUI : MonoBehaviour
     }
 
     // Test method to unlock all skills and assign them to buttons
+    // make sure this is also unlocking skills once assigned
     private void UnlockAllTestSkills()
     {
         if (PlayerSkills.Instance == null)
         {
-            if(debug) Debug.LogWarning("PlayerSkills instance not found! Cannot unlock test skills.");
             return;
         }
 

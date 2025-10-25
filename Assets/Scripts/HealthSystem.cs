@@ -68,16 +68,16 @@ public class HealthSystem : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
-        // Check for dodge chance first (complete damage avoidance)
-        if (entityData != null && entityData.currentDodgeChance > 0)
+        // Check for dodge chance first (complete damage avoidance) should apply ONLY TO PLAYER
+        if (gameObject.CompareTag("Player") && entityData != null && entityData.currentDodgeChance > 0)
         {
             float dodgeRoll = Random.Range(0f, 1f);
             if (dodgeRoll < entityData.currentDodgeChance)
             {
                 if(debug) Debug.Log($"{name} dodged the attack! (Roll: {dodgeRoll:F2} < Dodge: {entityData.currentDodgeChance:F2})");
                 
-                // Play dodge sound/effect here if desired
-                GameEvents.RequestSound("dodge"); // Assuming you have a dodge sound
+                // Play dodge sound
+                GameEvents.RequestSound("dodge"); 
                 
                 return; // No damage taken
             }
@@ -85,7 +85,7 @@ public class HealthSystem : MonoBehaviour
         
         // Apply defense damage reduction
         int finalDamage = amount;
-        if (entityData != null && entityData.currentDefense > 0)
+        if (gameObject.CompareTag("Player") && entityData != null && entityData.currentDefense > 0)
         {
             float damageReduction = entityData.currentDefense;
             finalDamage = Mathf.RoundToInt(amount * (1f - damageReduction));

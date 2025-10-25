@@ -13,7 +13,6 @@ public class EntityStats : SingletonBase<EntityStats>
 
     private EntityData playerData;
 
-    [Header("DEBUG")]
     public bool debug = false;
 
     protected override void Awake()
@@ -49,7 +48,8 @@ public class EntityStats : SingletonBase<EntityStats>
         if (playerData != null)
         {
             playerData.ModifyBaseStats(speedMod: amount);
-            
+            playerData.ModifyBaseStats(speedMultiplier: amount);
+
             GameEvents.StatsChanged(this);
             if(debug) Debug.Log($"Speed modified by {amount}. New base: {playerData.baseSpeed}");
         }
