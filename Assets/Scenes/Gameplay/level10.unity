@@ -829,12 +829,9 @@ MonoBehaviour:
   - {fileID: 150106152159008451, guid: d7120f27bc6ce4148b12f617ca3d83a1, type: 3}
   - {fileID: 150106152159008451, guid: d7120f27bc6ce4148b12f617ca3d83a1, type: 3}
   - {fileID: 150106152159008451, guid: d7120f27bc6ce4148b12f617ca3d83a1, type: 3}
-  enemySpawnPoints:
-  - {fileID: 584544272}
-  - {fileID: 120943701}
-  - {fileID: 169022243}
+  enemySpawnPoints: []
   bossPrefab: {fileID: 4060379348875191879, guid: 029b3d4fc54acbe48950001290aeaac7, type: 3}
-  bossSpawnPoint: {fileID: 0}
+  bossSpawnPoint: {fileID: 44839113}
   bossFloorInterval: 5
   debug: 0
   _floorProgressBar: {fileID: 0}
@@ -2307,7 +2304,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadNewScene: 1
-  nextFloorSceneName: level5
+  nextFloorSceneName: level11
   debug: 0
 --- !u!65 &1739942285
 BoxCollider:

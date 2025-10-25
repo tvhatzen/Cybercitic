@@ -154,7 +154,7 @@ Transform:
   m_GameObject: {fileID: 254944114}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.98, y: 0, z: -1}
+  m_LocalPosition: {x: 5.705, y: 0, z: -0.451}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1429,6 +1429,10 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 3032767640868300122, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
+      propertyPath: speedMultiplier
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 3149356929928338088, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: debug
       value: 0
@@ -1611,7 +1615,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5781737063218651057, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 0.07
       objectReference: {fileID: 0}
     - target: {fileID: 5781737063218651057, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3515,7 +3519,7 @@ Transform:
   m_GameObject: {fileID: 1749541839}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.02, y: 0, z: 1}
+  m_LocalPosition: {x: 5.354, y: 0, z: 0.591}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4206,7 +4210,7 @@ Transform:
   m_GameObject: {fileID: 2099124943}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.7, y: 0, z: 0}
+  m_LocalPosition: {x: -2.7, y: 0.11, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4254,10 +4258,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d430ce667a15f3458c8febf575d45d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseHealth: 50
-  baseSpeed: 4
+  baseHealth: 30
+  baseSpeed: 3
   baseAttack: 5
-  baseDodgeChance: 0.1
+  baseDodgeChance: 0
   baseDefense: 0
   currentHealth: 0
   currentSpeed: 0
