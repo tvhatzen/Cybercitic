@@ -432,6 +432,8 @@ public class FloorManager : SingletonBase<FloorManager>
     public void PlayBackgroundMusic()
     {
         // play floor background music
+
+        // would need to change music after every boss floor, use modulo method?
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.PlayMusicTrack("floor1_5");
