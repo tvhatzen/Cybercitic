@@ -1465,7 +1465,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 502.9, y: 51.6}
+  m_AnchoredPosition: {x: 502.9, y: 73.56}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &810941985
@@ -1491,7 +1491,8 @@ MonoBehaviour:
   m_text: "Music Credits\n\n\"Airship Serenity\", \"Equatorial Complex\", \n\"Exit
     the Premises\", \"Rhinoceros\", \"Unwritten Return\"\nKevin MacLeod (incompetech.com)\nLicensed
     under Creative Commons: By Attribution 3.0\nhttp://creativecommons.org/licenses/by/3.0/\n\nMusic
-    from JohnnyDog \nSong title: The Lab\nLink - \"https://youtu.be/yMpNPtta0us?si=uoFeQ6OnD6dnlsfR\" "
+    from JohnnyDog \nSong title: The Lab\nLink - \"https://youtu.be/yMpNPtta0us?si=uoFeQ6OnD6dnlsfR\"\n\nShield
+    from Luminary Labs - Unity Asset Store\n\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4452,6 +4453,7 @@ MonoBehaviour:
   bossSpawnPoint: {fileID: 1884654317}
   bossFloorInterval: 5
   isFinalFloor: 0
+  isRunning: 0
   debug: 1
   _floorProgressBar: {fileID: 1581502389}
 --- !u!1 &1884654316

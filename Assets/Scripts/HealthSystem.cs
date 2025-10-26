@@ -9,6 +9,7 @@ public class HealthSystem : MonoBehaviour
     private int currentHealth;
     public int CurrentHealth => currentHealth;
     public int DamagePerHit => entityData != null ? entityData.currentAttack : 0;
+    public bool isDead = false;
 
     public event Action<HealthSystem> OnDeath; // notify when this entity dies
     public static event Action<GameObject> OnAnyDeath; // global death flag for any death
@@ -62,8 +63,6 @@ public class HealthSystem : MonoBehaviour
             
             if(debug) Debug.Log($"[HealthSystem] {name} initialized - HP: {currentHealth}/{entityData.baseHealth}, ATK: {DamagePerHit}");
         }
-
-        //originalPosition = gameObject.transform.position;
     }
 
     public void TakeDamage(int amount)
@@ -178,6 +177,7 @@ public class HealthSystem : MonoBehaviour
             
             ResetSpriteColor();
         }
+        isDead = false;
     }
 
     public void ResetHealthToBase()
@@ -194,6 +194,7 @@ public class HealthSystem : MonoBehaviour
             
             ResetSpriteColor();
         }
+        isDead = false;
     }
 
     // reset all stats to original values (for new game after win)
@@ -301,5 +302,7 @@ public class HealthSystem : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        isDead = true;
     }
 }

@@ -20,6 +20,7 @@ public class FloorManager : SingletonBase<FloorManager>
     public Transform bossSpawnPoint;
     public int bossFloorInterval = 5; // Boss every 5 floors (5, 10, 15, 20, etc.)
     public bool isFinalFloor = false;
+    public bool isRunning; // track if there's a current run
 
     public int CurrentFloor { get; private set; } = 1;
 
@@ -277,15 +278,17 @@ public class FloorManager : SingletonBase<FloorManager>
         // reset health
         var health = playerGO.GetComponent<HealthSystem>();
         if (health != null && health.CurrentHealth <= 0)
+        {
             health.ResetHealth(); // only reset if dead
 
-        // reset skill cooldowns when respawning
-        if (PlayerSkills.Instance != null)
-        {
-            PlayerSkills.Instance.ResetAllSkillCooldowns();
-            if (debug) Debug.Log("[FloorManager] Reset all skill cooldowns on player spawn");
+            // reset skill cooldowns when respawning
+            if (PlayerSkills.Instance != null)
+            {
+                //PlayerSkills.Instance.ResetAllSkillCooldowns(); // need to check if running
+                if (debug) Debug.Log("[FloorManager] Reset all skill cooldowns on player spawn");
+            }
         }
-
+           
         // reset combat state when respawning
         var combat = playerGO.GetComponent<PlayerCombat>();
         if (combat != null)
