@@ -85,7 +85,7 @@ public class Skill : ScriptableObject
 
     protected virtual bool CanActivate()
     {
-        return isUnlocked && currentState == SkillStates.ReadyToUse && currentCharges > 0;
+        return isUnlocked && currentState == SkillStates.ReadyToUse && currentCharges > 0; 
     }
 
     protected virtual IEnumerator ExecuteSkill()
@@ -162,7 +162,7 @@ public class Skill : ScriptableObject
     protected virtual void FinishSkill()
     {
         currentCharges--;
-        StartCooldown();
+        StartCooldown(); 
     }
 
     protected virtual void StartCooldown()
@@ -238,3 +238,4 @@ public class Skill : ScriptableObject
         }
     }
 }
+// needs to account for just being cast once per run
