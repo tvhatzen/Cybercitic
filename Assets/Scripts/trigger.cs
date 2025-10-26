@@ -14,12 +14,8 @@ public class trigger : MonoBehaviour
     
     private bool hasBeenTriggered = false; // prevent multiple triggers
 
-    private SceneLoader sceneLoader;
-
     private void Awake()
     {
-        sceneLoader = GetComponent<SceneLoader>();
-
         Collider col = GetComponent<Collider>();
         col.isTrigger = true;
     }
@@ -49,9 +45,8 @@ public class trigger : MonoBehaviour
                 FloorManager.Instance.IncrementFloor();
                 if(debug) Debug.Log($"[Trigger] Floor incremented from {currentFloorBefore} to {FloorManager.Instance.CurrentFloor}");
 
-                // Load the scene - OnSceneLoaded will handle setting state to Playing
-                //SceneManager.LoadScene(nextFloorSceneName);
-                sceneLoader.LoadSceneWithTransition(nextFloorSceneName);
+                // Load the scene with transition animation
+                SceneLoader.LoadScene(nextFloorSceneName);
             }
             else
             {

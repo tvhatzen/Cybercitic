@@ -265,15 +265,29 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         isPlaying = false;
         currentAnimationCoroutine = null;
         
-        // if this was an attack animation and we're in combat, return to standing
+        // if this was an attack animation, return to appropriate animation based on combat state
         if (sequence.animationName == "Attack")
         {
-            // check if we're still in combat and should return to standing
             var playerCombat = GetComponent<PlayerCombat>();
+            var playerMovement = GetComponent<PlayerMovement>();
+            
             if (playerCombat != null && playerCombat.InCombat)
             {
+                // still in combat, return to standing
                 PlayStandingAnimation();
                 if (debug) Debug.Log("[FrameBasedPlayerAnimator] Attack animation completed, returning to standing");
+            }
+            else if (playerMovement != null && playerMovement.CanMove)
+            {
+                // not in combat and can move, return to running
+                PlayRunAnimation();
+                if (debug) Debug.Log("[FrameBasedPlayerAnimator] Attack animation completed, returning to running");
+            }
+            else
+            {
+                // fallback to standing
+                PlayStandingAnimation();
+                if (debug) Debug.Log("[FrameBasedPlayerAnimator] Attack animation completed, returning to standing (fallback)");
             }
         }
         
@@ -323,13 +337,14 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         isPlaying = false;
         currentAnimationCoroutine = null;
         
-        // if this was an attack animation and we're in combat, return to standing
+        // if this was an attack animation, return to appropriate animation based on combat state
         if (sequence.animationName == "Attack")
         {
             if (debug) Debug.Log("[FrameBasedPlayerAnimator] Attack animation sequence completed");
             
-            // check if we're still in combat and should return to standing
             var playerCombat = GetComponent<PlayerCombat>();
+            var playerMovement = GetComponent<PlayerMovement>();
+            
             if (playerCombat != null && playerCombat.InCombat)
             {
                 if (debug) Debug.Log("[FrameBasedPlayerAnimator] Still in combat, transitioning to standing");
@@ -340,9 +355,23 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
                 PlayStandingAnimation();
                 if (debug) Debug.Log("[FrameBasedPlayerAnimator] Attack animation completed, returning to standing");
             }
+            else if (playerMovement != null && playerMovement.CanMove)
+            {
+                if (debug) Debug.Log("[FrameBasedPlayerAnimator] Not in combat and can move, transitioning to running");
+                yield return new WaitForEndOfFrame();
+                
+                // update currentAnimation to Running before playing it
+                currentAnimation = "Running";
+                PlayRunAnimation();
+                if (debug) Debug.Log("[FrameBasedPlayerAnimator] Attack animation completed, returning to running");
+            }
             else
             {
-                if (debug) Debug.Log("[FrameBasedPlayerAnimator] Not in combat, not transitioning to standing");
+                if (debug) Debug.Log("[FrameBasedPlayerAnimator] Fallback to standing animation");
+                yield return new WaitForEndOfFrame();
+                
+                currentAnimation = "Standing";
+                PlayStandingAnimation();
             }
         }
         

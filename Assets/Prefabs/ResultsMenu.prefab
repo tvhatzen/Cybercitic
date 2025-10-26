@@ -332,7 +332,7 @@ MonoBehaviour:
   skillUnlockedPanel: {fileID: 9141995169809385310}
   skillNameText: {fileID: 1325602463719519881}
   continueButton: {fileID: 1376144276262393175}
-  useCountUpAnimation: 1
+  useCountUpAnimation: 0
   countUpDuration: 3
   debug: 0
 --- !u!1 &4555901829229381723

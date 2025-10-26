@@ -44,46 +44,53 @@ public class ResultsScreenUI : MonoBehaviour
 
     private void Update()
     {
-        if (isCountingUp && useCountUpAnimation)
-        {
-            countUpTimer += Time.deltaTime;
-            float progress = Mathf.Clamp01(countUpTimer / countUpDuration);
-            
-            if (floorsText != null)
-            {
-                StartCoroutine(AnimateCountUp(targetFloors));
-                floorsText.text = $"Floors Cleared: {targetFloors}";
-            }
-            if (enemiesText != null)
-            {
-                StartCoroutine(AnimateCountUp(targetEnemies));
-                enemiesText.text = $"Enemies Killed: {targetEnemies}";
-            }
-            if (creditsText != null)
-            {
-                StartCoroutine(AnimateCountUp(targetCredits));
-                creditsText.text = $"Credits Collected: {targetCredits} ȼ";
-            }
-            
-            if (progress >= 1f)
-            {
-                isCountingUp = false;
-            }
-        }
+        // Animation is handled by coroutines, no need for Update method needed
     }
 
-    IEnumerator AnimateCountUp(int targetCount)
+    IEnumerator AnimateCountUp(int targetCount, TextMeshProUGUI textComponent, string prefix)
     {
+        if (debug) Debug.Log($"[ResultsScreenUI] Starting animation for {prefix} to {targetCount}");
+        
         float startTime = Time.time;
         int currentCount = 0;
 
-        while(Time.time < startTime)
+        // Handle case where targetCount is 0
+        if (targetCount == 0)
         {
-            float elapsedPercentage = (Time.time - startTime) / countUpDuration;
-            currentCount = Mathf.RoundToInt(Mathf.Lerp(0, targetCount, elapsedPercentage));
+            if (textComponent != null)
+            {
+                textComponent.text = $"{prefix}: 0";
+            }
+            if (debug) Debug.Log($"[ResultsScreenUI] Target count is 0 for {prefix}, setting immediately");
+            yield break;
+        }
+
+        while (currentCount < targetCount)
+        {
+            float elapsedTime = Time.time - startTime;
+            float progress = Mathf.Clamp01(elapsedTime / countUpDuration);
+            currentCount = Mathf.RoundToInt(Mathf.Lerp(0, targetCount, progress));
+            
+            if (textComponent != null)
+            {
+                textComponent.text = $"{prefix}: {currentCount}";
+            }
+            
+            if (debug && currentCount % Mathf.Max(1, targetCount / 10) == 0) // Log every 10% progress
+            {
+                Debug.Log($"[ResultsScreenUI] {prefix} animation progress: {currentCount}/{targetCount} ({progress:P0})");
+            }
             
             yield return null;
         }
+        
+        // Ensure final value is set
+        if (textComponent != null)
+        {
+            textComponent.text = $"{prefix}: {targetCount}";
+        }
+        
+        if (debug) Debug.Log($"[ResultsScreenUI] Animation completed for {prefix}: {targetCount}");
     }
 
     private void DisplayResults()
@@ -104,11 +111,34 @@ public class ResultsScreenUI : MonoBehaviour
 
         if(debug) Debug.Log($"[ResultsScreenUI] Got stats - Floors: {targetFloors}, Enemies: {targetEnemies}, Credits: {targetCredits}");
 
-        if (floorsText != null) { floorsText.text = $"Floors Cleared: {targetFloors}"; }
-                
-        if (enemiesText != null) { enemiesText.text = $"Enemies Killed: {targetEnemies}"; }
-                
-        if (creditsText != null) { creditsText.text = $"Credits Collected: {targetCredits} ȼ"; }
+        // Start count up animations if enabled
+        if (useCountUpAnimation)
+        {
+            if (debug) Debug.Log($"[ResultsScreenUI] Starting count up animations - Duration: {countUpDuration}s");
+            
+            if (floorsText != null) 
+            { 
+                StartCoroutine(AnimateCountUp(targetFloors, floorsText, "Floors Cleared"));
+                if (debug) Debug.Log($"[ResultsScreenUI] Started floors animation to {targetFloors}");
+            }
+            if (enemiesText != null) 
+            { 
+                StartCoroutine(AnimateCountUp(targetEnemies, enemiesText, "Enemies Killed"));
+                if (debug) Debug.Log($"[ResultsScreenUI] Started enemies animation to {targetEnemies}");
+            }
+            if (creditsText != null) 
+            { 
+                StartCoroutine(AnimateCountUp(targetCredits, creditsText, "Credits Collected"));
+                if (debug) Debug.Log($"[ResultsScreenUI] Started credits animation to {targetCredits}");
+            }
+        }
+        else
+        {
+            // Set text immediately without animation
+            if (floorsText != null) { floorsText.text = $"Floors Cleared: {targetFloors}"; }
+            if (enemiesText != null) { enemiesText.text = $"Enemies Killed: {targetEnemies}"; }
+            if (creditsText != null) { creditsText.text = $"Credits Collected: {targetCredits} ȼ"; }
+        }
 
         // display skill unlocked panel
         if (skillUnlockedPanel != null)

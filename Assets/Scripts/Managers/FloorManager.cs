@@ -276,6 +276,9 @@ public class FloorManager : SingletonBase<FloorManager>
 
         // reset all enemy combat states to ensure they can attack again
         ResetAllEnemyCombatStates();
+        
+        // force enable combat for all enemies after a short delay to ensure player is ready
+        StartCoroutine(ForceEnableEnemyCombatAfterDelay(0.5f));
 
         yield return null;
         
@@ -426,7 +429,51 @@ public class FloorManager : SingletonBase<FloorManager>
             }
         }
         
-        if (debug) Debug.Log($"[FloorManager] Reset combat states for {enemies.Length} enemies");
+        // Also reset boss combat state if it exists
+        GameObject[] bosses = GameObject.FindGameObjectsWithTag("Boss");
+        foreach (GameObject boss in bosses)
+        {
+            EnemyCombat bossCombat = boss.GetComponent<EnemyCombat>();
+            if (bossCombat != null)
+            {
+                bossCombat.SendMessage("DisableCombat", SendMessageOptions.DontRequireReceiver);
+                if (debug) Debug.Log($"[FloorManager] Reset combat state for boss: {boss.name}");
+            }
+        }
+        
+        if (debug) Debug.Log($"[FloorManager] Reset combat states for {enemies.Length} enemies and {bosses.Length} bosses");
+    }
+
+    // Force enable combat for all enemies after a delay
+    private IEnumerator ForceEnableEnemyCombatAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        
+        // Enable combat for all enemies
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach (GameObject enemy in enemies)
+        {
+            EnemyCombat enemyCombat = enemy.GetComponent<EnemyCombat>();
+            if (enemyCombat != null)
+            {
+                enemyCombat.ForceEnableCombat();
+                if (debug) Debug.Log($"[FloorManager] Force enabled combat for enemy: {enemy.name}");
+            }
+        }
+        
+        // Enable combat for all bosses
+        GameObject[] bosses = GameObject.FindGameObjectsWithTag("Boss");
+        foreach (GameObject boss in bosses)
+        {
+            EnemyCombat bossCombat = boss.GetComponent<EnemyCombat>();
+            if (bossCombat != null)
+            {
+                bossCombat.ForceEnableCombat();
+                if (debug) Debug.Log($"[FloorManager] Force enabled combat for boss: {boss.name}");
+            }
+        }
+        
+        if (debug) Debug.Log($"[FloorManager] Force enabled combat for {enemies.Length} enemies and {bosses.Length} bosses");
     }
 
     public void PlayBackgroundMusic()

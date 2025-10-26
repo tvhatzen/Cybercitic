@@ -30,6 +30,18 @@ public class SkillButton : MonoBehaviour
         slotIndex = index;
         instanceID = GetInstanceID(); // store instance ID for debugging
 
+        // set up button click listener
+        if (button != null)
+        {
+            button.onClick.RemoveAllListeners(); // clear any existing listeners
+            button.onClick.AddListener(OnButtonClicked);
+            if (debug) Debug.Log($"[SkillButton] Button click listener added for slot {index}");
+        }
+        else
+        {
+            Debug.LogError($"[SkillButton] Button component is null for slot {index}!");
+        }
+
         // set up key label
         if (keyLabel != null)
         {
@@ -144,9 +156,17 @@ public class SkillButton : MonoBehaviour
 
     public void OnButtonClicked()
     {
+        if (debug) Debug.Log($"[SkillButton] Button clicked for slot {slotIndex}");
+        
         if (assignedSkill != null && PlayerSkills.Instance != null)
         {
+            if (debug) Debug.Log($"[SkillButton] Attempting to activate skill: {assignedSkill.SkillName}");
             bool activated = PlayerSkills.Instance.ActivateSkill(slotIndex);
+            if (debug) Debug.Log($"[SkillButton] Skill activation result: {activated}");
+        }
+        else
+        {
+            if (debug) Debug.LogWarning($"[SkillButton] Cannot activate skill - assignedSkill: {assignedSkill != null}, PlayerSkills: {PlayerSkills.Instance != null}");
         }
     }
 

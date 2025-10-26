@@ -55,6 +55,25 @@ public class AudioManager : SingletonBase<AudioManager>
     private void Start()
     {
         GameEvents.OnSoundRequested += HandleSoundRequest;
+        
+        // Check if AudioSources are properly assigned
+        if (musicSource == null)
+        {
+            Debug.LogError("AudioManager: Music AudioSource is not assigned!");
+        }
+        else
+        {
+            Debug.Log("AudioManager: Music AudioSource is properly assigned");
+        }
+        
+        if (sfxSource == null)
+        {
+            Debug.LogError("AudioManager: SFX AudioSource is not assigned!");
+        }
+        else
+        {
+            Debug.Log("AudioManager: SFX AudioSource is properly assigned");
+        }
     }
 
     private void OnDestroy()
@@ -76,13 +95,18 @@ public class AudioManager : SingletonBase<AudioManager>
             musicSource.clip = clip;
             musicSource.loop = true; // loop the background music
             musicSource.Play();
-            if (debug) Debug.Log("AudioManager: playing music - " + clip.name);
+            Debug.Log("AudioManager: playing music - " + clip.name);
+        }
+        else
+        {
+            Debug.LogWarning("AudioManager: Cannot play music - musicSource: " + (musicSource != null) + ", clip: " + (clip != null));
         }
     }
 
     // play music by string name 
     public void PlayMusicTrack(string trackName)
     {
+        Debug.Log("AudioManager: Attempting to play music track - " + trackName);
         AudioClip clip = GetSoundClip(trackName);
         if (clip != null)
         {
@@ -90,7 +114,7 @@ public class AudioManager : SingletonBase<AudioManager>
         }
         else
         {
-            if (debug) Debug.LogWarning($"AudioManager: Sound '{trackName}' not found!");
+            Debug.LogWarning($"AudioManager: Music track '{trackName}' not found!");
         }
     }
 
@@ -100,13 +124,18 @@ public class AudioManager : SingletonBase<AudioManager>
         if(sfxSource != null && clip != null)
         {
             sfxSource.PlayOneShot(clip);
-            if (debug) Debug.Log("AudioManager: playing sound - " + clip.name);
+            Debug.Log("AudioManager: playing sound - " + clip.name);
+        }
+        else
+        {
+            Debug.LogWarning("AudioManager: Cannot play sound - sfxSource: " + (sfxSource != null) + ", clip: " + (clip != null));
         }
     }
 
     // play sound by string name 
     public void PlaySound(string soundName)
     {
+        Debug.Log("AudioManager: Attempting to play sound - " + soundName);
         AudioClip clip = GetSoundClip(soundName);
         if (clip != null)
         {
@@ -114,7 +143,7 @@ public class AudioManager : SingletonBase<AudioManager>
         }
         else
         {
-            if (debug) Debug.LogWarning($"AudioManager: Sound '{soundName}' not found!");
+            Debug.LogWarning($"AudioManager: Sound '{soundName}' not found!");
         }
     }
 

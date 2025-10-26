@@ -75,6 +75,11 @@ public class EnemyCombat : MonoBehaviour
             nextAttackTime = Time.time + attackCooldown;
             AttackTarget(target);
         }
+        else if (debug)
+        {
+            float timeUntilAttack = nextAttackTime - Time.time;
+            Debug.Log($"[EnemyCombat] {name} waiting to attack, {timeUntilAttack:F1}s remaining");
+        }
     }
 
     protected virtual void AttackTarget(HealthSystem target)
@@ -93,6 +98,9 @@ public class EnemyCombat : MonoBehaviour
             if (t == transform)
             {
                 canAttack = true;
+                // Set next attack time to current time + cooldown to prevent immediate attack
+                nextAttackTime = Time.time + attackCooldown;
+                if (debug) Debug.Log($"[EnemyCombat] {name} combat enabled, next attack in {attackCooldown}s");
                 break;
             }
         }
@@ -101,6 +109,15 @@ public class EnemyCombat : MonoBehaviour
     private void DisableCombat()
     {
         canAttack = false;
+    }
+
+    // Public method to force enable combat (used after respawn)
+    public void ForceEnableCombat()
+    {
+        canAttack = true;
+        // Set next attack time to current time + cooldown to prevent immediate attack
+        nextAttackTime = Time.time + attackCooldown;
+        if (debug) Debug.Log($"[EnemyCombat] {name} combat force enabled, next attack in {attackCooldown}s");
     }
 
     // Draw attack range
