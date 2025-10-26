@@ -30,6 +30,7 @@ public class Skill : ScriptableObject
     [NonSerialized] public float currentCooldown = 0f;
     [NonSerialized] public int currentCharges = 0;
     [NonSerialized] public bool isUnlocked = false;
+    [NonSerialized] public bool hasBeenUsed = false; // track if skill has been used this run
 
     // events
     public event Action<Skill> OnSkillActivated;
@@ -63,6 +64,7 @@ public class Skill : ScriptableObject
         currentState = isUnlocked ? SkillStates.ReadyToUse : SkillStates.Locked;
         currentCooldown = 0f;
         currentCharges = maxCharges;
+        hasBeenUsed = false; // initialize as not used
     }
 
     public virtual bool Activate()
@@ -85,7 +87,7 @@ public class Skill : ScriptableObject
 
     protected virtual bool CanActivate()
     {
-        return isUnlocked && currentState == SkillStates.ReadyToUse && currentCharges > 0; 
+        return isUnlocked && currentState == SkillStates.ReadyToUse && currentCharges > 0 && !hasBeenUsed; 
     }
 
     protected virtual IEnumerator ExecuteSkill()
@@ -162,6 +164,7 @@ public class Skill : ScriptableObject
     protected virtual void FinishSkill()
     {
         currentCharges--;
+        hasBeenUsed = true; // mark skill as used
         StartCooldown(); 
     }
 
@@ -192,10 +195,14 @@ public class Skill : ScriptableObject
     protected virtual void FinishCooldown()
     {
         currentCooldown = 0f;
-        currentState = SkillStates.ReadyToUse;
-        currentCharges = maxCharges;
+        // Don't reset state to ReadyToUse if skill has been used
+        if (!hasBeenUsed)
+        {
+            currentState = SkillStates.ReadyToUse;
+            currentCharges = maxCharges;
+        }
         OnSkillCooldownFinished?.Invoke(this);
-        if(debug) Debug.Log($"{skillName} is ready to use again!");
+        if(debug && !hasBeenUsed) Debug.Log($"{skillName} is ready to use again!");
     }
 
     public virtual void UnlockSkill()
@@ -220,6 +227,7 @@ public class Skill : ScriptableObject
             currentState = SkillStates.ReadyToUse;
             currentCooldown = 0f;
             currentCharges = maxCharges;
+            hasBeenUsed = false; // reset the used flag on respawn
             if (debug) Debug.Log($"[Skill] {skillName} cooldown reset - ready to use!");
         }
     }
@@ -238,4 +246,3 @@ public class Skill : ScriptableObject
         }
     }
 }
-// needs to account for just being cast once per run

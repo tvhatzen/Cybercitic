@@ -284,7 +284,7 @@ public class FloorManager : SingletonBase<FloorManager>
             // reset skill cooldowns when respawning
             if (PlayerSkills.Instance != null)
             {
-                //PlayerSkills.Instance.ResetAllSkillCooldowns(); // need to check if running
+                PlayerSkills.Instance.ResetAllSkillCooldowns(); // reset skills when player dies and respawns
                 if (debug) Debug.Log("[FloorManager] Reset all skill cooldowns on player spawn");
             }
         }
@@ -317,7 +317,11 @@ public class FloorManager : SingletonBase<FloorManager>
         }
 
         // reset health bar foreground
-
+        HealthBar healthBar = playerGO.GetComponent<HealthBar>();
+        if (healthBar != null)
+        {
+            healthBar.ResetForeground();
+        }
 
         playerGO.SetActive(true);
     }

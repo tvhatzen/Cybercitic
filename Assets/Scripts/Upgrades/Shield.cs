@@ -13,11 +13,7 @@ public class Shield : Skill
     private bool isShieldActive = false;
     private float originalDefense = 0f;
     private EntityData playerEntityData;
-
-    private void Start()
-    {
-        shieldPrefab.SetActive(false);
-    }
+    private bool hasOriginalDefenseBeenSaved = false;
 
     protected override void ApplySkillEffects()
     {
@@ -29,13 +25,6 @@ public class Shield : Skill
         ApplyShield();
     }
     
-    protected override void PlaySkillParticleEffect()
-    {
-        // Shield uses a different particle effect system (attached to player)
-        // The base particle effect is not used for shield
-        if(debug) Debug.Log("[Shield] Using custom shield particle effect system");
-    }
-    
     private void ApplyShield()
     {
         // Get player's EntityData component
@@ -44,15 +33,23 @@ public class Shield : Skill
             playerEntityData = PlayerInstance.Instance.GetComponent<EntityData>();
             if (playerEntityData != null)
             {
-                // Store original defense value
-                originalDefense = playerEntityData.currentDefense;
+                // Store original defense value only once
+                if (!hasOriginalDefenseBeenSaved)
+                {
+                    originalDefense = playerEntityData.currentDefense;
+                    hasOriginalDefenseBeenSaved = true;
+                    if(debug) Debug.Log($"[Shield] Original defense saved: {originalDefense:F2}");
+                }
                 
-                // Apply shield damage reduction
-                playerEntityData.currentDefense = Mathf.Min(1f, originalDefense + damageReduction);
+                // Apply shield damage reduction by setting defense to our damage reduction value
+                float shieldDefense = originalDefense + damageReduction;
+                shieldDefense = Mathf.Clamp01(shieldDefense);
+                
+                playerEntityData.currentDefense = shieldDefense;
                 
                 isShieldActive = true;
                 
-                if(debug) Debug.Log($"[Shield] Applied shield! Defense: {originalDefense:F2} -> {playerEntityData.currentDefense:F2}");
+                if(debug) Debug.Log($"[Shield] Applied shield! Defense: {originalDefense:F2} -> {playerEntityData.currentDefense:F2} (Added {damageReduction * 100}% reduction)");
                 
                 // Start shield duration timer
                 if (PlayerSkills.Instance != null)
@@ -94,6 +91,9 @@ public class Shield : Skill
             
             if(debug) Debug.Log($"[Shield] Shield expired! Defense restored to {originalDefense:F2}");
             
+            // Reset the flag so shield can be used again
+            hasOriginalDefenseBeenSaved = false;
+            
             // Remove visual effect
             RemoveShieldEffect();
         }
@@ -101,7 +101,13 @@ public class Shield : Skill
     
     private void CreateShieldEffect()
     {
-        if (PlayerInstance.Instance != null)
+        if (shieldPrefab != null)
+        {
+            // Activate the shield prefab if it exists
+            shieldPrefab.SetActive(true);
+            if(debug) Debug.Log("[Shield] Shield visual effect activated");
+        }
+        else if (PlayerInstance.Instance != null)
         {
             // Use skillEffect from base class if available, otherwise use shieldEffect
             ParticleSystem effectPrefab = skillEffect != null ? skillEffect : shieldEffect;
@@ -111,11 +117,6 @@ public class Shield : Skill
                 // Instantiate shield visual effect on player
                 ParticleSystem shield = Instantiate(effectPrefab, PlayerInstance.Instance.transform);
                 shield.name = "ShieldEffect";
-
-                // Play the particle system
-                //shield.Play();
-                shieldPrefab.SetActive(true);
-                //if (debug) Debug.Log("[Shield] Shield particle effect started");
                 
                 if(debug) Debug.Log("[Shield] Shield visual effect created");
             }
@@ -132,7 +133,13 @@ public class Shield : Skill
     
     private void RemoveShieldEffect()
     {
-        if (PlayerInstance.Instance != null)
+        // Deactivate the shield prefab if it exists
+        if (shieldPrefab != null)
+        {
+            shieldPrefab.SetActive(false);
+            if(debug) Debug.Log("[Shield] Shield prefab deactivated");
+        }
+        else if (PlayerInstance.Instance != null)
         {
             // Find and destroy shield effect
             Transform shieldEffectTransform = PlayerInstance.Instance.transform.Find("ShieldEffect");
@@ -171,6 +178,9 @@ public class Shield : Skill
         {
             RemoveShield();
         }
+        
+        // Reset the flag
+        hasOriginalDefenseBeenSaved = false;
         
         base.ResetCooldown();
     }

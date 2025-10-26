@@ -49,18 +49,23 @@ public class HealthBar : MonoBehaviour
         _healthBarSprite.fillAmount = _targetFillAmount;
         _healthLerpCoroutine = null;
     }
-    
+
     // instantly set health bar without animation
     public void SetHealthBarInstant(float maxHealth, float currentHealth)
     {
         _targetFillAmount = currentHealth / maxHealth;
         _healthBarSprite.fillAmount = _targetFillAmount;
-        
+
         // stop any running coroutine
         if (_healthLerpCoroutine != null)
         {
             StopCoroutine(_healthLerpCoroutine);
             _healthLerpCoroutine = null;
         }
+    }
+    
+    public void ResetForeground()
+    {
+        _healthBarSprite.fillAmount = 1f;
     }
 }
