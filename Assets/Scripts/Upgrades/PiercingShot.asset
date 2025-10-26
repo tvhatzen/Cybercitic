@@ -17,11 +17,11 @@ MonoBehaviour:
   skillIcon: {fileID: 0}
   castIcon: {fileID: 0}
   cooldownDuration: 8
-  castingTime: 0.5
+  castingTime: 0.1
   skillDuration: 1
   skillDamage: 25
   skillRange: 10
   maxCharges: 1
-  skillSound: {fileID: 0}
-  skillEffect: {fileID: 1279018785575207751, guid: b510adc856e8171439bd8520fa91495f, type: 3}
+  skillSound: {fileID: 8300000, guid: 07d297bf05d35204ab41daf1211c2f05, type: 3}
+  skillEffect: {fileID: 6695296498835225918, guid: f6e1d0f7b371c15408041ffd0ad6cc67, type: 3}
   debug: 0

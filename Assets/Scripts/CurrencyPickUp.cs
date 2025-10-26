@@ -90,6 +90,7 @@ public class CurrencyPickUp : MonoBehaviour
         if (other.CompareTag("Player") && CurrencyManager.Instance != null)
         {
             CollectCurrency();
+            
         }
     }
 
@@ -100,7 +101,9 @@ public class CurrencyPickUp : MonoBehaviour
             CurrencyManager.Instance.AddCredits(creditsValue);
             if(debug) Debug.Log($"[CurrencyPickUp] Collected {creditsValue} credits!");
         }
-        
+
+        AudioManager.Instance.PlaySound("pickUpCurrency");
+        Debug.Log("collected currency and played sound");
         Destroy(gameObject);
     }
 

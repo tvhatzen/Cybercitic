@@ -217,12 +217,4 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
         
         if (debug) Debug.Log("[PlayerSkills] All skills cleared for fresh start");
     }
-
-    private void PlayParticles()
-    {
-        if (skillUseParticle != null)
-        {
-            skillUseParticle.Play();
-        }
-    }
 }

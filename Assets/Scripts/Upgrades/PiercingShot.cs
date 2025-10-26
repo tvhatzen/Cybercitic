@@ -5,7 +5,7 @@ using System.Collections;
 public class PiercingShot : Skill
 {
     [Header("Piercing Shot Specific")]
-    [SerializeField] private int additionalDamage = 75; // High damage bonus
+    [SerializeField] private int additionalDamage = 50; // High damage bonus
     [SerializeField] private float pierceRange = 10f; // How far the shot travels
     [SerializeField] private float pierceWidth = 0.5f; // Width of the piercing line
     [SerializeField] private LayerMask enemyLayerMask = -1; // What layers can be hit
@@ -37,17 +37,13 @@ public class PiercingShot : Skill
             }
             
             // Instantiate particle effect oriented toward target
-            ParticleSystem effect = Instantiate(skillEffect, playerPos, Quaternion.LookRotation(playerForward));
+            ParticleSystem effect = Instantiate(skillEffect);
             effect.Play();
             
             if(debug) Debug.Log("[PiercingShot] Particle effect started");
             
-            // Destroy the effect after a reasonable time
+            // Destroy the effect
             Destroy(effect.gameObject, 5f);
-        }
-        else
-        {
-            if(debug) Debug.LogWarning("[PiercingShot] No particle effect assigned or PlayerInstance not found");
         }
     }
 
@@ -99,8 +95,6 @@ public class PiercingShot : Skill
                 if(debug) Debug.Log($"[PiercingShot] Dealt {totalDamage} damage to {hit.collider.name}");
             }
         }
-        
-        // Note: Particle effect is handled in PlaySkillParticleEffect()
     }
     
     private Transform FindClosestEnemy()
@@ -127,8 +121,6 @@ public class PiercingShot : Skill
                 closestEnemy = enemy.transform;
             }
         }
-        
         return closestEnemy;
     }
-    
 }

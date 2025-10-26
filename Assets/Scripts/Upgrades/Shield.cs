@@ -8,11 +8,17 @@ public class Shield : Skill
     [SerializeField] private float damageReduction = 0.5f; // 50% damage reduction
     [SerializeField] private float shieldDuration = 8f; // How long the shield lasts
     [SerializeField] private ParticleSystem shieldEffect; // Visual effect for the shield
-    
+    [SerializeField] private GameObject shieldPrefab;
+
     private bool isShieldActive = false;
     private float originalDefense = 0f;
     private EntityData playerEntityData;
-    
+
+    private void Start()
+    {
+        shieldPrefab.SetActive(false);
+    }
+
     protected override void ApplySkillEffects()
     {
         base.ApplySkillEffects();
@@ -105,10 +111,11 @@ public class Shield : Skill
                 // Instantiate shield visual effect on player
                 ParticleSystem shield = Instantiate(effectPrefab, PlayerInstance.Instance.transform);
                 shield.name = "ShieldEffect";
-                
+
                 // Play the particle system
-                shield.Play();
-                if(debug) Debug.Log("[Shield] Shield particle effect started");
+                //shield.Play();
+                shieldPrefab.SetActive(true);
+                //if (debug) Debug.Log("[Shield] Shield particle effect started");
                 
                 if(debug) Debug.Log("[Shield] Shield visual effect created");
             }

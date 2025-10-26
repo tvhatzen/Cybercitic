@@ -169,16 +169,13 @@ public class SceneLoader : MonoBehaviour
         StartCoroutine(TransitionAndLoadScene(sceneName));
     }
     
-    // Static method to load scene with transition from anywhere
     public static void LoadScene(string sceneName)
     {
-        //if (debug) Debug.Log($"[SceneLoader] Static LoadScene called for: {sceneName}");
         
         // Ensure the SceneLoader instance is properly initialized
         var loader = Instance;
         if (loader.transitionImage == null)
         {
-            //if (debug) Debug.Log("[SceneLoader] Transition image missing, recreating...");
             loader.CreateTransitionImage();
         }
         
@@ -220,6 +217,9 @@ public class SceneLoader : MonoBehaviour
         
         // Phase 1: Slide in from left
         yield return StartCoroutine(SlideTransition(true));
+
+        // play scene transition sound
+        AudioManager.Instance.PlaySound("levelTransition");
         
         // Phase 2: Load the scene
         if (debug) Debug.Log($"[SceneLoader] Loading scene: {sceneName}");

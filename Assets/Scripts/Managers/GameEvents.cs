@@ -95,6 +95,9 @@ public class GameEvents : SingletonBase<GameEvents>
     // Audio system events
     public static event Action<string> OnSoundRequested; // sound name
     public static event Action<AudioClip> OnMusicRequested; // music clip
+    public static event Action<string> OnButtonHover;
+    public static event Action<string> OnButtonClick;
+    public static event Action<string> NotEnoughCreditsButton;
 
     #endregion
 
@@ -351,6 +354,28 @@ public class GameEvents : SingletonBase<GameEvents>
     {
         OnMusicRequested?.Invoke(musicClip);
         if(debug) Debug.Log($"GameEvents: Music requested - {musicClip?.name ?? "null"}");
+    }
+
+    #endregion
+
+    #region UI Audio Event Triggers
+
+    public static void UIButtonHovered(string soundName)
+    {
+        OnButtonHover?.Invoke(soundName);
+        if (debug) Debug.Log($"GameEvents: Sound requested - {soundName}");
+    }
+
+    public static void UIButtonClicked(string soundName)
+    {
+        OnButtonClick?.Invoke(soundName);
+        if (debug) Debug.Log($"GameEvents: Sound requested - {soundName}");
+    }
+
+    public static void UIButtonNotEnoughCredits(string soundName)
+    {
+        NotEnoughCreditsButton?.Invoke(soundName);
+        if (debug) Debug.Log($"GameEvents: Sound requested - {soundName}");
     }
 
     #endregion

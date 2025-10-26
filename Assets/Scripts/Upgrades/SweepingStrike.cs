@@ -32,7 +32,7 @@ public class SweepingStrike : Skill
             
             if(debug) Debug.Log("[SweepingStrike] Particle effect started");
             
-            // Destroy the effect after a reasonable time
+            // Destroy the effect
             Destroy(effect.gameObject, 5f);
         }
         else
