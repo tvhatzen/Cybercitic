@@ -2464,7 +2464,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loadNewScene: 1
   nextFloorSceneName: level4
-  debug: 0
+  debug: 1
 --- !u!65 &2041073988
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: PiercingShot
   m_EditorClassIdentifier: 
   skillName: Piercing Shot
-  skillDescription: A single high damage shot
-  skillIcon: {fileID: -1346730620, guid: 4da6afd06d4bf8d40a5e54f23fddc139, type: 3}
-  castIcon: {fileID: -1842379148, guid: 0d84c7ae1c2ce5a458dd7d157992a828, type: 3}
+  skillDescription: A high-damage shot that pierces through all enemies in a line
+  skillIcon: {fileID: 0}
+  castIcon: {fileID: 0}
   cooldownDuration: 8
   castingTime: 0.5
   skillDuration: 1
-  skillDamage: 40
-  skillRange: 1
+  skillDamage: 25
+  skillRange: 10
   maxCharges: 1
   skillSound: {fileID: 0}
-  skillEffect: {fileID: 0}
+  skillEffect: {fileID: 1279018785575207751, guid: b510adc856e8171439bd8520fa91495f, type: 3}
   debug: 0

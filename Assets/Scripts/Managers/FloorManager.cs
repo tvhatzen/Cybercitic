@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.UI;
 
 public class FloorManager : SingletonBase<FloorManager>
 {
@@ -195,6 +196,14 @@ public class FloorManager : SingletonBase<FloorManager>
     {
         if (debug) Debug.Log($"[FloorManager] OnSceneLoaded - Scene: {scene.name}, Floor: {CurrentFloor}");
         
+        // Check for NextLevelTrigger before doing anything else
+        trigger[] triggers = FindObjectsOfType<trigger>();
+        if (debug) Debug.Log($"[FloorManager] Found {triggers.Length} trigger(s) in scene {scene.name}");
+        foreach (trigger trigger in triggers)
+        {
+            if (debug) Debug.Log($"[FloorManager] Trigger found: {trigger.name} (Active: {trigger.gameObject.activeInHierarchy})");
+        }
+        
         // refresh Transform references since they get lost when scene changes
         RefreshSpawnPointReferences();
 
@@ -213,6 +222,17 @@ public class FloorManager : SingletonBase<FloorManager>
         hasSpawnedOnLoad = true;
         StartCoroutine(SpawnPlayerCoroutine());
         SpawnEnemies();
+        
+        // Check for NextLevelTrigger after spawning
+        triggers = FindObjectsOfType<trigger>();
+        if (debug) Debug.Log($"[FloorManager] After spawning - Found {triggers.Length} trigger(s) in scene {scene.name}");
+        foreach (trigger trigger in triggers)
+        {
+            if (debug) Debug.Log($"[FloorManager] Trigger after spawning: {trigger.name} (Active: {trigger.gameObject.activeInHierarchy})");
+        }
+        
+        // Check trigger status after a delay to see if it gets destroyed
+        StartCoroutine(CheckTriggerStatusAfterDelay(1f));
     }
 
     public IEnumerator SpawnPlayerCoroutine()
@@ -323,10 +343,8 @@ public class FloorManager : SingletonBase<FloorManager>
             SpawnRegularEnemies();
         }
 
-        foreach (GameObject enemy in existingEnemies)
-        {
-            enemy.GetComponent<EnemyVisualFeedback>()?.PlaySpawnEffect(); 
-        }
+        // Note: This code was trying to call PlaySpawnEffect on destroyed enemies
+        // Removed as it would cause null reference exceptions
         
     }
 
@@ -360,6 +378,55 @@ public class FloorManager : SingletonBase<FloorManager>
         GameEvents.EnemySpawned(boss);
 
         if (debug) Debug.Log($"Spawned BOSS for floor {CurrentFloor}");
+        
+        // Check UI state after boss spawn
+        CheckUIStateAfterBossSpawn();
+    }
+    
+    private void CheckUIStateAfterBossSpawn()
+    {
+        if (debug) Debug.Log("[FloorManager] Checking UI state after boss spawn...");
+        
+        // Check if EventSystem exists
+        UnityEngine.EventSystems.EventSystem eventSystem = FindObjectOfType<UnityEngine.EventSystems.EventSystem>();
+        if (eventSystem == null)
+        {
+            if (debug) Debug.LogError("[FloorManager] No EventSystem found after boss spawn!");
+        }
+        else
+        {
+            if (debug) Debug.Log($"[FloorManager] EventSystem found: {eventSystem.name} (Active: {eventSystem.gameObject.activeInHierarchy})");
+        }
+        
+        // Check if Canvas exists
+        Canvas canvas = FindObjectOfType<Canvas>();
+        if (canvas == null)
+        {
+            if (debug) Debug.LogError("[FloorManager] No Canvas found after boss spawn!");
+        }
+        else
+        {
+            if (debug) Debug.Log($"[FloorManager] Canvas found: {canvas.name} (Active: {canvas.gameObject.activeInHierarchy})");
+        }
+        
+        // Check if skill buttons exist
+        SkillButton[] skillButtons = FindObjectsOfType<SkillButton>();
+        if (debug) Debug.Log($"[FloorManager] Found {skillButtons.Length} skill buttons after boss spawn");
+        
+        foreach (SkillButton button in skillButtons)
+        {
+            if (debug) Debug.Log($"[FloorManager] SkillButton: {button.name} (Active: {button.gameObject.activeInHierarchy}, Interactable: {button.GetComponent<Button>()?.interactable})");
+        }
+        
+        // Check if PlayerSkills exists
+        if (PlayerSkills.Instance == null)
+        {
+            if (debug) Debug.LogError("[FloorManager] PlayerSkills.Instance is null after boss spawn!");
+        }
+        else
+        {
+            if (debug) Debug.Log("[FloorManager] PlayerSkills.Instance is available after boss spawn");
+        }
     }
 
     private void SpawnRegularEnemies()
@@ -402,6 +469,34 @@ public class FloorManager : SingletonBase<FloorManager>
         }
 
         if (debug) Debug.Log($"Spawned {Mathf.Min(enemySpawnPoints.Count, enemyPrefabsForThisFloor.Count)} regular enemies for floor {CurrentFloor}");
+        
+        // Check UI state after regular enemy spawn
+        CheckUIStateAfterRegularSpawn();
+    }
+    
+    private void CheckUIStateAfterRegularSpawn()
+    {
+        if (debug) Debug.Log("[FloorManager] Checking UI state after regular enemy spawn...");
+        
+        // Check if EventSystem exists
+        UnityEngine.EventSystems.EventSystem eventSystem = FindObjectOfType<UnityEngine.EventSystems.EventSystem>();
+        if (eventSystem == null)
+        {
+            if (debug) Debug.LogError("[FloorManager] No EventSystem found after regular spawn!");
+        }
+        else
+        {
+            if (debug) Debug.Log($"[FloorManager] EventSystem found: {eventSystem.name} (Active: {eventSystem.gameObject.activeInHierarchy})");
+        }
+        
+        // Check if skill buttons exist
+        SkillButton[] skillButtons = FindObjectsOfType<SkillButton>();
+        if (debug) Debug.Log($"[FloorManager] Found {skillButtons.Length} skill buttons after regular spawn");
+        
+        foreach (SkillButton button in skillButtons)
+        {
+            if (debug) Debug.Log($"[FloorManager] SkillButton: {button.name} (Active: {button.gameObject.activeInHierarchy}, Interactable: {button.GetComponent<Button>()?.interactable})");
+        }
     }
 
     public void SetBossFloorInterval(int interval)
@@ -476,14 +571,53 @@ public class FloorManager : SingletonBase<FloorManager>
         if (debug) Debug.Log($"[FloorManager] Force enabled combat for {enemies.Length} enemies and {bosses.Length} bosses");
     }
 
+    private IEnumerator CheckTriggerStatusAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        
+        trigger[] triggers = FindObjectsOfType<trigger>();
+        if (debug) Debug.Log($"[FloorManager] After {delay}s delay - Found {triggers.Length} trigger(s) in scene");
+        foreach (trigger trigger in triggers)
+        {
+            if (debug) Debug.Log($"[FloorManager] Trigger after delay: {trigger.name} (Active: {trigger.gameObject.activeInHierarchy}, Destroyed: {trigger == null})");
+        }
+        
+        // Also check by name
+        GameObject triggerByName = GameObject.Find("NextLevelTrigger (1)");
+        if (debug) Debug.Log($"[FloorManager] Trigger by name: {(triggerByName != null ? triggerByName.name + " (Active: " + triggerByName.activeInHierarchy + ")" : "NOT FOUND")}");
+    }
+
     public void PlayBackgroundMusic()
     {
-        // play floor background music
-
-        // would need to change music after every boss floor, use modulo method?
+        // play floor background music based on current floor
         if (AudioManager.Instance != null)
         {
-            AudioManager.Instance.PlayMusicTrack("floor1_5");
+            string musicTrack = GetMusicTrackForFloor(CurrentFloor);
+            AudioManager.Instance.PlayMusicTrack(musicTrack);
+            
+            if (debug) Debug.Log($"[FloorManager] Playing music track '{musicTrack}' for floor {CurrentFloor}");
+        }
+    }
+
+    private string GetMusicTrackForFloor(int floor)
+    {
+        if (floor >= 1 && floor <= 5)
+        {
+            return "floor1_5";
+        }
+        else if (floor >= 6 && floor <= 10)
+        {
+            return "floor6_10";
+        }
+        else if (floor >= 11 && floor <= 15)
+        {
+            return "floor11_15";
+        }
+        else
+        {
+            // Default to floor1_5 for any floors outside the expected range
+            if (debug) Debug.LogWarning($"[FloorManager] Floor {floor} is outside expected range (1-15), defaulting to floor1_5 music");
+            return "floor1_5";
         }
     }
 }

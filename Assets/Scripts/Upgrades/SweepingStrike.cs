@@ -17,6 +17,29 @@ public class SweepingStrike : Skill
         // apply sweeping damage to enemies in arc
         ApplySweepingDamage();
     }
+    
+    protected override void PlaySkillParticleEffect()
+    {
+        if (skillEffect != null && PlayerInstance.Instance != null)
+        {
+            // Get player position and forward direction
+            Vector3 playerPos = PlayerInstance.Instance.transform.position;
+            Vector3 playerForward = PlayerInstance.Instance.transform.forward;
+            
+            // Instantiate particle effect at player position, oriented forward
+            ParticleSystem effect = Instantiate(skillEffect, playerPos, Quaternion.LookRotation(playerForward));
+            effect.Play();
+            
+            if(debug) Debug.Log("[SweepingStrike] Particle effect started");
+            
+            // Destroy the effect after a reasonable time
+            Destroy(effect.gameObject, 5f);
+        }
+        else
+        {
+            if(debug) Debug.LogWarning("[SweepingStrike] No particle effect assigned or PlayerInstance not found");
+        }
+    }
 
     private void ApplySweepingDamage()
     {

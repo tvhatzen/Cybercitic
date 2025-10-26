@@ -23,7 +23,7 @@ public class Skill : ScriptableObject
     
     [Header("Audio/Visual")]
     [SerializeField] private AudioClip skillSound;
-    [SerializeField] private GameObject skillEffect;
+    [SerializeField] protected ParticleSystem skillEffect;
     
     // runtime data
     [NonSerialized] public SkillStates currentState = SkillStates.ReadyToUse;
@@ -113,8 +113,34 @@ public class Skill : ScriptableObject
             AudioManager.Instance.PlaySound(skillSound);
         }
         
+        // play particle effect
+        PlaySkillParticleEffect();
+        
         // apply damage to enemies in range
         ApplyDamageToEnemies();
+    }
+    
+    protected virtual void PlaySkillParticleEffect()
+    {
+        if (skillEffect != null && PlayerInstance.Instance != null)
+        {
+            // Get player position and forward direction
+            Vector3 playerPos = PlayerInstance.Instance.transform.position;
+            Vector3 playerForward = PlayerInstance.Instance.transform.forward;
+            
+            // Instantiate particle effect
+            ParticleSystem effect = Instantiate(skillEffect, playerPos, Quaternion.LookRotation(playerForward));
+            effect.Play();
+            
+            if(debug) Debug.Log($"[Skill] {skillName} particle effect started");
+            
+            // Destroy the effect after a reasonable time
+            Destroy(effect.gameObject, 5f);
+        }
+        else
+        {
+            if(debug) Debug.LogWarning($"[Skill] {skillName} - No particle effect assigned or PlayerInstance not found");
+        }
     }
 
     protected virtual void ApplyDamageToEnemies()

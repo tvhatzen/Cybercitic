@@ -23,5 +23,5 @@ MonoBehaviour:
   skillRange: 4
   maxCharges: 1
   skillSound: {fileID: 0}
-  skillEffect: {fileID: 0}
+  skillEffect: {fileID: 1279018785575207751, guid: b510adc856e8171439bd8520fa91495f, type: 3}
   debug: 0

@@ -45,14 +45,36 @@ public class SceneLoader : MonoBehaviour
         else
         {
             if (debug) Debug.Log("[SceneLoader] Duplicate instance found, destroying");
+            
+            // Check if this SceneLoader has any children that shouldn't be destroyed
+            Transform[] children = GetComponentsInChildren<Transform>();
+            if (debug) Debug.Log($"[SceneLoader] SceneLoader has {children.Length} children");
+            foreach (Transform child in children)
+            {
+                if (debug) Debug.Log($"[SceneLoader] Child: {child.name}");
+                if (child.name.Contains("NextLevelTrigger") || child.name.Contains("Trigger"))
+                {
+                    if (debug) Debug.LogWarning($"[SceneLoader] Found trigger child '{child.name}', moving to scene root before destroying SceneLoader");
+                    child.SetParent(null);
+                }
+            }
+            
             Destroy(gameObject);
             return;
         }
         
-        // Only load PersistentScene if it's not already loaded
-        if (!SceneManager.GetSceneByName("PersistentScene").isLoaded)
+        // Only load PersistentScene if it's not already loaded and exists in build settings
+        try
         {
-            SceneManager.LoadScene("PersistentScene", LoadSceneMode.Additive);
+            if (!SceneManager.GetSceneByName("PersistentScene").isLoaded)
+            {
+                SceneManager.LoadScene("PersistentScene", LoadSceneMode.Additive);
+                if (debug) Debug.Log("[SceneLoader] Loaded PersistentScene additively");
+            }
+        }
+        catch (System.Exception e)
+        {
+            if (debug) Debug.LogWarning($"[SceneLoader] PersistentScene not found in build settings: {e.Message}");
         }
     }
     
@@ -206,6 +228,9 @@ public class SceneLoader : MonoBehaviour
         // Wait for the scene to fully load and initialize
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
+        
+        // Verify the scene actually loaded
+        if (debug) Debug.Log($"[SceneLoader] Scene loaded. Current scene: {SceneManager.GetActiveScene().name}");
         
         // Phase 3: Slide out to right
         if (debug) Debug.Log("[SceneLoader] Starting slide-out animation");

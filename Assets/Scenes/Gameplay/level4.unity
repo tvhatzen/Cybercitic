@@ -148,7 +148,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1911975828}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &120943700
 GameObject:
@@ -494,7 +494,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1911975828}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &584544271
 GameObject:
@@ -2100,7 +2100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loadNewScene: 1
   nextFloorSceneName: level5
-  debug: 0
+  debug: 1
 --- !u!65 &1739942285
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2374,6 +2374,8 @@ Transform:
   - {fileID: 2024726072}
   - {fileID: 1922183902}
   - {fileID: 179848019}
+  - {fileID: 44839113}
+  - {fileID: 505477709}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1922183901
@@ -2599,7 +2601,5 @@ SceneRoots:
   - {fileID: 2103014478}
   - {fileID: 1739942288}
   - {fileID: 1911975828}
-  - {fileID: 44839113}
-  - {fileID: 505477709}
   - {fileID: 1100013727}
   - {fileID: 142703738}

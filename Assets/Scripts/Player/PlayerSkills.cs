@@ -79,16 +79,24 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
 
     public bool ActivateSkill(int skillIndex)
     {
+        if(debug) Debug.Log($"[PlayerSkills] ActivateSkill called with index {skillIndex}");
+        
         if (skillIndex < 0 || skillIndex >= equippedSkills.Count)
+        {
+            if(debug) Debug.LogWarning($"[PlayerSkills] Invalid skill index {skillIndex} (count: {equippedSkills.Count})");
             return false;
+        }
         
         Skill skill = equippedSkills[skillIndex];
         if (skill == null)
+        {
+            if(debug) Debug.LogWarning($"[PlayerSkills] No skill at index {skillIndex}");
             return false;
+        }
         
-        if(debug) Debug.Log($"[PlayerSkills] Activating skill at index {skillIndex}: {skill.SkillName}");
+        if(debug) Debug.Log($"[PlayerSkills] Activating skill at index {skillIndex}: {skill.SkillName} (State: {skill.CurrentState}, Ready: {skill.IsReady})");
 
-        PlayParticles();
+        // Note: Individual skills will handle their own particle effects
         AudioManager.Instance.PlaySound("useSkill");
 
         return ActivateSkill(skill);

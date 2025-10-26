@@ -94,6 +94,12 @@ public class SkillUI : MonoBehaviour
                 button.UpdateCooldown();
             }
         }
+        
+        // Debug: Log every few seconds to see if Update is being called
+        if (debug && Time.frameCount % 300 == 0) // Every 5 seconds at 60fps
+        {
+            Debug.Log($"[SkillUI] Update called - {skillButtons.Count} skill buttons");
+        }
     }
 
     // Test method to unlock all skills and assign them to buttons

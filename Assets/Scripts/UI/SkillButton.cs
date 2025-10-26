@@ -158,6 +158,18 @@ public class SkillButton : MonoBehaviour
     {
         if (debug) Debug.Log($"[SkillButton] Button clicked for slot {slotIndex}");
         
+        // Check if button is interactable
+        if (button != null && !button.interactable)
+        {
+            if (debug) Debug.LogWarning($"[SkillButton] Button is not interactable for slot {slotIndex}");
+        }
+        
+        // Check if assignedSkill is ready
+        if (assignedSkill != null && !assignedSkill.IsReady)
+        {
+            if (debug) Debug.LogWarning($"[SkillButton] Skill {assignedSkill.SkillName} is not ready (State: {assignedSkill.CurrentState})");
+        }
+        
         if (assignedSkill != null && PlayerSkills.Instance != null)
         {
             if (debug) Debug.Log($"[SkillButton] Attempting to activate skill: {assignedSkill.SkillName}");
@@ -172,12 +184,19 @@ public class SkillButton : MonoBehaviour
 
     public void UpdateCooldown()
     {
-        if (assignedSkill == null) return;
+        if (assignedSkill == null) 
+        {
+            if(debug) Debug.Log($"[SkillButton] Slot {slotIndex} - No skill assigned");
+            return;
+        }
+
+        if(debug) Debug.Log($"[SkillButton] Slot {slotIndex} - {assignedSkill.SkillName} State: {assignedSkill.CurrentState}, Ready: {assignedSkill.IsReady}, Cooldown: {assignedSkill.CurrentCooldown:F1}s");
 
         switch (assignedSkill.CurrentState)
         {
             case Skill.SkillStates.ReadyToUse:
                 SetButtonState(readyColor, 0f, "");
+                if(debug) Debug.Log($"[SkillButton] {assignedSkill.SkillName} - READY TO USE");
                 break;
 
             case Skill.SkillStates.Casting:
@@ -194,19 +213,34 @@ public class SkillButton : MonoBehaviour
 
             case Skill.SkillStates.Locked:
                 SetButtonState(cooldownColor, 1f, "LOCKED");
+                if(debug) Debug.Log($"[SkillButton] {assignedSkill.SkillName} - LOCKED");
                 break;
         }
     }
 
     private void SetButtonState(Color color, float cooldownFill, string cooldownTextValue)
     {
+        if(debug) Debug.Log($"[SkillButton] SetButtonState - Color: {color}, Fill: {cooldownFill}, Text: '{cooldownTextValue}'");
+        
         if (skillIcon != null)
+        {
             skillIcon.color = color;
+            if(debug) Debug.Log($"[SkillButton] Skill icon color set to: {color}");
+        }
+        else
+        {
+            if(debug) Debug.LogWarning($"[SkillButton] Slot {slotIndex} - skillIcon is null!");
+        }
 
         if (cooldownOverlay != null)
         {
             cooldownOverlay.fillAmount = cooldownFill;
             cooldownOverlay.gameObject.SetActive(cooldownFill > 0);
+            if(debug) Debug.Log($"[SkillButton] Cooldown overlay - Fill: {cooldownFill}, Active: {cooldownOverlay.gameObject.activeSelf}");
+        }
+        else
+        {
+            if(debug) Debug.LogWarning($"[SkillButton] Slot {slotIndex} - cooldownOverlay is null!");
         }
 
         // display cooldown timer text
@@ -215,12 +249,22 @@ public class SkillButton : MonoBehaviour
             cooldownText.text = cooldownTextValue;
             cooldownText.gameObject.SetActive(!string.IsNullOrEmpty(cooldownTextValue));
             
-            if (debug && !string.IsNullOrEmpty(cooldownTextValue))
-                Debug.Log($"[SkillButton] Cooldown text set to: '{cooldownTextValue}' (active: {cooldownText.gameObject.activeSelf})");
+            if(debug) Debug.Log($"[SkillButton] Cooldown text - Text: '{cooldownTextValue}', Active: {cooldownText.gameObject.activeSelf}");
+        }
+        else
+        {
+            if(debug) Debug.LogWarning($"[SkillButton] Slot {slotIndex} - cooldownText is null!");
         }
 
         if (button != null)
+        {
             button.interactable = assignedSkill != null && assignedSkill.IsReady;
+            if(debug) Debug.Log($"[SkillButton] Button interactable: {button.interactable}");
+        }
+        else
+        {
+            if(debug) Debug.LogWarning($"[SkillButton] Slot {slotIndex} - button is null!");
+        }
     }
 
     private void SetButtonActive(bool active) => gameObject.SetActive(active);
