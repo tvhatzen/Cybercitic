@@ -263,11 +263,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18c9816d3d648ed438d2301878985472, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDead: 0
   healthText: {fileID: 1458773518392947188}
   healthBar: {fileID: 1404803999726378916}
   spriteRenderer: {fileID: 5677088393632722384}
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.1
+  shakeDuration: 0.5
+  shakeMagnitude: 0.1
   debug: 0
 --- !u!114 &4903866260193589597
 MonoBehaviour:
@@ -282,7 +285,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currencyPrefab: {fileID: 4788816608471098415, guid: 243313326fb77f84080086ce389d2827, type: 3}
-  creditsOnDeath: 50
+  creditsOnDeath: 30
   possibleDrops: []
   debug: 0
 --- !u!114 &-5057696123977782798
@@ -299,12 +302,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseHealth: 100
   baseSpeed: 5
-  baseAttack: 10
-  baseDodgeChance: 0.1
+  baseAttack: 15
+  baseDodgeChance: 0
+  baseDefense: 0
   currentHealth: 0
   currentSpeed: 0
   currentAttack: 0
   currentDodgeChance: 0
+  currentDefense: 0
   debug: 0
 --- !u!114 &-8762542245306527853
 MonoBehaviour:
@@ -318,7 +323,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79147db44d41db942a5cae13f5b5a230, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackCooldown: 2
+  attackCooldown: 1
   attackRange: 2
   debug: 0
 --- !u!114 &4571561975590357121
@@ -565,3 +570,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _healthBarSprite: {fileID: 4166847746943761295}
+  _lerpSpeed: 5
+  _smoothTransition: 1

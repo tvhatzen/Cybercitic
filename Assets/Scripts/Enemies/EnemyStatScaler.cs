@@ -2,8 +2,8 @@ using UnityEngine;
 
 /// <summary>
 /// EnemyStatScaler scales enemy stats based on floor level and tier
-/// Use custom formulas: Health = 19 + (5 * (level * 0.2))^2
-///                      Damage = 1 + (2.5 * (level * 0.2))^2
+/// Use custom formulas: Health = 22 + (5 * (level * 0.2))^2 Line 98
+///                      Damage = 1 + (2.5 * (level * 0.2))^2 Line 106
 /// </summary>
 public class EnemyStatScaler : MonoBehaviour
 {
@@ -95,7 +95,7 @@ public class EnemyStatScaler : MonoBehaviour
     private int CalculateHealth(int level)
     {
         float scaledLevel = level * 0.2f;
-        float healthValue = 19f + (5f * scaledLevel * scaledLevel);
+        float healthValue = 22f + (5f * scaledLevel * scaledLevel);
         return Mathf.RoundToInt(healthValue);
     }
 

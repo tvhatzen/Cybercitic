@@ -19,7 +19,7 @@ MonoBehaviour:
   cooldownDuration: 5
   castingTime: 0.1
   skillDuration: 0.5
-  skillDamage: 15
+  skillDamage: 10
   skillRange: 6
   maxCharges: 1
   skillSound: {fileID: 8300000, guid: 07d297bf05d35204ab41daf1211c2f05, type: 3}

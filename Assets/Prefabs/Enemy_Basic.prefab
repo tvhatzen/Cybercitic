@@ -131,7 +131,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d430ce667a15f3458c8febf575d45d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseHealth: 20
+  baseHealth: 22
   baseSpeed: 1
   baseAttack: 4
   baseDodgeChance: 0
@@ -154,6 +154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18c9816d3d648ed438d2301878985472, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDead: 0
   healthText: {fileID: 5617473571488467594}
   healthBar: {fileID: 5952826097504670135}
   spriteRenderer: {fileID: 3737664258124136096}
@@ -174,7 +175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79147db44d41db942a5cae13f5b5a230, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackCooldown: 2
+  attackCooldown: 0.8
   attackRange: 2
   debug: 0
 --- !u!114 &7473089266629081275
