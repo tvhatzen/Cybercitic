@@ -1197,6 +1197,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerStanding
       objectReference: {fileID: 0}
+    - target: {fileID: 4973884166958901136, guid: c9e3347a050b6f143921aee198139321, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1315,6 +1319,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerAttacking
       objectReference: {fileID: 0}
+    - target: {fileID: 2913909319422972192, guid: 851993590218f394daa1d6557498b0c0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6971139387448851635, guid: 851993590218f394daa1d6557498b0c0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.128002
@@ -1372,6 +1380,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Guy
       objectReference: {fileID: 0}
+    - target: {fileID: 1662897852831368334, guid: d14de806fcbecb644ac3e536306a85ec, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6469564846047156161, guid: d14de806fcbecb644ac3e536306a85ec, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.61
@@ -1428,6 +1440,10 @@ PrefabInstance:
     - target: {fileID: 623256411194247832, guid: 8ac2683e50a430945a6cd1af0f6de99f, type: 3}
       propertyPath: m_Name
       value: PlayerRunFrame3
+      objectReference: {fileID: 0}
+    - target: {fileID: 623256411194247832, guid: 8ac2683e50a430945a6cd1af0f6de99f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6829367696885387129, guid: 8ac2683e50a430945a6cd1af0f6de99f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1562,9 +1578,33 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1513903971100974490, guid: d2e7b04e94b04de42a69d329c3b3d6cc, type: 3}
+      propertyPath: m_Color.b
+      value: 0.7843138
+      objectReference: {fileID: 0}
+    - target: {fileID: 1513903971100974490, guid: d2e7b04e94b04de42a69d329c3b3d6cc, type: 3}
+      propertyPath: m_Color.r
+      value: 0.53333336
+      objectReference: {fileID: 0}
     - target: {fileID: 3001680048447051203, guid: d2e7b04e94b04de42a69d329c3b3d6cc, type: 3}
       propertyPath: m_Name
       value: Canvas_HUD
+      objectReference: {fileID: 0}
+    - target: {fileID: 5812539641032815321, guid: d2e7b04e94b04de42a69d329c3b3d6cc, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.54
+      objectReference: {fileID: 0}
+    - target: {fileID: 5812539641032815321, guid: d2e7b04e94b04de42a69d329c3b3d6cc, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 47.98
+      objectReference: {fileID: 0}
+    - target: {fileID: 7593657522287881378, guid: d2e7b04e94b04de42a69d329c3b3d6cc, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8103743837434101720, guid: d2e7b04e94b04de42a69d329c3b3d6cc, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1623,6 +1663,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerRunFrame2
       objectReference: {fileID: 0}
+    - target: {fileID: 7201331124755435790, guid: 35b5aa966e1c5564abc9a826e5f7e5cf, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1639,6 +1683,10 @@ PrefabInstance:
     - target: {fileID: 2980984480396418293, guid: 6cf21222c7a114c41a8b1a7230c6b0c0, type: 3}
       propertyPath: m_Name
       value: PlayerRunFrame1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2980984480396418293, guid: 6cf21222c7a114c41a8b1a7230c6b0c0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4006172453008092758, guid: 6cf21222c7a114c41a8b1a7230c6b0c0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1999,6 +2047,10 @@ PrefabInstance:
     - target: {fileID: 6403522533026855917, guid: b2cd6ddb0fe6d4a4cb2669cb246f9468, type: 3}
       propertyPath: m_Name
       value: PlayerRunFrame4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6403522533026855917, guid: b2cd6ddb0fe6d4a4cb2669cb246f9468, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9206284420125519919, guid: b2cd6ddb0fe6d4a4cb2669cb246f9468, type: 3}
       propertyPath: m_LocalPosition.x
