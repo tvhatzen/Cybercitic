@@ -197,20 +197,13 @@ public class UpgradeShopUI : MonoBehaviour
         }
 
         // show details panel
-        if (detailsPanel != null)
-            detailsPanel.SetActive(true);
+        if (detailsPanel != null) { detailsPanel.SetActive(true); }
 
         // update name
-        if (upgradeName != null)
-        {
-            upgradeName.text = selectedUpgrade.UpgradeName;
-        }
+        if (upgradeName != null) { upgradeName.text = selectedUpgrade.UpgradeName; }
 
         // update description
-        if (upgradeDescription != null)
-        {
-            upgradeDescription.text = selectedUpgrade.Description;
-        }
+        if (upgradeDescription != null) { upgradeDescription.text = selectedUpgrade.Description; }
 
         // update stat info
         if (statInfo != null)
@@ -258,6 +251,7 @@ public class UpgradeShopUI : MonoBehaviour
         return $"<b>{statName}:</b> {displayValue} per level\n<b>Current Level:</b> {upgrade.CurrentLevel}/{upgrade.MaxLevel}";
     }
 
+    // change the text of the purchase button depending on credits
     private void UpdatePurchaseButton()
     {
         if (selectedUpgrade == null || purchaseButton == null || purchaseButtonText == null)
@@ -271,7 +265,7 @@ public class UpgradeShopUI : MonoBehaviour
 
         Image buttonImage = purchaseButton.GetComponent<Image>();
 
-        if (isMaxLevel)
+        if (isMaxLevel) // upgrade maxed out
         {
             purchaseButtonText.text = "MAX LEVEL";
             purchaseButtonText.color = maxLevelColor;
@@ -279,7 +273,7 @@ public class UpgradeShopUI : MonoBehaviour
                 buttonImage.color = maxLevelColor;
             purchaseButton.interactable = false;
         }
-        else if (canAfford && canUpgrade)
+        else if (canAfford && canUpgrade) // can purchase
         {
             purchaseButtonText.text = $"PURCHASE: {cost} ȼ";
             purchaseButtonText.color = canPurchaseColor;
@@ -287,7 +281,7 @@ public class UpgradeShopUI : MonoBehaviour
                 buttonImage.color = canPurchaseColor;
             purchaseButton.interactable = true;
         }
-        else if (!canUpgrade)
+        else if (!canUpgrade) // can't purchase
         {
             purchaseButtonText.text = "LOCKED";
             purchaseButtonText.color = maxLevelColor;
@@ -318,7 +312,7 @@ public class UpgradeShopUI : MonoBehaviour
         }
     }
 
-    public void UpdateEquippedDisplay()
+    private void UpdateEquippedDisplay()
     {
         foreach (var kvp in upgradeButtons)
         {
@@ -384,7 +378,7 @@ public class UpgradeShopUI : MonoBehaviour
         if (RunStatsTracker.Instance != null)
             RunStatsTracker.Instance.ResetStatsForRetry();
         
-        // reset floor to 1 but keep player upgrades
+        // reset floor to 1 
         if (FloorManager.Instance != null)
             FloorManager.Instance.ResetToFloor1();
         
@@ -401,7 +395,7 @@ public class UpgradeShopUI : MonoBehaviour
     public void CloseShop() => OnDoneClicked();
     
     // refresh all upgrade displays (useful after reset)
-    public void RefreshAllDisplays()
+    private void RefreshAllDisplays()
     {
         if(debug) Debug.Log("[UpgradeShopUI] Refreshing all upgrade displays");
         
@@ -418,4 +412,3 @@ public class UpgradeShopUI : MonoBehaviour
         if(debug) Debug.Log("[UpgradeShopUI] All displays refreshed");
     }
 }
-

@@ -3,14 +3,16 @@ using UnityEngine.InputSystem;
 using UnityEngine.Windows;
 using System;
 
-public class InputManager : MonoBehaviour, InputSystem_Actions.IPlayerActions
+public class InputManager : SingletonBase<InputManager>, InputSystem_Actions.IPlayerActions
 {
     private InputSystem_Actions input;
 
     public bool debug = false;
 
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         try
         {
             input = new InputSystem_Actions();

@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMovement))]
 public class PlayerCombat : MonoBehaviour
 {
+    #region Variables
+
     [Header("Combat")]
     public LayerMask enemyLayer;
     public float combatCheckRadius = 2f;
@@ -24,6 +26,8 @@ public class PlayerCombat : MonoBehaviour
 
     public bool debug = false;
 
+    #endregion
+
     void Awake()
     {
         movement = GetComponent<PlayerMovement>();
@@ -39,11 +43,16 @@ public class PlayerCombat : MonoBehaviour
         else
             ExitCombatIfNoEnemies();
 
+        FindAndAttackClosestEnemy();
+    }
+
+    private void FindAndAttackClosestEnemy()
+    {
         // while in combat, always keep the closest alive enemy as the attack target
         if (InCombat && enemiesInRange.Count > 0)
         {
             Transform newTarget = FindClosestEnemy();
-            
+
             // fire event if target changed
             if (newTarget != CurrentTarget)
             {
@@ -54,7 +63,7 @@ public class PlayerCombat : MonoBehaviour
                     // additional check to ensure the Transform hasn't been destroyed
                     try
                     {
-                        string name = CurrentTarget.name; 
+                        string name = CurrentTarget.name;
                         oldTarget = CurrentTarget;
                     }
                     catch (System.Exception)
@@ -63,7 +72,7 @@ public class PlayerCombat : MonoBehaviour
                         CurrentTarget = null;
                     }
                 }
-                
+
                 GameEvents.PlayerTargetChanged(oldTarget, newTarget);
                 previousTarget = CurrentTarget;
                 CurrentTarget = newTarget;
@@ -146,6 +155,9 @@ public class PlayerCombat : MonoBehaviour
             // pass the full array to GameEvents
             GameEvents.PlayerEnteredCombat(enemiesInRange.ToArray());
 
+            // unlock skills
+
+
             if(debug) Debug.Log($"Entering combat with {enemiesInRange.Count} enemies. Target: {CurrentTarget?.name ?? "none"}");
         }
     }
@@ -187,6 +199,10 @@ public class PlayerCombat : MonoBehaviour
             }
 
             GameEvents.PlayerExitedCombat();
+
+            // lock skills
+
+
             if(debug) Debug.Log("No enemies left, exiting combat");
         }
     }

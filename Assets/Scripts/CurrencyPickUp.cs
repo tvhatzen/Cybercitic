@@ -22,16 +22,12 @@ public class CurrencyPickUp : MonoBehaviour
         // find player
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
-        {
             playerTransform = player.transform;
-        }
 
         // get or add Rigidbody for smooth movement
         rb = GetComponent<Rigidbody>();
         if (rb == null)
-        {
             rb = gameObject.AddComponent<Rigidbody>();
-        }
         
         // configure Rigidbody for smooth magnet movement
         rb.useGravity = false;
@@ -52,45 +48,44 @@ public class CurrencyPickUp : MonoBehaviour
             return;
         }
 
+        if (useMagnet) { CheckMagnetRange(); }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") && CurrencyManager.Instance != null) { CollectCurrency(); }
+    }
+
+    private void CheckMagnetRange()
+    {
+        float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
+
         // check if player is within magnet range
         if (distanceToPlayer <= magnetRange)
         {
             if (!isMagnetized)
             {
                 isMagnetized = true;
-                if(debug) Debug.Log($"[CurrencyPickUp] {name} magnetized to player!");
+                if (debug) Debug.Log($"[CurrencyPickUp] {name} magnetized to player!");
             }
 
             // move toward player
             Vector3 directionToPlayer = (playerTransform.position - transform.position).normalized;
             Vector3 magnetForce = directionToPlayer * magnetSpeed;
-            
+
             // apply force or direct movement
             if (rb != null)
-            {
                 rb.AddForce(magnetForce, ForceMode.Force);
-            }
             else
-            {
                 transform.position += magnetForce * Time.deltaTime;
-            }
         }
         else
         {
             if (isMagnetized)
             {
                 isMagnetized = false;
-                if(debug) Debug.Log($"[CurrencyPickUp] {name} no longer magnetized");
+                if (debug) Debug.Log($"[CurrencyPickUp] {name} no longer magnetized");
             }
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player") && CurrencyManager.Instance != null)
-        {
-            CollectCurrency();
-            
         }
     }
 
@@ -103,7 +98,7 @@ public class CurrencyPickUp : MonoBehaviour
         }
 
         AudioManager.Instance.PlaySound("pickUpCurrency");
-        Debug.Log("collected currency and played sound");
+        if (debug) Debug.Log("collected currency and played sound");
         Destroy(gameObject);
     }
 
@@ -121,3 +116,4 @@ public class CurrencyPickUp : MonoBehaviour
     public void SetCreditsValue(int value) => creditsValue = value;
     public void EnableMagnet(bool enable) => useMagnet = enable;
 }
+// eventually add a coroutine that animates the currency floating above the ground & spinning

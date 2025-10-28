@@ -33,11 +33,6 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
         }
     }
 
-    public List<Upgrade> GetAvailableUpgrades()
-    {
-        return allUpgrades.FindAll(upgrade => upgrade != null && upgrade.isUnlocked);
-    }
-
     public List<Upgrade> GetAllUpgrades()
     {
         return new List<Upgrade>(allUpgrades);
@@ -65,17 +60,6 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
         
         GameEvents.UpgradeUnlocked(upgrade);
         if(debug) Debug.Log($"Unlocked upgrade: {upgrade.UpgradeName}");
-    }
-
-    public void UnlockAllUpgrades()
-    {
-        foreach (var upgrade in allUpgrades)
-        {
-            if (upgrade != null)
-            {
-                UnlockUpgrade(upgrade);
-            }
-        }
     }
 
     public Upgrade GetUpgradeByName(string upgradeName)

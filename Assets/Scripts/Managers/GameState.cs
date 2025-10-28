@@ -153,9 +153,7 @@ public class GameState : SingletonBase<GameState>
         var movement = playerGO.GetComponent<PlayerMovement>();
         if (movement != null && floorManager != null)
             movement.ResetToSpawn(floorManager.playerSpawnPoint);
-
     }
-
 
     public void ChangeState(GameStates newState)
     {

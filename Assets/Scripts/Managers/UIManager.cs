@@ -71,12 +71,7 @@ public class UIManager : SingletonBase<UIManager>
                 break;
 
             case GameState.GameStates.Tutorial: ShowScreen(MenuScreen.Tutorial, 0f); break;
-
-            case GameState.GameStates.Playing: 
-                ShowScreen(MenuScreen.Gameplay, 1f);
-                //FloorManager.Instance.PlayBackgroundMusic();
-                break;
-
+            case GameState.GameStates.Playing: ShowScreen(MenuScreen.Gameplay, 1f); break;
             case GameState.GameStates.Paused: ShowScreen(MenuScreen.Pause, 0f); break;
 
             case GameState.GameStates.Upgrade: 

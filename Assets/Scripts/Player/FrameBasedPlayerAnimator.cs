@@ -8,6 +8,8 @@ using System.Collections;
 /// </summary>
 public class FrameBasedPlayerAnimator : MonoBehaviour
 {
+    #region Helper Classes
+
     [System.Serializable]
     public class AnimationFrame
     {
@@ -33,6 +35,10 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         public bool loop = true;
     }
 
+    #endregion
+
+    #region Variables
+
     [Header("Animation Sequences")]
     [SerializeField] private List<AnimationSequence> animationSequences = new List<AnimationSequence>();
     
@@ -52,6 +58,8 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
     private Dictionary<string, AnimationSequence> animationLookup = new Dictionary<string, AnimationSequence>();
     private Dictionary<UpgradeShopUI.BodyPart, BodyPartFrame> bodyPartLookup = new Dictionary<UpgradeShopUI.BodyPart, BodyPartFrame>();
     private Coroutine currentAnimationCoroutine;
+
+    #endregion
 
     private void Awake()
     {
@@ -98,17 +106,13 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
                 foreach (var bodyPartFrame in frame.bodyPartFrames)
                 {
                     if (!bodyPartLookup.ContainsKey(bodyPartFrame.bodyPart))
-                    {
                         bodyPartLookup[bodyPartFrame.bodyPart] = bodyPartFrame;
-                    }
                 }
             }
         }
     }
 
-    /// <summary>
-    /// Play an animation sequence
-    /// </summary>
+    // Play animation sequence
     public void PlayAnimation(string animationName)
     {
         if (!animationLookup.ContainsKey(animationName))
@@ -132,9 +136,7 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Playing animation: {animationName}");
     }
 
-    /// <summary>
-    /// Play an animation sequence with forced non-looping behavior
-    /// </summary>
+    // Play an animation sequence with forced non-looping behavior
     public void PlayAnimationOnce(string animationName)
     {
         if (!animationLookup.ContainsKey(animationName))
@@ -157,9 +159,7 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Playing animation once: {animationName}");
     }
 
-    /// <summary>
-    /// Stop the current animation
-    /// </summary>
+    // Stop the current animation
     public void StopCurrentAnimation()
     {
         if (currentAnimationCoroutine != null)
@@ -174,9 +174,7 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         if (debug) Debug.Log("[FrameBasedPlayerAnimator] Animation stopped");
     }
 
-    /// <summary>
-    /// Update all body part sprites based on current upgrade levels
-    /// </summary>
+    // Update all body part sprites based on current upgrade levels
     public void UpdateBodyPartSprites()
     {
         if (UpgradeManager.Instance == null) return;
@@ -190,9 +188,7 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         if (debug) Debug.Log("[FrameBasedPlayerAnimator] Body part sprites updated");
     }
 
-    /// <summary>
-    /// Set all body parts to their default sprites based on current upgrade levels
-    /// </summary>
+    // Set all body parts to their default sprites based on current upgrade levels
     private void SetIdleSprites()
     {
         // use the first frame of the first available animation as default
@@ -222,10 +218,10 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         string name = upgrade.UpgradeName.ToLower();
 
         if (name.Contains("core")) return UpgradeShopUI.BodyPart.Core;
-        if (name.Contains("larm") || name.Contains("left arm")) return UpgradeShopUI.BodyPart.LeftArm;
-        if (name.Contains("rarm") || name.Contains("right arm")) return UpgradeShopUI.BodyPart.RightArm;
-        if (name.Contains("lleg") || name.Contains("left leg")) return UpgradeShopUI.BodyPart.LeftLeg;
-        if (name.Contains("rleg") || name.Contains("right leg")) return UpgradeShopUI.BodyPart.RightLeg;
+        if (name.Contains("left arm")) return UpgradeShopUI.BodyPart.LeftArm;
+        if (name.Contains("right arm")) return UpgradeShopUI.BodyPart.RightArm;
+        if (name.Contains("left leg")) return UpgradeShopUI.BodyPart.LeftLeg;
+        if (name.Contains("right leg")) return UpgradeShopUI.BodyPart.RightLeg;
 
         return UpgradeShopUI.BodyPart.Core;
     }
@@ -395,9 +391,7 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         return null;
     }
 
-    /// <summary>
-    /// Get the appropriate sprite for a specific animation frame and upgrade level
-    /// </summary>
+    // Get the appropriate sprite for a specific animation frame and upgrade level
     private Sprite GetSpriteForAnimationFrame(BodyPartFrame bodyPartFrame, int animationFrameIndex)
     {
         // get the current upgrade level for this body part
@@ -422,23 +416,6 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         return bodyPartFrame.baseSprite;
     }
 
-    private void OnUpgradePurchased(Upgrade upgrade)
-    {
-        UpdateBodyPartSprites();
-        if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Upgrade purchased: {upgrade.UpgradeName}");
-    }
-
-    public void PlayAttackAnimation() => PlayAnimationOnce("Attack");
-    public void PlayWalkAnimation() => PlayAnimation("Walk");
-    public void PlayRunAnimation() => PlayAnimation("Running");
-    public void PlayStandingAnimation() 
-    {
-        if (debug) Debug.Log("[FrameBasedPlayerAnimator] PlayStandingAnimation called");
-        PlayAnimation("Standing");
-    }
-    public void PlayDamageAnimation() => PlayAnimation("Damage");
-    public void PlayDeathAnimation() => PlayAnimation("Death");
-
     // ensure the player is in the correct animation state for combat
     public void EnsureCombatAnimationState()
     {
@@ -455,10 +432,21 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         }
     }
 
+    private void OnUpgradePurchased(Upgrade upgrade)
+    {
+        UpdateBodyPartSprites();
+        if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Upgrade purchased: {upgrade.UpgradeName}");
+    }
+
+    public void PlayAttackAnimation() => PlayAnimationOnce("Attack");
+    public void PlayWalkAnimation() => PlayAnimation("Walk");
+    public void PlayRunAnimation() => PlayAnimation("Running");
+    public void PlayStandingAnimation() { PlayAnimation("Standing"); }
+    public void PlayDamageAnimation() => PlayAnimation("Damage");
+    public void PlayDeathAnimation() => PlayAnimation("Death");
+
     // debugging
     public string GetCurrentAnimation() => currentAnimation;
     public bool IsPlaying() => isPlaying;
     public int GetCurrentFrameIndex() => currentFrameIndex;
 }
-// *** When upgrading core/rightarm/left leg but not right leg,
-// right leg in attack animation is showing two legs and its the first upgrade color 

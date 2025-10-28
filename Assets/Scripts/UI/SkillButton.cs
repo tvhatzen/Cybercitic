@@ -21,7 +21,6 @@ public class SkillButton : MonoBehaviour
 
     private Skill assignedSkill;
     private int slotIndex;
-    private int instanceID; 
 
     [Header("DEBUG")]
     public bool debug = false;
@@ -29,7 +28,6 @@ public class SkillButton : MonoBehaviour
     public void Initialize(int index)
     {
         slotIndex = index;
-        instanceID = GetInstanceID(); // store instance ID for debugging
 
         // set up button click listener
         if (button != null)
@@ -272,5 +270,4 @@ public class SkillButton : MonoBehaviour
     public void OnSkillActivated() => OnButtonClicked();
     public void ShowTooltip() => toolTip.SetActive(true);
     public void HideTooltip() => toolTip.SetActive(false);
-
 }
