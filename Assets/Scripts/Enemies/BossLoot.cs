@@ -7,7 +7,6 @@ public class BossLoot : EnemyLoot
     [SerializeField] private SkillDrop[] skillDrops;
     
     [Header("Boss Specific Settings")]
-    [SerializeField] private bool isBoss = true;
     [SerializeField] private int bossCreditsMultiplier = 5;
 
     protected override void HandleDeath(HealthSystem hs)
@@ -23,7 +22,7 @@ public class BossLoot : EnemyLoot
         base.HandleDeath(hs);
         
         // skill drops
-        HandleSkillDrops();
+        //HandleSkillDrops();
     }
 
     private void HandleSkillDrops()

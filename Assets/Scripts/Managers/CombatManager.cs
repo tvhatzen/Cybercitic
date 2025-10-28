@@ -10,7 +10,6 @@ public class CombatManager : SingletonBase<CombatManager>
     private readonly List<HealthSystem> activeEnemies = new List<HealthSystem>();
 
     [SerializeField] private float playerAttackRate = 1.0f; // attacks per second
-    [SerializeField] private float enemyAttackRate = 1.5f;
 
     private Coroutine combatRoutine;
 

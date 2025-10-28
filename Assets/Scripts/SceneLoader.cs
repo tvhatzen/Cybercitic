@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class SceneLoader : MonoBehaviour
+public class SceneLoader : SingletonBase<SceneLoader>
 {
     [Header("Transition Animation")]
     [SerializeField] private Image transitionImage;
@@ -18,23 +18,16 @@ public class SceneLoader : MonoBehaviour
     private RectTransform transitionRectTransform;
     private static SceneLoader instance;
     
-    private void Awake()
+    protected override void Awake()
     {
-        // Make this a singleton to persist across scene loads
+        base.Awake();
+
+        // make this a singleton to persist across scene loads
         if (instance == null)
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-            
-            // Initialize transition image if not assigned
-            if (transitionImage == null)
-            {
-                CreateTransitionImage();
-            }
-            
             transitionRectTransform = transitionImage.GetComponent<RectTransform>();
             
-            // Start with transition image off-screen
+            // start with transition image off-screen
             if (transitionRectTransform != null)
             {
                 transitionRectTransform.anchoredPosition = new Vector2(-Screen.width, 0);
@@ -45,109 +38,8 @@ public class SceneLoader : MonoBehaviour
         else
         {
             if (debug) Debug.Log("[SceneLoader] Duplicate instance found, destroying");
-            
-            // Check if this SceneLoader has any children that shouldn't be destroyed
-            Transform[] children = GetComponentsInChildren<Transform>();
-            if (debug) Debug.Log($"[SceneLoader] SceneLoader has {children.Length} children");
-            foreach (Transform child in children)
-            {
-                if (debug) Debug.Log($"[SceneLoader] Child: {child.name}");
-                if (child.name.Contains("NextLevelTrigger") || child.name.Contains("Trigger"))
-                {
-                    if (debug) Debug.LogWarning($"[SceneLoader] Found trigger child '{child.name}', moving to scene root before destroying SceneLoader");
-                    child.SetParent(null);
-                }
-            }
-            
             Destroy(gameObject);
             return;
-        }
-        
-        // Only load PersistentScene if it's not already loaded and exists in build settings
-        try
-        {
-            if (!SceneManager.GetSceneByName("PersistentScene").isLoaded)
-            {
-                SceneManager.LoadScene("PersistentScene", LoadSceneMode.Additive);
-                if (debug) Debug.Log("[SceneLoader] Loaded PersistentScene additively");
-            }
-        }
-        catch (System.Exception e)
-        {
-            if (debug) Debug.LogWarning($"[SceneLoader] PersistentScene not found in build settings: {e.Message}");
-        }
-    }
-    
-    private void CreateTransitionImage()
-    {
-        // Look for existing transition canvas first
-        Canvas transitionCanvas = GameObject.Find("TransitionCanvas")?.GetComponent<Canvas>();
-        
-        if (transitionCanvas == null)
-        {
-            // Create a canvas for the transition
-            GameObject canvasGO = new GameObject("TransitionCanvas");
-            transitionCanvas = canvasGO.AddComponent<Canvas>();
-            canvasGO.AddComponent<CanvasScaler>();
-            canvasGO.AddComponent<GraphicRaycaster>();
-            transitionCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            transitionCanvas.sortingOrder = 1000; // Ensure it's on top
-            
-            // Make canvas persistent across scene loads
-            DontDestroyOnLoad(canvasGO);
-            
-            // Ensure canvas is active
-            canvasGO.SetActive(true);
-            
-            if (debug) Debug.Log("[SceneLoader] Created new transition canvas");
-        }
-        else
-        {
-            if (debug) Debug.Log("[SceneLoader] Found existing transition canvas");
-        }
-        
-        // Create the transition image
-        GameObject imageGO = new GameObject("TransitionImage");
-        imageGO.transform.SetParent(transitionCanvas.transform, false);
-        
-        transitionImage = imageGO.AddComponent<Image>();
-        transitionImage.color = Color.black; // Default to black, can be changed in inspector
-        
-        // Set up RectTransform to cover full screen
-        transitionRectTransform = imageGO.GetComponent<RectTransform>();
-        transitionRectTransform.anchorMin = Vector2.zero;
-        transitionRectTransform.anchorMax = Vector2.one;
-        transitionRectTransform.offsetMin = Vector2.zero;
-        transitionRectTransform.offsetMax = Vector2.zero;
-        
-        // Ensure the image is active and visible
-        imageGO.SetActive(true);
-        transitionImage.enabled = true;
-        
-        // Set initial position off-screen
-        transitionRectTransform.anchoredPosition = new Vector2(-Screen.width, 0);
-        
-        if (debug) Debug.Log("[SceneLoader] Created transition image UI element");
-    }
-    
-    // Static method to access the SceneLoader from anywhere
-    public static SceneLoader Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                // Try to find existing SceneLoader in the scene
-                instance = FindObjectOfType<SceneLoader>();
-                if (instance == null)
-                {
-                    // Create a new SceneLoader if none exists
-                    GameObject loaderGO = new GameObject("SceneLoader");
-                    instance = loaderGO.AddComponent<SceneLoader>();
-                    DontDestroyOnLoad(loaderGO);
-                }
-            }
-            return instance;
         }
     }
     
@@ -159,11 +51,10 @@ public class SceneLoader : MonoBehaviour
             return;
         }
         
-        // Ensure transition image exists
+        // ensure transition image exists
         if (transitionImage == null || transitionRectTransform == null)
         {
             if (debug) Debug.LogWarning("[SceneLoader] Transition image missing, recreating...");
-            CreateTransitionImage();
         }
         
         StartCoroutine(TransitionAndLoadScene(sceneName));
@@ -171,42 +62,9 @@ public class SceneLoader : MonoBehaviour
     
     public static void LoadScene(string sceneName)
     {
-        
-        // Ensure the SceneLoader instance is properly initialized
+        // ensure the SceneLoader instance is properly initialized
         var loader = Instance;
-        if (loader.transitionImage == null)
-        {
-            loader.CreateTransitionImage();
-        }
-        
         loader.LoadSceneWithTransition(sceneName);
-    }
-    
-    // Test method to check if transition image is working
-    public void TestTransition()
-    {
-        if (debug) Debug.Log("[SceneLoader] Testing transition animation");
-        StartCoroutine(TestTransitionAnimation());
-    }
-    
-    private IEnumerator TestTransitionAnimation()
-    {
-        if (transitionImage == null)
-        {
-            if (debug) Debug.LogError("[SceneLoader] No transition image found, creating one");
-            CreateTransitionImage();
-        }
-        
-        // Test slide in
-        yield return StartCoroutine(SlideTransition(true));
-        
-        // Wait a moment
-        yield return new WaitForSeconds(0.5f);
-        
-        // Test slide out
-        yield return StartCoroutine(SlideTransition(false));
-        
-        if (debug) Debug.Log("[SceneLoader] Test transition completed");
     }
     
     private IEnumerator TransitionAndLoadScene(string sceneName)

@@ -15,15 +15,10 @@ public class PlayerMovement : MonoBehaviour
     
     [Header("Animation Settings")]
     [SerializeField] private bool enableMovementAnimations = true;
-    [SerializeField] private float movementThreshold = 0.1f; // minimum movement to trigger running animation
     
     [Header("Debug")]
     public bool debug = false;
     
-    // animation state tracking
-    private bool isMoving = false;
-    private bool wasMoving = false;
-
     void Awake()
     {
         controller = GetComponent<CharacterController>();
@@ -47,8 +42,6 @@ public class PlayerMovement : MonoBehaviour
         if (enableMovementAnimations && frameAnimator != null)
         {
             frameAnimator.PlayRunAnimation();
-            isMoving = true;
-            wasMoving = true;
             if (debug) Debug.Log("[PlayerMovement] Started running animation on spawn");
         }
     }
@@ -60,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        // Get movement speed with fallback
+        // get movement speed
         float moveSpeed = GetMovementSpeed();
         
         if (moveSpeed <= 0)
@@ -127,8 +120,6 @@ public class PlayerMovement : MonoBehaviour
         if (enableMovementAnimations && frameAnimator != null)
         {
             frameAnimator.PlayRunAnimation();
-            isMoving = true;
-            wasMoving = true;
             if (debug) Debug.Log("[PlayerMovement] Started running animation after spawn reset");
         }
         

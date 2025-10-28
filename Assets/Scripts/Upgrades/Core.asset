@@ -16,9 +16,9 @@ MonoBehaviour:
   upgradeDescription: Increased Health
   icon: {fileID: 21300000, guid: 1470d2448268c2042b2d64bf4708d903, type: 3}
   iconLocked: {fileID: 21300000, guid: 76faa83a000b91e44abef512799406a0, type: 3}
-  baseCost: 85
-  maxUpgradeLevel: 3
+  baseCost: 40
+  maxUpgradeLevel: 5
   costMultiplier: 1.5
   upgradeType: 0
-  statIncreasePerLevel: 0.15
+  statIncreasePerLevel: 0.1
   debug: 0

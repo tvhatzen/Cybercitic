@@ -8,45 +8,41 @@ public static class TriggerRecreator
 {
     public static void RecreateTrigger(Vector3 position, Quaternion rotation, bool loadNewScene, string nextFloorSceneName)
     {
-        // Find a MonoBehaviour to start the coroutine
-        MonoBehaviour coroutineRunner = Object.FindObjectOfType<FloorManager>();
+        // find a floormanager to start the coroutine
+        MonoBehaviour coroutineRunner = Object.FindFirstObjectByType<FloorManager>();
         if (coroutineRunner != null)
         {
             coroutineRunner.StartCoroutine(RecreateTriggerCoroutine(position, rotation, loadNewScene, nextFloorSceneName));
         }
-        else
-        {
-            Debug.LogError("[TriggerRecreator] No MonoBehaviour found to start coroutine!");
-        }
     }
     
-    private static System.Collections.IEnumerator RecreateTriggerCoroutine(Vector3 position, Quaternion rotation, bool loadNewScene, string nextFloorSceneName)
+    private static IEnumerator RecreateTriggerCoroutine(Vector3 position, Quaternion rotation, bool loadNewScene, string nextFloorSceneName)
     {
-        yield return null; // Wait one frame
+        yield return null;
         
-        // Check if trigger still exists
-        trigger existingTrigger = Object.FindObjectOfType<trigger>();
+        // check if trigger still exists
+        trigger existingTrigger = Object.FindFirstObjectByType<trigger>();
         if (existingTrigger == null)
         {
             Debug.Log("[TriggerRecreator] No trigger found, recreating...");
             
-            // Create a new trigger GameObject
+            // create a new trigger GameObject
             GameObject newTrigger = new GameObject("NextLevelTrigger_Recreated");
             newTrigger.AddComponent<BoxCollider>().isTrigger = true;
             
-            // Set up the collider with proper size
+            // set up the collider with proper size
             BoxCollider collider = newTrigger.GetComponent<BoxCollider>();
-            collider.size = new Vector3(2f, 2f, 2f); // Make it larger so player doesn't miss it
+            collider.size = new Vector3(2f, 2f, 2f); // make it larger so player doesn't miss it
             
-            // Add the trigger component
+            // add the trigger component
             trigger triggerComponent = newTrigger.AddComponent<trigger>();
             
-            // Configure the trigger settings
+            // configure the trigger settings
             triggerComponent.loadNewScene = loadNewScene;
             triggerComponent.nextFloorSceneName = nextFloorSceneName;
-            triggerComponent.debug = true; // Enable debug for the recreated trigger
+            triggerComponent.debug = true; // enable debug for the created trigger
             
-            // Position it at the same location as the original
+            // position it at the same location as the original
             newTrigger.transform.position = position;
             newTrigger.transform.rotation = rotation;
             
@@ -77,22 +73,19 @@ public class trigger : MonoBehaviour
         Collider col = GetComponent<Collider>();
         col.isTrigger = true;
         
-        // Ensure this trigger is not destroyed by SceneLoader
+        // ensure this trigger is not destroyed by SceneLoader
         if (transform.parent != null && transform.parent.name.Contains("SceneLoader"))
         {
             if(debug) Debug.LogWarning($"[Trigger] {gameObject.name} is child of SceneLoader! Moving to scene root.");
             transform.SetParent(null);
         }
         
-        // Mark this trigger as protected from accidental destruction
-        gameObject.tag = "Untagged"; // Remove any tags that might cause issues
-        gameObject.name = "NextLevelTrigger_Protected"; // Rename to avoid conflicts
+        // mark this trigger as protected from accidental destruction
+        gameObject.tag = "Untagged"; // remove any tags that might cause issues
+        gameObject.name = "NextLevelTrigger_Protected"; // rename to avoid conflicts
         
-        // Add a small delay to ensure the trigger is fully initialized before any cleanup
+        // add small delay to ensure the trigger is fully initialized
         StartCoroutine(EnsureTriggerSurvival());
-        
-        // Add a coroutine that continuously checks if the trigger is still alive
-        StartCoroutine(MonitorTriggerHealth());
         
         if(debug) Debug.Log($"[Trigger] {gameObject.name} Awake called");
         if(debug) Debug.Log($"[Trigger] Parent: {(transform.parent != null ? transform.parent.name : "None")}");
@@ -108,12 +101,11 @@ public class trigger : MonoBehaviour
         // Log the stack trace to see what's calling Destroy
         if(debug) Debug.Log($"[Trigger] Stack trace: {System.Environment.StackTrace}");
         
-        // If this is an accidental destruction, try to prevent it
         if (!isBeingDestroyed && gameObject.scene.isLoaded)
         {
             if(debug) Debug.LogWarning($"[Trigger] {gameObject.name} was accidentally destroyed! This should not happen!");
             
-            // Try to recreate the trigger immediately using a static method
+            // try to recreate the trigger immediately using a static method
             TriggerRecreator.RecreateTrigger(transform.position, transform.rotation, loadNewScene, nextFloorSceneName);
         }
         
@@ -121,12 +113,12 @@ public class trigger : MonoBehaviour
     }
     
     
-    private System.Collections.IEnumerator EnsureTriggerSurvival()
+    private IEnumerator EnsureTriggerSurvival()
     {
-        // Wait a frame to ensure everything is initialized
+        // wait a frame to ensure everything is initialized
         yield return null;
         
-        // Check if the trigger is still alive
+        // check if the trigger is still alive
         if (gameObject != null && gameObject.activeInHierarchy)
         {
             if(debug) Debug.Log($"[Trigger] {gameObject.name} survived initialization!");
@@ -137,24 +129,7 @@ public class trigger : MonoBehaviour
         }
     }
     
-    private System.Collections.IEnumerator MonitorTriggerHealth()
-    {
-        // Monitor the trigger for 5 seconds after creation
-        for (int i = 0; i < 50; i++) // Check every 0.1 seconds for 5 seconds
-        {
-            yield return new WaitForSeconds(0.1f);
-            
-            if (gameObject == null || !gameObject.activeInHierarchy)
-            {
-                if(debug) Debug.LogWarning($"[Trigger] {gameObject?.name ?? "Unknown"} was destroyed after {i * 0.1f} seconds!");
-                break;
-            }
-        }
-        
-        if(debug) Debug.Log($"[Trigger] {gameObject.name} monitoring completed - trigger is still alive!");
-    }
-    
-    // Method to safely destroy the trigger
+    // safely destroy the trigger
     public void SafeDestroy()
     {
         if(debug) Debug.Log($"[Trigger] {gameObject.name} safely destroying...");
@@ -199,7 +174,7 @@ public class trigger : MonoBehaviour
                 FloorManager.Instance.IncrementFloor();
                 if(debug) Debug.Log($"[Trigger] Floor incremented from {currentFloorBefore} to {FloorManager.Instance.CurrentFloor}");
 
-                // Load the scene with transition animation
+                // load the scene with transition animation
                 SceneLoader.LoadScene(nextFloorSceneName);
             }
             else
@@ -209,9 +184,11 @@ public class trigger : MonoBehaviour
         }
         else
         {
-            // Handle same-scene floor progression
+            // handle same-scene floor progression
             if(debug) Debug.Log("[Trigger] Same-scene floor progression");
             FloorManager.Instance.LoadNextFloor();
         }
     }
 }
+
+// could this be simplified by instantiating a trigger prefab inst of doing it here in code?

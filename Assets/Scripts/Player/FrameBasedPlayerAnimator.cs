@@ -45,8 +45,6 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
     [SerializeField] private float attackDuration = 0.5f;
     
     [Header("Animation State Management")]
-    [SerializeField] private bool isInCombat = false;
-    [SerializeField] private bool isMoving = false;
     
     [Header("Debug")]
     [SerializeField] private bool debug = false;

@@ -13,6 +13,8 @@ using static GameState;
 /// </summary>
 public class UpgradeShopUI : MonoBehaviour
 {
+    #region Panel Elements
+
     [Header("UI References")]
     [SerializeField] private Button doneButton;
     [SerializeField] private TextMeshProUGUI creditsText;
@@ -44,6 +46,9 @@ public class UpgradeShopUI : MonoBehaviour
     [SerializeField] private Color cannotAffordColor = Color.red;
     [SerializeField] private Color maxLevelColor = Color.gray;
 
+    #endregion
+
+    #region Other Variables
     public enum BodyPart
     {
         Core,
@@ -58,8 +63,9 @@ public class UpgradeShopUI : MonoBehaviour
     private Upgrade selectedUpgrade;
     private UpgradeButtonUI selectedButton;
 
-    [Header("DEBUG")]
     public bool debug = false;
+
+    #endregion
 
     private void Awake()
     {
@@ -150,10 +156,10 @@ public class UpgradeShopUI : MonoBehaviour
         string name = upgrade.UpgradeName.ToLower();
 
         if (name.Contains("core")) return BodyPart.Core;
-        if (name.Contains("larm") || name.Contains("left arm")) return BodyPart.LeftArm;
-        if (name.Contains("rarm") || name.Contains("right arm")) return BodyPart.RightArm;
-        if (name.Contains("lleg") || name.Contains("left leg")) return BodyPart.LeftLeg;
-        if (name.Contains("rleg") || name.Contains("right leg")) return BodyPart.RightLeg;
+        if (name.Contains("left arm")) return BodyPart.LeftArm;
+        if (name.Contains("right arm")) return BodyPart.RightArm;
+        if (name.Contains("left leg")) return BodyPart.LeftLeg;
+        if (name.Contains("right leg")) return BodyPart.RightLeg;
 
         return BodyPart.Core;
     }

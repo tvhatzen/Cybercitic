@@ -12,6 +12,7 @@ public class SkillButton : MonoBehaviour
     [SerializeField] private TextMeshProUGUI cooldownText;
     [SerializeField] private TextMeshProUGUI skillNameText; 
     [SerializeField] private TextMeshProUGUI keyLabel;
+    [SerializeField] private GameObject toolTip;
 
     [Header("Visual Settings")]
     [SerializeField] private Color readyColor = Color.white;
@@ -269,4 +270,7 @@ public class SkillButton : MonoBehaviour
 
     private void SetButtonActive(bool active) => gameObject.SetActive(active);
     public void OnSkillActivated() => OnButtonClicked();
+    public void ShowTooltip() => toolTip.SetActive(true);
+    public void HideTooltip() => toolTip.SetActive(false);
+
 }

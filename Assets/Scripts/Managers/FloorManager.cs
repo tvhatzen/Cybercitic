@@ -34,7 +34,6 @@ public class FloorManager : SingletonBase<FloorManager>
     {
         base.Awake(); 
         
-        // Only subscribe to events if this is the valid instance
         if (Instance == this)
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
@@ -43,7 +42,6 @@ public class FloorManager : SingletonBase<FloorManager>
 
     void OnDestroy()
     {
-        // Only unsubscribe if this was the valid instance
         if (Instance == this)
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -195,6 +193,9 @@ public class FloorManager : SingletonBase<FloorManager>
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        // play music
+        PlayBackgroundMusic();
+
         if (debug) Debug.Log($"[FloorManager] OnSceneLoaded - Scene: {scene.name}, Floor: {CurrentFloor}");
         
         // Check for NextLevelTrigger before doing anything else
@@ -348,11 +349,7 @@ public class FloorManager : SingletonBase<FloorManager>
         {
             if (debug) Debug.Log($"[FloorManager] Spawning regular enemies for floor {CurrentFloor}");
             SpawnRegularEnemies();
-        }
-
-        // Note: This code was trying to call PlaySpawnEffect on destroyed enemies
-        // Removed as it would cause null reference exceptions
-        
+        }       
     }
 
     private void SpawnBoss()
@@ -395,7 +392,7 @@ public class FloorManager : SingletonBase<FloorManager>
         if (debug) Debug.Log("[FloorManager] Checking UI state after boss spawn...");
         
         // Check if EventSystem exists
-        UnityEngine.EventSystems.EventSystem eventSystem = FindObjectOfType<UnityEngine.EventSystems.EventSystem>();
+        UnityEngine.EventSystems.EventSystem eventSystem = FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>();
         if (eventSystem == null)
         {
             if (debug) Debug.LogError("[FloorManager] No EventSystem found after boss spawn!");
@@ -406,7 +403,7 @@ public class FloorManager : SingletonBase<FloorManager>
         }
         
         // Check if Canvas exists
-        Canvas canvas = FindObjectOfType<Canvas>();
+        Canvas canvas = FindFirstObjectByType<Canvas>();
         if (canvas == null)
         {
             if (debug) Debug.LogError("[FloorManager] No Canvas found after boss spawn!");
@@ -486,7 +483,7 @@ public class FloorManager : SingletonBase<FloorManager>
         if (debug) Debug.Log("[FloorManager] Checking UI state after regular enemy spawn...");
         
         // Check if EventSystem exists
-        UnityEngine.EventSystems.EventSystem eventSystem = FindObjectOfType<UnityEngine.EventSystems.EventSystem>();
+        UnityEngine.EventSystems.EventSystem eventSystem = FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>();
         if (eventSystem == null)
         {
             if (debug) Debug.LogError("[FloorManager] No EventSystem found after regular spawn!");
@@ -506,11 +503,7 @@ public class FloorManager : SingletonBase<FloorManager>
         }
     }
 
-    public void SetBossFloorInterval(int interval)
-    {
-        bossFloorInterval = interval;
-        if (debug) Debug.Log($"Boss floor interval set to: {bossFloorInterval} (boss every {interval} floors)");
-    }
+    public void SetBossFloorInterval(int interval) { bossFloorInterval = interval; }
 
     // check if current floor is boss floor
     public bool IsBossFloor() { return CurrentFloor % bossFloorInterval == 0; }

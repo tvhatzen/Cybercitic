@@ -7,7 +7,6 @@ public class InputManager : MonoBehaviour, InputSystem_Actions.IPlayerActions
 {
     private InputSystem_Actions input;
 
-    [Header("DEBUG")]
     public bool debug = false;
 
     void Awake()
@@ -28,12 +27,6 @@ public class InputManager : MonoBehaviour, InputSystem_Actions.IPlayerActions
     public event Action skill1InputEvent;
     public event Action skill2InputEvent;
     public event Action skill3InputEvent;
-    public event Action interactInputEvent;
-
-    public event Action<InputAction.CallbackContext> Skill1InputEvent;
-    public event Action<InputAction.CallbackContext> Skill2InputEvent;
-    public event Action<InputAction.CallbackContext> Skill3InputEvent;
-    public event Action<InputAction.CallbackContext> InteractInputEvent;
 
     #region Callbacks
 
@@ -62,11 +55,6 @@ public class InputManager : MonoBehaviour, InputSystem_Actions.IPlayerActions
             skill3InputEvent?.Invoke();
             if(debug) Debug.Log("Skill 3 started");
         }
-    }
-
-    public void OnInteract(InputAction.CallbackContext context)
-    {
-        if(debug) Debug.Log("On Interact");
     }
 
     #endregion
