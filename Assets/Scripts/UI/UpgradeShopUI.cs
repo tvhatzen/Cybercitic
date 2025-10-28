@@ -212,6 +212,9 @@ public class UpgradeShopUI : MonoBehaviour
             statInfo.text = statText;
         }
 
+        // show unique square level pips
+        selectedButton.ShowSquares();
+
         // update purchase button
         UpdatePurchaseButton();
     }
@@ -232,7 +235,7 @@ public class UpgradeShopUI : MonoBehaviour
                 break;
             case Upgrade.UpgradeType.Speed:
                 statName = "Speed";
-                displayValue = $"+{increaseAmount:F2}";
+                displayValue = $"+{(increaseAmount * 100):F2}%";
                 break;
             case Upgrade.UpgradeType.Attack:
                 statName = "Attack";
@@ -240,7 +243,7 @@ public class UpgradeShopUI : MonoBehaviour
                 break;
             case Upgrade.UpgradeType.Defense:
                 statName = "Defense";
-                displayValue = $"+{increaseAmount:F2}";
+                displayValue = $"+{(increaseAmount * 100):F2}%";
                 break;
             case Upgrade.UpgradeType.DodgeChance:
                 statName = "Dodge Chance";
@@ -248,7 +251,7 @@ public class UpgradeShopUI : MonoBehaviour
                 break;
         }
 
-        return $"<b>{statName}:</b> {displayValue} per level\n<b>Current Level:</b> {upgrade.CurrentLevel}/{upgrade.MaxLevel}";
+        return $"<b>{statName} {displayValue} \n<b>Level:</b> {upgrade.CurrentLevel}/{upgrade.MaxLevel}";
     }
 
     // change the text of the purchase button depending on credits
@@ -275,7 +278,7 @@ public class UpgradeShopUI : MonoBehaviour
         }
         else if (canAfford && canUpgrade) // can purchase
         {
-            purchaseButtonText.text = $"PURCHASE: {cost} ȼ";
+            purchaseButtonText.text = $"PURCHASE: {cost} "; // ADD IMAGE OF SCRAP
             purchaseButtonText.color = canPurchaseColor;
             if (buttonImage != null)
                 buttonImage.color = canPurchaseColor;
@@ -289,10 +292,10 @@ public class UpgradeShopUI : MonoBehaviour
                 buttonImage.color = maxLevelColor;
             purchaseButton.interactable = false;
         }
-        else // Can't afford
+        else // can't afford
         {
             int needed = cost - currentCredits;
-            purchaseButtonText.text = $"NEED MORE CREDITS: {needed} ȼ";
+            purchaseButtonText.text = $"NEED MORE SCRAP: {needed} "; // ADD IMAGE OF SCRAP
             purchaseButtonText.color = cannotAffordColor;
             if (buttonImage != null)
                 buttonImage.color = cannotAffordColor;
@@ -360,7 +363,7 @@ public class UpgradeShopUI : MonoBehaviour
     {
         if (creditsText != null)
         {
-            creditsText.text = $"Credits: {credits}";
+            creditsText.text = $"Scrap: {credits}"; // ADD IMAGE OF SCRAP
         }
         
         // update purchase button when credits change
@@ -412,3 +415,5 @@ public class UpgradeShopUI : MonoBehaviour
         if(debug) Debug.Log("[UpgradeShopUI] All displays refreshed");
     }
 }
+
+// equipped display should only be showing the selected upgrade (right now is showing all at once)

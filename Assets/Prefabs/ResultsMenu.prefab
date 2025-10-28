@@ -329,8 +329,6 @@ MonoBehaviour:
   floorsText: {fileID: 3778302020388728932}
   enemiesText: {fileID: 7231949550104832568}
   creditsText: {fileID: 2353779533341691917}
-  skillUnlockedPanel: {fileID: 9141995169809385310}
-  skillNameText: {fileID: 1325602463719519881}
   continueButton: {fileID: 1376144276262393175}
   useCountUpAnimation: 0
   countUpDuration: 3
@@ -347,7 +345,7 @@ GameObject:
   - component: {fileID: 855451300637338268}
   - component: {fileID: 2353779533341691917}
   m_Layer: 0
-  m_Name: credits
+  m_Name: scrap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -400,7 +398,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: credits
+  m_text: scrap
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

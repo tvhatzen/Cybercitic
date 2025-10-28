@@ -5,6 +5,8 @@ using System;
 [CreateAssetMenu(fileName = "Skill", menuName = "Scriptable Objects/Skill")]
 public class Skill : ScriptableObject
 {
+    #region Variables
+
     [Header("Skill Info")]
     [SerializeField] private string skillName;
     [SerializeField] private string skillDescription;
@@ -32,6 +34,10 @@ public class Skill : ScriptableObject
     [NonSerialized] public bool isUnlocked = false;
     [NonSerialized] public bool hasBeenUsed = false; // track if skill has been used this run
 
+    #endregion
+
+    #region Events, Enum & Properties
+
     // events
     public event Action<Skill> OnSkillActivated;
     public event Action<Skill> OnSkillCooldownStarted;
@@ -58,6 +64,8 @@ public class Skill : ScriptableObject
 
     [Header("DEBUG")]
     public bool debug = false;
+
+    #endregion
 
     public virtual void Initialize()
     {

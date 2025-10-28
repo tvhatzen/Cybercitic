@@ -26,7 +26,7 @@ public class SceneLoader : SingletonBase<SceneLoader>
         if (instance == null)
         {
             transitionRectTransform = transitionImage.GetComponent<RectTransform>();
-            
+
             // start with transition image off-screen
             if (transitionRectTransform != null)
             {

@@ -25,6 +25,8 @@ public class UpgradeButtonUI : MonoBehaviour
 
     private void Awake()
     {
+        HideSquares();
+
         if (button == null)
             button = GetComponent<Button>();
             
@@ -38,6 +40,24 @@ public class UpgradeButtonUI : MonoBehaviour
         shopUI = shop;
         
         UpdateDisplay();
+    }
+
+    private void HideSquares()
+    {
+        foreach (var square in levelSquares)
+        {
+            if (square != null)
+                gameObject.SetActive(false);
+        }
+    }
+
+    public void ShowSquares()
+    {
+        foreach (var square in levelSquares)
+        {
+            if (square != null)
+                gameObject.SetActive(true);
+        }
     }
 
     public void UpdateDisplay()

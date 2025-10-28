@@ -98,7 +98,7 @@ public class ResultsScreenUI : MonoBehaviour
         bool beatBoss = RunStatsTracker.Instance.BeatBoss;
         string unlockedSkill = RunStatsTracker.Instance.UnlockedSkill;
 
-        if(debug) Debug.Log($"[ResultsScreenUI] Got stats - Floors: {targetFloors}, Enemies: {targetEnemies}, Credits: {targetCredits}");
+        if(debug) Debug.Log($"[ResultsScreenUI] Got stats - Floors: {targetFloors}, Enemies: {targetEnemies}, Scrap: {targetCredits}");
 
         // start count up animations if enabled
         if (useCountUpAnimation)
@@ -114,7 +114,7 @@ public class ResultsScreenUI : MonoBehaviour
             // otherwise set text immediately without animation
             if (floorsText != null) { floorsText.text = $"Floors Cleared: {targetFloors}"; }
             if (enemiesText != null) { enemiesText.text = $"Enemies Killed: {targetEnemies}"; }
-            if (creditsText != null) { creditsText.text = $"Credits Collected: {targetCredits} ȼ"; }
+            if (creditsText != null) { creditsText.text = $"{targetCredits} collected"; } // ADD IMAGE OF SCRAP
         }
 
         if(debug) Debug.Log($"[ResultsScreenUI] Displaying results:\n{RunStatsTracker.Instance.GetRunSummary()}");
@@ -129,7 +129,7 @@ public class ResultsScreenUI : MonoBehaviour
             enemiesText.text = "Enemies Killed: 0";
             
         if (creditsText != null)
-            creditsText.text = "Credits Collected: 0 ȼ";
+            creditsText.text = "0 Collected"; // ADD IMAGE OF SCRAP
     }
 
     private void OnContinueClicked()

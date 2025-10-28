@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Finish and \nStart Game!"
+  m_text: ' Start Game!'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -774,7 +774,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 399.84973, y: 292.4931}
-  m_SizeDelta: {x: 541.2043, y: 291.6315}
+  m_SizeDelta: {x: 404.55, y: 182.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &433226565208678826
 CanvasRenderer:
