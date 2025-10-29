@@ -1728,6 +1728,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+        - m_Target: {fileID: 1072457971}
+          m_TargetAssemblyTypeName: UpgradeShopUI, Assembly-CSharp
+          m_MethodName: ShowDetailsPanel
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - eventID: 4
     callback:
       m_PersistentCalls:
@@ -1735,6 +1747,22 @@ MonoBehaviour:
         - m_Target: {fileID: 1984834158}
           m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
           m_MethodName: PlayButtonClick
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1072457971}
+          m_TargetAssemblyTypeName: UpgradeShopUI, Assembly-CSharp
+          m_MethodName: HideDetailsPanel
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -2136,7 +2164,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5174850044127445237, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: iconOffset.y
-      value: 0.8
+      value: 0.9
       objectReference: {fileID: 0}
     - target: {fileID: 5174850044127445237, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: targetingIcon
@@ -2766,7 +2794,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1658368652761031261, guid: daa8428dff4e7d44b87a0a3a6db1d8e7, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 203.5518
+      value: 192.21
       objectReference: {fileID: 0}
     - target: {fileID: 1658368652761031261, guid: daa8428dff4e7d44b87a0a3a6db1d8e7, type: 3}
       propertyPath: m_LocalScale.x
@@ -3000,6 +3028,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7649588671196898586, guid: daa8428dff4e7d44b87a0a3a6db1d8e7, type: 3}
   m_PrefabInstance: {fileID: 1072457968}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1072457971 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7527210903502437379, guid: daa8428dff4e7d44b87a0a3a6db1d8e7, type: 3}
+  m_PrefabInstance: {fileID: 1072457968}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072457970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b2bf81a28887eb4c8f5fe6fefcde5fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1092127025
 GameObject:
   m_ObjectHideFlags: 0
@@ -3921,8 +3960,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Sprite: {fileID: 21300000, guid: a3f50b4721127034c8f6c56e3a520c15, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -3941,7 +3980,7 @@ RectTransform:
   m_GameObject: {fileID: 1339922552}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2134808726}

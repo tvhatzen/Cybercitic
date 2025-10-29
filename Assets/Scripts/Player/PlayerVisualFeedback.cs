@@ -5,7 +5,9 @@ public class PlayerVisualFeedback : MonoBehaviour
 {
     [Header("Targeting Icon")]
     // the icon GameObject to display above the current target
+    // make this an array so i can play frame animation
     [SerializeField] private GameObject targetingIcon;
+
     private Transform currentTarget; // track current target for icon positioning
 
     // offset position of the icon above the target

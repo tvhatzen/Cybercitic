@@ -359,7 +359,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetingIcon: {fileID: 0}
-  iconOffset: {x: 0, y: 0.3, z: 0}
+  iconOffset: {x: 0, y: 0.4, z: 0}
   frameAnimator: {fileID: 3149356929928338088}
   attackParticles: {fileID: 6017616659528246154, guid: e528659df24afd24e9303ccfbb7139b7, type: 3}
   takeDamageParticles: {fileID: 3625109293735009957}

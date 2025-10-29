@@ -117,7 +117,7 @@ public class SceneLoader : SingletonBase<SceneLoader>
         
         if (slideIn)
         {
-            // Start off-screen left, slide to center
+            // Start off-screen left, slide to center *** (change to up/down)
             startPosition = new Vector2(-Screen.width, 0);
             endPosition = Vector2.zero;
             if (debug) Debug.Log("[SceneLoader] Starting slide-in animation");

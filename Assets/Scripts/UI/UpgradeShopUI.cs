@@ -295,7 +295,7 @@ public class UpgradeShopUI : MonoBehaviour
         else // can't afford
         {
             int needed = cost - currentCredits;
-            purchaseButtonText.text = $"NEED MORE SCRAP: {needed} "; // ADD IMAGE OF SCRAP
+            purchaseButtonText.text = $"NEEDED: {needed} "; // ADD IMAGE OF SCRAP
             purchaseButtonText.color = cannotAffordColor;
             if (buttonImage != null)
                 buttonImage.color = cannotAffordColor;
@@ -413,6 +413,16 @@ public class UpgradeShopUI : MonoBehaviour
         UpdateEquippedDisplay();
         
         if(debug) Debug.Log("[UpgradeShopUI] All displays refreshed");
+    }
+
+    public void ShowDetailsPanel()
+    {
+        Debug.Log("showing details panel");
+    }
+
+    public void HideDetailsPanel()
+    {
+        Debug.Log("hiding details panel");
     }
 }
 
