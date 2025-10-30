@@ -166,5 +166,35 @@ public class GameState : SingletonBase<GameState>
         if(debug) Debug.Log($"Game state changed: {lastStateDebug} -> {currentStateDebug}");
 
         GameEvents.GameStateChanged(newState);
+
+		// update music for this state
+		ApplyMusicForState(newState);
     }
+
+	private void ApplyMusicForState(GameStates state)
+	{
+		if (AudioManager.Instance == null) return;
+
+		switch (state)
+		{
+			case GameStates.MainMenu:
+				AudioManager.Instance.PlayMusicTrack("mainMenu");
+				break;
+			case GameStates.Upgrade:
+				AudioManager.Instance.PlayMusicTrack("upgradeScreen");
+				break;
+			case GameStates.Win:
+				AudioManager.Instance.PlayMusicTrack("winScreen");
+				break;
+			case GameStates.Playing:
+				if (floorManager != null)
+				{
+					AudioManager.Instance.PlayGameplayForFloor(floorManager.CurrentFloor);
+				}
+				break;
+			default:
+				// leave currently playing track for other states or extend mapping as needed
+				break;
+		}
+	}
 }

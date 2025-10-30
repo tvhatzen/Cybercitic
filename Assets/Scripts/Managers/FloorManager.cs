@@ -65,6 +65,9 @@ public class FloorManager : SingletonBase<FloorManager>
         StartCoroutine(SpawnPlayerCoroutine());
 
         SpawnEnemies();
+
+        // ensure background music updates when progressing floors within the same scene
+        PlayBackgroundMusic();
     }
 
     // increment floor counter and notify listeners (called before scene loads)
@@ -135,7 +138,7 @@ public class FloorManager : SingletonBase<FloorManager>
             if (playerSpawnGO == null)
             {
                 // List all GameObjects to see what's available
-                GameObject[] allObjects = FindObjectsOfType<GameObject>();
+                GameObject[] allObjects = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
                 if (debug) Debug.Log($"[FloorManager] Total GameObjects in scene: {allObjects.Length}");
                 foreach (GameObject obj in allObjects)
                 {
@@ -193,13 +196,10 @@ public class FloorManager : SingletonBase<FloorManager>
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // play music
-        PlayBackgroundMusic();
-
         if (debug) Debug.Log($"[FloorManager] OnSceneLoaded - Scene: {scene.name}, Floor: {CurrentFloor}");
         
         // Check for NextLevelTrigger before doing anything else
-        trigger[] triggers = FindObjectsOfType<trigger>();
+        trigger[] triggers = FindObjectsByType<trigger>(FindObjectsSortMode.None);
         if (debug) Debug.Log($"[FloorManager] Found {triggers.Length} trigger(s) in scene {scene.name}");
         foreach (trigger trigger in triggers)
         {
@@ -220,13 +220,16 @@ public class FloorManager : SingletonBase<FloorManager>
             GameState.Instance.ChangeState(GameState.GameStates.Playing);
         }        
 
+        // play music AFTER game state has been set so the correct track is chosen
+        PlayBackgroundMusic();
+
         // reset player position whenever a new floor scene loads
         hasSpawnedOnLoad = true;
         StartCoroutine(SpawnPlayerCoroutine());
         SpawnEnemies();
         
         // Check for NextLevelTrigger after spawning
-        triggers = FindObjectsOfType<trigger>();
+        triggers = FindObjectsByType<trigger>(FindObjectsSortMode.None);
         if (debug) Debug.Log($"[FloorManager] After spawning - Found {triggers.Length} trigger(s) in scene {scene.name}");
         foreach (trigger trigger in triggers)
         {
@@ -414,7 +417,7 @@ public class FloorManager : SingletonBase<FloorManager>
         }
         
         // Check if skill buttons exist
-        SkillButton[] skillButtons = FindObjectsOfType<SkillButton>();
+        SkillButton[] skillButtons = FindObjectsByType<SkillButton>(FindObjectsSortMode.None);
         if (debug) Debug.Log($"[FloorManager] Found {skillButtons.Length} skill buttons after boss spawn");
         
         foreach (SkillButton button in skillButtons)
@@ -494,7 +497,7 @@ public class FloorManager : SingletonBase<FloorManager>
         }
         
         // Check if skill buttons exist
-        SkillButton[] skillButtons = FindObjectsOfType<SkillButton>();
+        SkillButton[] skillButtons = FindObjectsByType<SkillButton>(FindObjectsSortMode.None);
         if (debug) Debug.Log($"[FloorManager] Found {skillButtons.Length} skill buttons after regular spawn");
         
         foreach (SkillButton button in skillButtons)
@@ -575,7 +578,7 @@ public class FloorManager : SingletonBase<FloorManager>
     {
         yield return new WaitForSeconds(delay);
         
-        trigger[] triggers = FindObjectsOfType<trigger>();
+        trigger[] triggers = FindObjectsByType<trigger>(FindObjectsSortMode.None);
         if (debug) Debug.Log($"[FloorManager] After {delay}s delay - Found {triggers.Length} trigger(s) in scene");
         foreach (trigger trigger in triggers)
         {

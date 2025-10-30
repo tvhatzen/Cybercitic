@@ -456,5 +456,3 @@ public class UpgradeShopUI : MonoBehaviour
 		}
 	}
 }
-
-// equipped display should only be showing the selected upgrade (right now is showing all at once)

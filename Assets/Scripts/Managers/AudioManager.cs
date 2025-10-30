@@ -52,6 +52,10 @@ public class AudioManager : SingletonBase<AudioManager>
 
     public bool debug = false;
 
+    // PlayerPrefs keys
+    private const string MusicVolumeKey = "audio_music_volume";
+    private const string SfxVolumeKey = "audio_sfx_volume";
+
     private void Start()
     {
         GameEvents.OnSoundRequested += HandleSoundRequest;
@@ -76,18 +80,22 @@ public class AudioManager : SingletonBase<AudioManager>
             musicSource.clip = clip;
             musicSource.loop = true; // loop the background music
             musicSource.Play();
-            //Debug.Log("AudioManager: playing music - " + clip.name);
+            if (debug) Debug.Log($"[AudioManager] Now playing music clip: {clip.name}");
         }
     }
 
     // play music by string name 
     public void PlayMusicTrack(string trackName)
     {
-        //Debug.Log("AudioManager: Attempting to play music track - " + trackName);
+        if (debug) Debug.Log($"[AudioManager] Requested music track: {trackName}");
         AudioClip clip = GetSoundClip(trackName);
         if (clip != null)
         {
             PlayMusic(clip);
+        }
+        else
+        {
+            if (debug) Debug.LogWarning($"[AudioManager] No AudioClip found for track: {trackName} (check naming and inspector assignments)");
         }
     }
 
@@ -168,11 +176,11 @@ public class AudioManager : SingletonBase<AudioManager>
                 return floor6_10;
             case "floor11_15":
                 return floor11_15;
-            case "mainMenu":
+            case "mainmenu":
                 return mainMenu;
-            case "upgradeScreen":
+            case "upgradescreen":
                 return upgradeScreen;
-            case "winScreen":
+            case "winscreen":
                 return winScreen;
 
             default:
@@ -183,12 +191,22 @@ public class AudioManager : SingletonBase<AudioManager>
     // volume settings
     public void SetMusicVolume(float volume)
     {
-        musicSource.volume = volume;
+        float clamped = Mathf.Clamp01(volume);
+        if (musicSource != null)
+        {
+            musicSource.volume = clamped;
+            if (debug) Debug.Log($"[AudioManager] Applied Music volume to AudioSource: {musicSource.volume:0.###} (from slider {volume:0.###})");
+        }
     }
 
     public void SetSFXVolume(float volume)
     {
-        sfxSource.volume = volume;
+        float clamped = Mathf.Clamp01(volume);
+        if (sfxSource != null)
+        {
+            sfxSource.volume = clamped;
+            if (debug) Debug.Log($"[AudioManager] Applied SFX volume to AudioSource: {sfxSource.volume:0.###} (from slider {volume:0.###})");
+        }
     }
 
     public void PlayButtonHover()
@@ -199,5 +217,48 @@ public class AudioManager : SingletonBase<AudioManager>
     public void PlayButtonClick()
     {
         PlaySound("uiClick");
+    }
+
+    // select gameplay background music based on floor ranges
+    public void PlayGameplayForFloor(int floor)
+    {
+        if (floor >= 1 && floor <= 5)
+        {
+            PlayMusic(floor1_5 != null ? floor1_5 : backgroundMusic);
+            return;
+        }
+
+        if (floor >= 6 && floor <= 10)
+        {
+            PlayMusic(floor6_10 != null ? floor6_10 : backgroundMusic);
+            return;
+        }
+
+        // floors 11+ (or fallback)
+        PlayMusic(floor11_15 != null ? floor11_15 : backgroundMusic);
+    }
+
+    // UI helpers for sliders (hook to Slider.onValueChanged)
+    public void OnMusicSliderChanged(float value)
+    {
+        if (debug) Debug.Log($"[AudioManager] Music slider changed: raw={value:0.###}");
+        SetMusicVolume(value);
+    }
+
+    public void OnSfxSliderChanged(float value)
+    {
+        if (debug) Debug.Log($"[AudioManager] SFX slider changed: raw={value:0.###}");
+        SetSFXVolume(value);
+    }
+
+    // Getters for initializing slider values
+    public float GetMusicVolume()
+    {
+        return musicSource != null ? musicSource.volume : PlayerPrefs.GetFloat(MusicVolumeKey, 1f);
+    }
+
+    public float GetSfxVolume()
+    {
+        return sfxSource != null ? sfxSource.volume : PlayerPrefs.GetFloat(SfxVolumeKey, 1f);
     }
 }
