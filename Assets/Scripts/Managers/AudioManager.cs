@@ -59,6 +59,11 @@ public class AudioManager : SingletonBase<AudioManager>
     private void Start()
     {
         GameEvents.OnSoundRequested += HandleSoundRequest;
+
+        // Ensure sources are 2D so SFX/Music are not distance-attenuated
+        if (musicSource != null) musicSource.spatialBlend = 0f;
+        if (sfxSource != null) sfxSource.spatialBlend = 0f;
+        if (debug) Debug.Log("[AudioManager] Initialized audio sources as 2D (spatialBlend=0)");
     }
 
     private void OnDestroy()
@@ -102,6 +107,23 @@ public class AudioManager : SingletonBase<AudioManager>
     // play sound by AudioClip
     public void PlaySound(AudioClip clip)
     {
+        if (sfxSource == null)
+        {
+            if (debug) Debug.LogError("[AudioManager] SFX AudioSource is null - cannot play sound");
+            return;
+        }
+
+        if (clip == null)
+        {
+            if (debug) Debug.LogWarning("[AudioManager] Tried to play null AudioClip");
+            return;
+        }
+
+        if (debug)
+        {
+            Debug.Log($"[AudioManager] PlayOneShot: {clip.name} | vol={sfxSource.volume:0.###} | mute={sfxSource.mute}");
+        }
+
         if(sfxSource != null && clip != null)
         {
             sfxSource.PlayOneShot(clip);
@@ -112,11 +134,15 @@ public class AudioManager : SingletonBase<AudioManager>
     // play sound by string name 
     public void PlaySound(string soundName)
     {
-        //Debug.Log("AudioManager: Attempting to play sound - " + soundName);
+        if (debug) Debug.Log($"[AudioManager] Request PlaySound: {soundName}");
         AudioClip clip = GetSoundClip(soundName);
         if (clip != null)
         {
             PlaySound(clip);
+        }
+        else
+        {
+            if (debug) Debug.LogWarning($"[AudioManager] No clip mapped for sound key: {soundName}");
         }
     }
 

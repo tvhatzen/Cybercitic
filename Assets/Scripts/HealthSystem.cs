@@ -65,6 +65,13 @@ public class HealthSystem : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        // When objects are disabled (e.g., on death) while shaking, the coroutine stops
+        // without resetting the flag. Ensure the shake state is cleared whenever re-enabled.
+        isShaking = false;
+    }
+
     public void TakeDamage(int amount)
     {
         // Check for dodge chance first (complete damage avoidance)
@@ -75,10 +82,9 @@ public class HealthSystem : MonoBehaviour
             {
                 if(debug) Debug.Log($"{name} dodged the attack! (Roll: {dodgeRoll:F2} < Dodge: {entityData.currentDodgeChance:F2})");
                 
-                // Play dodge sound/effect here if desired
-                GameEvents.RequestSound("dodge"); // Assuming you have a dodge sound
+                GameEvents.RequestSound("dodge"); 
                 
-                return; // No damage taken
+                return; 
             }
         }
         
@@ -178,6 +184,9 @@ public class HealthSystem : MonoBehaviour
             ResetSpriteColor();
         }
         isDead = false;
+        // Ensure any pending shake is cleared after respawn
+        isShaking = false;
+        StopAllCoroutines();
     }
 
     public void ResetHealthToBase()
@@ -195,6 +204,8 @@ public class HealthSystem : MonoBehaviour
             ResetSpriteColor();
         }
         isDead = false;
+        isShaking = false;
+        StopAllCoroutines();
     }
 
     // reset all stats to original values (for new game after win)
@@ -223,6 +234,8 @@ public class HealthSystem : MonoBehaviour
             
             if(debug) Debug.Log($"[HealthSystem] {name} reset to original stats - HP: {currentHealth}, ATK: {DamagePerHit}, Credits: {CurrencyManager.Instance.Credits}");
         }
+        isShaking = false;
+        StopAllCoroutines();
     }
 
     // Reset sprite color back to original (removes damage flash effect)
@@ -280,6 +293,10 @@ public class HealthSystem : MonoBehaviour
                 if (debug) Debug.Log("[HealthSystem] Playing enemy death sound");
             }
         }
+
+        // If death occurs mid-shake, clear the flag so future shakes work after respawn
+        isShaking = false;
+        StopAllCoroutines();
 
         // trigger both local and centralized events
         OnDeath?.Invoke(this);

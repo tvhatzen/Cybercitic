@@ -2946,7 +2946,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7649588671196898586, guid: daa8428dff4e7d44b87a0a3a6db1d8e7, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7920672774011841652, guid: daa8428dff4e7d44b87a0a3a6db1d8e7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -4364,11 +4364,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5588327119793023583, guid: d2e7b04e94b04de42a69d329c3b3d6cc, type: 3}
       propertyPath: m_margin.x
-      value: 31.808838
+      value: 41.678467
       objectReference: {fileID: 0}
     - target: {fileID: 5588327119793023583, guid: d2e7b04e94b04de42a69d329c3b3d6cc, type: 3}
       propertyPath: m_margin.z
-      value: 32.869507
+      value: -28.626343
       objectReference: {fileID: 0}
     - target: {fileID: 5588327119793023583, guid: d2e7b04e94b04de42a69d329c3b3d6cc, type: 3}
       propertyPath: m_fontStyle
@@ -4384,7 +4384,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5588327119793023583, guid: d2e7b04e94b04de42a69d329c3b3d6cc, type: 3}
       propertyPath: m_HorizontalAlignment
-      value: 4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7593657522287881378, guid: d2e7b04e94b04de42a69d329c3b3d6cc, type: 3}
       propertyPath: m_AnchorMax.x
@@ -5697,23 +5697,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3489473060187675190, guid: 17a18d72eee259844823d41782474e01, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3489473060187675190, guid: 17a18d72eee259844823d41782474e01, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3489473060187675190, guid: 17a18d72eee259844823d41782474e01, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4067010589879336102, guid: 17a18d72eee259844823d41782474e01, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4067010589879336102, guid: 17a18d72eee259844823d41782474e01, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4067010589879336102, guid: 17a18d72eee259844823d41782474e01, type: 3}
       propertyPath: m_AnchorMin.x
@@ -5793,23 +5793,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5360913067463728433, guid: 17a18d72eee259844823d41782474e01, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5360913067463728433, guid: 17a18d72eee259844823d41782474e01, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5703940386981255188, guid: 17a18d72eee259844823d41782474e01, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5703940386981255188, guid: 17a18d72eee259844823d41782474e01, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5703940386981255188, guid: 17a18d72eee259844823d41782474e01, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6490599629548124222, guid: 17a18d72eee259844823d41782474e01, type: 3}
       propertyPath: m_Name
@@ -5817,7 +5817,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6490599629548124222, guid: 17a18d72eee259844823d41782474e01, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7940619663967424582, guid: 17a18d72eee259844823d41782474e01, type: 3}
       propertyPath: m_Color.b

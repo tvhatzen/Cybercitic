@@ -40,6 +40,9 @@ public class UpgradeButtonUI : MonoBehaviour
         shopUI = shop;
         
         UpdateDisplay();
+
+        // Also refresh any UpgradeBarSprite components beneath this button
+        RefreshAttachedUpgradeBars();
     }
 
     public void HideSquares()
@@ -65,6 +68,7 @@ public class UpgradeButtonUI : MonoBehaviour
         if (upgrade == null) return;
 
         UpdateLevelIndicators();
+        RefreshAttachedUpgradeBars();
     }
 
     private void UpdateLevelIndicators()
@@ -118,5 +122,15 @@ public class UpgradeButtonUI : MonoBehaviour
         }
         levelSquares.Clear();
     }
-}
 
+    private void RefreshAttachedUpgradeBars()
+    {
+        var bars = GetComponentsInChildren<UpgradeBarSprite>(true);
+        foreach (var bar in bars)
+        {
+            // If not bound, try to bind to this button automatically
+            var field = bar;
+            if (bar != null) bar.Refresh();
+        }
+    }
+}
