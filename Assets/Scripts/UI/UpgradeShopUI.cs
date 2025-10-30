@@ -111,6 +111,8 @@ public class UpgradeShopUI : MonoBehaviour
         // hide details panel initially
         if (detailsPanel != null)
             detailsPanel.SetActive(false);
+        // ensure level squares are hidden at start
+        HideAllSquares();
     }
 
     private void OnDestroy()
@@ -185,6 +187,7 @@ public class UpgradeShopUI : MonoBehaviour
 
         selectedUpgrade = upgrade;
         UpdateDetailsPanel();
+        UpdateLevelSquaresVisibility();
     }
 
     private void UpdateDetailsPanel()
@@ -193,6 +196,8 @@ public class UpgradeShopUI : MonoBehaviour
         {
             if (detailsPanel != null)
                 detailsPanel.SetActive(false);
+            // hide all squares when no selection or panel closed
+            HideAllSquares();
             return;
         }
 
@@ -212,8 +217,8 @@ public class UpgradeShopUI : MonoBehaviour
             statInfo.text = statText;
         }
 
-        // show unique square level pips
-        selectedButton.ShowSquares();
+        // show unique square level pips only for selected when details are open
+        UpdateLevelSquaresVisibility();
 
         // update purchase button
         UpdatePurchaseButton();
@@ -417,13 +422,39 @@ public class UpgradeShopUI : MonoBehaviour
 
     public void ShowDetailsPanel()
     {
-        Debug.Log("showing details panel");
+        if (detailsPanel != null)
+            detailsPanel.SetActive(true);
+        UpdateLevelSquaresVisibility();
     }
 
     public void HideDetailsPanel()
     {
-        Debug.Log("hiding details panel");
+        if (detailsPanel != null)
+            detailsPanel.SetActive(false);
+        HideAllSquares();
     }
+
+	private void UpdateLevelSquaresVisibility()
+	{
+		// Hide all by default
+		HideAllSquares();
+		// Show only for the selected button when details panel is open
+		if (detailsPanel != null && detailsPanel.activeSelf && selectedButton != null)
+		{
+			selectedButton.ShowSquares();
+		}
+	}
+
+	private void HideAllSquares()
+	{
+		foreach (var button in upgradeButtons.Values)
+		{
+			if (button != null)
+			{
+				button.HideSquares();
+			}
+		}
+	}
 }
 
 // equipped display should only be showing the selected upgrade (right now is showing all at once)

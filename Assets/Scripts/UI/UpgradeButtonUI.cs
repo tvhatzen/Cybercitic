@@ -42,12 +42,12 @@ public class UpgradeButtonUI : MonoBehaviour
         UpdateDisplay();
     }
 
-    private void HideSquares()
+    public void HideSquares()
     {
         foreach (var square in levelSquares)
         {
             if (square != null)
-                gameObject.SetActive(false);
+                square.SetActive(false);
         }
     }
 
@@ -56,7 +56,7 @@ public class UpgradeButtonUI : MonoBehaviour
         foreach (var square in levelSquares)
         {
             if (square != null)
-                gameObject.SetActive(true);
+                square.SetActive(true);
         }
     }
 
