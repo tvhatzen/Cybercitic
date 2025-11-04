@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfa3d6d682718e7459e0070d9b55b627, type: 3}
   m_Name: RightLeg
   m_EditorClassIdentifier: 
-  upgradeName: RIght Leg
+  upgradeName: Right Leg
   upgradeDescription: Increased Attack and Movement Speed
   icon: {fileID: 21300000, guid: 1c33502c8c40b874b9263877771a576b, type: 3}
   iconLocked: {fileID: 21300000, guid: 432e85e03baa08c4ab4377c0da84f182, type: 3}

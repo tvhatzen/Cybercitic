@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using UnityEngine.UI;
 
+// each floor should have its own assigned enemies
+// (when splitting into spawner classes, set enemy spawns per floor)
 public class FloorManager : SingletonBase<FloorManager>
 {
     [Header("Player")]

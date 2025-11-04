@@ -5,8 +5,35 @@ Right Arm - defense
 Left Leg - dodge chance
 Right Leg - speed
 
-__________
-after playtest
+Things for Alpha
+- win condition (get boss working on floor 5)
+- upgrade screen UI
+- upgrade functionality
+- skill buttons drop
+- skill buttons functionality
+- implement art
+- account for multiple player sprites to have damage flash
 
-* balance upgrades / damage because skills are on cooldowns again
-* fix audio mixing (music too quiet)
+* floor manager singleton is spawning prefabs set in the game manager, have it set per floor/scene
+*tutorial UIManager reference not being assigned after closing (happens in scenes after 1)
+* add enemy tiers, apply new health and damage once reaching a certain point (level?)
+
+upgrade info
+
++10 health
+Level 1/5
+pips
+purchase button
+
+credits -> scrap
+
+result credits : [amount] [img] "collected"
+
+fix scrap image offset
+add death event animation (slow time, show health going to 0)
+make upgrade screen button click look different for selected button
+fix floormanager and spawners
+make shield completely negate damage, fix casting text staying during whole duration
+make first upgrade cheaper
+add upgrade screen left panel - background to have pips on top to test more upgrade levels
+make all skills scale damage with floor level

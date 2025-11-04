@@ -129,7 +129,7 @@ GameObject:
   - component: {fileID: 361011445121860575}
   - component: {fileID: 3189613980638680683}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -221,10 +221,10 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: -174463267, guid: 8795b1d98cf16824188f4da5b68b9265, type: 3}
-    m_PressedSprite: {fileID: -1473140552, guid: cd289f6c280ec8f4ba21a8833793ef4c, type: 3}
+    m_HighlightedSprite: {fileID: -1943733112, guid: a05a566f1c4b3c54ba9c1541cc59400e, type: 3}
+    m_PressedSprite: {fileID: -1943733112, guid: a05a566f1c4b3c54ba9c1541cc59400e, type: 3}
     m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: -1943733112, guid: a05a566f1c4b3c54ba9c1541cc59400e, type: 3}
+    m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -523,6 +523,8 @@ MonoBehaviour:
   purchasedSquarePrefab: {fileID: 8807253392651650293, guid: 81f3651570715c1429231d1639d4e328, type: 3}
   nonPurchasedSquarePrefab: {fileID: 2784220072987389875, guid: d337040e7bd3d314dac33a9ff7e0a768, type: 3}
   levelIndicatorParent: {fileID: 3128229965616007372}
+  canPurchase: {fileID: 2041338557, guid: a71185678a724ea4baa4c45d7e45b0f1, type: 3}
+  cannotPurchase: {fileID: -1473140552, guid: cd289f6c280ec8f4ba21a8833793ef4c, type: 3}
   debug: 1
 --- !u!1 &1270339051993223073
 GameObject:
@@ -645,7 +647,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -777,6 +779,8 @@ MonoBehaviour:
   purchasedSquarePrefab: {fileID: 8807253392651650293, guid: 81f3651570715c1429231d1639d4e328, type: 3}
   nonPurchasedSquarePrefab: {fileID: 2784220072987389875, guid: d337040e7bd3d314dac33a9ff7e0a768, type: 3}
   levelIndicatorParent: {fileID: 1689046332036600771}
+  canPurchase: {fileID: -1410874617, guid: 41cfac7ae5687d64b848a506d10a317a, type: 3}
+  cannotPurchase: {fileID: 421569008, guid: 237d770c60419294ba82c1f1745f69fb, type: 3}
   debug: 0
 --- !u!1 &1732736609312689300
 GameObject:
@@ -937,10 +941,10 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: -620750661, guid: 0f000af8147e2b649bc15995160b76ab, type: 3}
-    m_PressedSprite: {fileID: -1085432489, guid: d83563555d69c88498339b06b7bdd5a2, type: 3}
+    m_HighlightedSprite: {fileID: 1549338485, guid: 417d475357ed98846966aa6e5705a0f8, type: 3}
+    m_PressedSprite: {fileID: 1549338485, guid: 417d475357ed98846966aa6e5705a0f8, type: 3}
     m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 1549338485, guid: 417d475357ed98846966aa6e5705a0f8, type: 3}
+    m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -1047,6 +1051,8 @@ MonoBehaviour:
   purchasedSquarePrefab: {fileID: 8807253392651650293, guid: 81f3651570715c1429231d1639d4e328, type: 3}
   nonPurchasedSquarePrefab: {fileID: 2784220072987389875, guid: d337040e7bd3d314dac33a9ff7e0a768, type: 3}
   levelIndicatorParent: {fileID: 8481516904236070233}
+  canPurchase: {fileID: -1686756699, guid: a49aa13fc23e82f45b643af736ea2ecb, type: 3}
+  cannotPurchase: {fileID: -1342708314, guid: 0b7ca750680908b42b0aec77e7ad7d12, type: 3}
   debug: 0
 --- !u!1 &2907470200565620127
 GameObject:
@@ -1228,10 +1234,10 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: -1000084046, guid: a6159fdb08f10444b987c73a8a8b73c0, type: 3}
-    m_PressedSprite: {fileID: -1342708314, guid: 0b7ca750680908b42b0aec77e7ad7d12, type: 3}
+    m_HighlightedSprite: {fileID: 460870993, guid: 4d7531d018013554c9d603c81279c4ff, type: 3}
+    m_PressedSprite: {fileID: 460870993, guid: 4d7531d018013554c9d603c81279c4ff, type: 3}
     m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 460870993, guid: 4d7531d018013554c9d603c81279c4ff, type: 3}
+    m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -1707,10 +1713,10 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: -1349983524, guid: 49e6bbcec8c9de74dbf9dd6df435ab70, type: 3}
-    m_PressedSprite: {fileID: 1428388806, guid: 468787b7fd84a7b4dbb22b23ebea48a4, type: 3}
+    m_HighlightedSprite: {fileID: -402459646, guid: f39ffcb4b3e41cf4b8df4cdceef2d61b, type: 3}
+    m_PressedSprite: {fileID: -402459646, guid: f39ffcb4b3e41cf4b8df4cdceef2d61b, type: 3}
     m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: -402459646, guid: f39ffcb4b3e41cf4b8df4cdceef2d61b, type: 3}
+    m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -2017,10 +2023,10 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 1840526342, guid: bdc04304a1dd1b246946a65bdc202991, type: 3}
-    m_PressedSprite: {fileID: 421569008, guid: 237d770c60419294ba82c1f1745f69fb, type: 3}
+    m_HighlightedSprite: {fileID: -732531595, guid: 87e9d12cf715bb342a3b9372896e61bc, type: 3}
+    m_PressedSprite: {fileID: -732531595, guid: 87e9d12cf715bb342a3b9372896e61bc, type: 3}
     m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: -732531595, guid: 87e9d12cf715bb342a3b9372896e61bc, type: 3}
+    m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -2319,6 +2325,8 @@ MonoBehaviour:
   purchasedSquarePrefab: {fileID: 8807253392651650293, guid: 81f3651570715c1429231d1639d4e328, type: 3}
   nonPurchasedSquarePrefab: {fileID: 2784220072987389875, guid: d337040e7bd3d314dac33a9ff7e0a768, type: 3}
   levelIndicatorParent: {fileID: 5464739184881964598}
+  canPurchase: {fileID: 1304356443, guid: 9d483ab66e6831f41a547092bb20e9ec, type: 3}
+  cannotPurchase: {fileID: -1085432489, guid: d83563555d69c88498339b06b7bdd5a2, type: 3}
   debug: 0
 --- !u!1 &6029014109889642811
 GameObject:
@@ -3391,4 +3399,6 @@ MonoBehaviour:
   purchasedSquarePrefab: {fileID: 8807253392651650293, guid: 81f3651570715c1429231d1639d4e328, type: 3}
   nonPurchasedSquarePrefab: {fileID: 2784220072987389875, guid: d337040e7bd3d314dac33a9ff7e0a768, type: 3}
   levelIndicatorParent: {fileID: 1086919231339668239}
+  canPurchase: {fileID: -1358329300, guid: 44738ed81bd35f44b998aa413f531822, type: 3}
+  cannotPurchase: {fileID: 1428388806, guid: 468787b7fd84a7b4dbb22b23ebea48a4, type: 3}
   debug: 0

@@ -835,6 +835,38 @@ PrefabInstance:
       propertyPath: playOnAwake
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 190982491605831248, guid: 289411e4b05369042ad757f70182c9fc, type: 3}
+      propertyPath: ShapeModule.type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 190982491605831248, guid: 289411e4b05369042ad757f70182c9fc, type: 3}
+      propertyPath: ShapeModule.radiusThickness
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 190982491605831248, guid: 289411e4b05369042ad757f70182c9fc, type: 3}
+      propertyPath: InitialModule.startColor.maxGradient.key0.b
+      value: 0.7264151
+      objectReference: {fileID: 0}
+    - target: {fileID: 190982491605831248, guid: 289411e4b05369042ad757f70182c9fc, type: 3}
+      propertyPath: InitialModule.startColor.maxGradient.key0.g
+      value: 0.7187962
+      objectReference: {fileID: 0}
+    - target: {fileID: 190982491605831248, guid: 289411e4b05369042ad757f70182c9fc, type: 3}
+      propertyPath: InitialModule.startColor.maxGradient.key0.r
+      value: 0.4488697
+      objectReference: {fileID: 0}
+    - target: {fileID: 190982491605831248, guid: 289411e4b05369042ad757f70182c9fc, type: 3}
+      propertyPath: InitialModule.startColor.maxGradient.key1.b
+      value: 0.8962264
+      objectReference: {fileID: 0}
+    - target: {fileID: 190982491605831248, guid: 289411e4b05369042ad757f70182c9fc, type: 3}
+      propertyPath: InitialModule.startColor.maxGradient.key1.g
+      value: 0.894547
+      objectReference: {fileID: 0}
+    - target: {fileID: 190982491605831248, guid: 289411e4b05369042ad757f70182c9fc, type: 3}
+      propertyPath: InitialModule.startColor.maxGradient.key1.r
+      value: 0.7736294
+      objectReference: {fileID: 0}
     - target: {fileID: 2426261466547207457, guid: 289411e4b05369042ad757f70182c9fc, type: 3}
       propertyPath: m_Name
       value: DamageParticles

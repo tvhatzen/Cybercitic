@@ -13,7 +13,11 @@ public class UpgradeButtonUI : MonoBehaviour
     [SerializeField] private GameObject purchasedSquarePrefab;
     [SerializeField] private GameObject nonPurchasedSquarePrefab;
     [SerializeField] private Transform levelIndicatorParent;
-    
+
+    [Header("Enables/Disabled Sprites")]
+    [SerializeField] private Sprite canPurchase;
+    [SerializeField] private Sprite cannotPurchase;
+
     private Upgrade upgrade;
     private UpgradeShopUI shopUI;
     private List<GameObject> levelSquares = new List<GameObject>();
@@ -160,9 +164,20 @@ public class UpgradeButtonUI : MonoBehaviour
     public void SetButtonState(bool state)
     {
         if (button == null) return;
-        
-        button.interactable = state;
-        
+
+        var buttonVisual = button.GetComponent<Image>();
+
+        //button.interactable = state;
+        if (state == false)
+        {
+            buttonVisual.sprite = cannotPurchase;
+        }
+        else if(state == true)
+        {
+            buttonVisual.sprite = canPurchase;
+        }
+
+
         if (debug)
         {
             Debug.Log($"Button state set to {(state ? "enabled" : "disabled")} for upgrade: {upgrade?.name ?? "null"}");

@@ -371,7 +371,7 @@ public class UpgradeShopUI : MonoBehaviour
         if (scrapText != null)
         {
             string spriteTag = scrapSprite != null ? $"<sprite name=\"{scrapSprite.name}\">" : "";
-            scrapText.text = $"{spriteTag} Scrap: {scrap}";
+            scrapText.text = $"{spriteTag}: {scrap}";
         }
         
         // update purchase button when credits change
