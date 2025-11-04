@@ -177,12 +177,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3426843812077243334}
+  - component: {fileID: 5303155290636701237}
   - component: {fileID: 1871390592388574173}
   - component: {fileID: 8990218076844084688}
   - component: {fileID: 3939951849945258654}
   - component: {fileID: 5863336159748288026}
   - component: {fileID: 5918369198679851037}
-  - component: {fileID: 5303155290636701237}
   m_Layer: 0
   m_Name: ResultsMenu
   m_TagString: Untagged
@@ -213,6 +213,26 @@ RectTransform:
   m_AnchoredPosition: {x: 960, y: 540}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5303155290636701237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2389692238068859151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cc5816300a597e4e9ad2d65f95a443e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floorsText: {fileID: 3778302020388728932}
+  enemiesText: {fileID: 7231949550104832568}
+  creditsText: {fileID: 2353779533341691917}
+  scrapSprite: {fileID: 1690595520, guid: d80734b5c94cd87489e3f61882311292, type: 3}
+  continueButton: {fileID: 1376144276262393175}
+  useCountUpAnimation: 0
+  countUpDuration: 3
+  debug: 0
 --- !u!223 &1871390592388574173
 Canvas:
   m_ObjectHideFlags: 0
@@ -314,25 +334,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5303155290636701237
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2389692238068859151}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4cc5816300a597e4e9ad2d65f95a443e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  floorsText: {fileID: 3778302020388728932}
-  enemiesText: {fileID: 7231949550104832568}
-  creditsText: {fileID: 2353779533341691917}
-  continueButton: {fileID: 1376144276262393175}
-  useCountUpAnimation: 0
-  countUpDuration: 3
-  debug: 0
 --- !u!1 &4555901829229381723
 GameObject:
   m_ObjectHideFlags: 0

@@ -131,7 +131,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d430ce667a15f3458c8febf575d45d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseHealth: 22
+  baseHealth: 25
   baseSpeed: 1
   baseAttack: 4
   baseDodgeChance: 0
@@ -244,7 +244,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tierText: {fileID: 8432002103512341160}
   showTierText: 1
-  tierTextFormat: T{0}
+  tierTextFormat: LV{0}
   debug: 0
 --- !u!1 &530826170337910495
 GameObject:

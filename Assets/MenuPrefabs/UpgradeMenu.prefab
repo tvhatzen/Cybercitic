@@ -3139,7 +3139,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   doneButton: {fileID: 6699416546376857337}
-  creditsText: {fileID: 7816756268599528013}
+  scrapText: {fileID: 7816756268599528013}
+  scrapSprite: {fileID: 1690595520, guid: d80734b5c94cd87489e3f61882311292, type: 3}
   coreButton: {fileID: 2266665731097397970}
   leftArmButton: {fileID: 7101606979906785885}
   rightArmButton: {fileID: 4552641440010361308}

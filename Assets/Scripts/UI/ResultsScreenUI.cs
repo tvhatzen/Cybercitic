@@ -4,7 +4,7 @@ using TMPro;
 using System.Collections;
 
 // results screen to display run statistics
-// shows enemies killed, credits collected, floors cleared
+// shows enemies killed, scrap collected, floors cleared
 
 public class ResultsScreenUI : MonoBehaviour
 {
@@ -12,6 +12,7 @@ public class ResultsScreenUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI floorsText;
     [SerializeField] private TextMeshProUGUI enemiesText;
     [SerializeField] private TextMeshProUGUI creditsText;
+    [SerializeField] private Sprite scrapSprite;
     
     [Header("Buttons")]
     [SerializeField] private Button continueButton;
@@ -107,14 +108,14 @@ public class ResultsScreenUI : MonoBehaviour
             
             if (floorsText != null) { StartCoroutine(AnimateCountUp(targetFloors, floorsText, "Floors Cleared")); }
             if (enemiesText != null) { StartCoroutine(AnimateCountUp(targetEnemies, enemiesText, "Enemies Killed")); }
-            if (creditsText != null) { StartCoroutine(AnimateCountUp(targetCredits, creditsText, "Credits Collected")); }
+            if (creditsText != null) { StartCoroutine(AnimateCountUp(targetCredits, creditsText, "Scrap Collected")); }
         }
         else
         {
             // otherwise set text immediately without animation
             if (floorsText != null) { floorsText.text = $"Floors Cleared: {targetFloors}"; }
             if (enemiesText != null) { enemiesText.text = $"Enemies Killed: {targetEnemies}"; }
-            if (creditsText != null) { creditsText.text = $"{targetCredits} collected"; } // ADD IMAGE OF SCRAP
+            if (creditsText != null) { creditsText.text = $"{targetCredits} {scrapSprite} collected"; } // ADD IMAGE OF SCRAP
         }
 
         if(debug) Debug.Log($"[ResultsScreenUI] Displaying results:\n{RunStatsTracker.Instance.GetRunSummary()}");

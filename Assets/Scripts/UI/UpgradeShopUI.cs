@@ -17,8 +17,9 @@ public class UpgradeShopUI : MonoBehaviour
 
     [Header("UI References")]
     [SerializeField] private Button doneButton;
-    [SerializeField] private TextMeshProUGUI creditsText;
-    
+    [SerializeField] private TextMeshProUGUI scrapText;
+    [SerializeField] private Sprite scrapSprite;
+
     [Header("Center Panel - Upgrade Buttons")]
     [SerializeField] private UpgradeButtonUI coreButton;
     [SerializeField] private UpgradeButtonUI leftArmButton;
@@ -239,7 +240,7 @@ public class UpgradeShopUI : MonoBehaviour
                 displayValue = $"+{Mathf.RoundToInt(increaseAmount * 100)}";
                 break;
             case Upgrade.UpgradeType.Speed:
-                statName = "Speed";
+                statName = "Attack Speed";
                 displayValue = $"+{(increaseAmount * 100):F2}%";
                 break;
             case Upgrade.UpgradeType.Attack:
@@ -283,7 +284,7 @@ public class UpgradeShopUI : MonoBehaviour
         }
         else if (canAfford && canUpgrade) // can purchase
         {
-            purchaseButtonText.text = $"PURCHASE: {cost} "; // ADD IMAGE OF SCRAP
+            purchaseButtonText.text = $"{scrapSprite} PURCHASE: {cost} "; // ADD IMAGE OF SCRAP
             purchaseButtonText.color = canPurchaseColor;
             if (buttonImage != null)
                 buttonImage.color = canPurchaseColor;
@@ -299,7 +300,7 @@ public class UpgradeShopUI : MonoBehaviour
         }
         else // can't afford
         {
-            purchaseButtonText.text = $"NEEDED: {cost} "; // ADD IMAGE OF SCRAP
+            purchaseButtonText.text = $"{scrapSprite} NEEDED: {cost} "; // ADD IMAGE OF SCRAP
             purchaseButtonText.color = cannotAffordColor;
             if (buttonImage != null)
                 buttonImage.color = cannotAffordColor;
@@ -363,11 +364,11 @@ public class UpgradeShopUI : MonoBehaviour
         RefreshAllDisplays();
     }
 
-    private void UpdateCreditsDisplay(int credits)
+    private void UpdateCreditsDisplay(int scrap)
     {
-        if (creditsText != null)
+        if (scrapText != null)
         {
-            creditsText.text = $"Scrap: {credits}"; // ADD IMAGE OF SCRAP
+            scrapText.text = $"{scrapSprite} Scrap: {scrap}"; // ADD IMAGE OF SCRAP
         }
         
         // update purchase button when credits change

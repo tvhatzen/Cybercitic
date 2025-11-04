@@ -200,14 +200,16 @@ public class SkillButton : MonoBehaviour
 
             case Skill.SkillStates.Casting:
                 SetButtonState(castingColor, 0f, "CASTING");
-                if(debug) Debug.Log($"[SkillButton] {assignedSkill.SkillName} is CASTING");
+                cooldownText.fontSize = 16; // change text size
+                if (debug) Debug.Log($"[SkillButton] {assignedSkill.SkillName} is CASTING");
                 break;
 
             case Skill.SkillStates.Cooldown:
                 float progress = assignedSkill.CooldownProgress;
                 float remainingTime = assignedSkill.CurrentCooldown;
                 SetButtonState(cooldownColor, progress, $"{remainingTime:F1}s");
-                if(debug) Debug.Log($"[SkillButton] {assignedSkill.SkillName} cooldown: {remainingTime:F1}s (progress: {progress:F2})");
+                cooldownText.fontSize = 30; // change text size
+                if (debug) Debug.Log($"[SkillButton] {assignedSkill.SkillName} cooldown: {remainingTime:F1}s (progress: {progress:F2})");
                 break;
 
             case Skill.SkillStates.Locked:

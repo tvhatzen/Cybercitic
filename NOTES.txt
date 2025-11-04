@@ -5,15 +5,8 @@ Right Arm - defense
 Left Leg - dodge chance
 Right Leg - speed
 
-Things for Alpha
-- win condition (get boss working on floor 5)
-- upgrade screen UI
-- upgrade functionality
-- skill buttons drop
-- skill buttons functionality
-- implement art
-- account for multiple player sprites to have damage flash
+__________
+after playtest
 
-* floor manager singleton is spawning prefabs set in the game manager, have it set per floor/scene
-*tutorial UIManager reference not being assigned after closing (happens in scenes after 1)
-* add enemy tiers, apply new health and damage once reaching a certain point (level?)
+* balance upgrades / damage because skills are on cooldowns again
+* fix audio mixing (music too quiet)
