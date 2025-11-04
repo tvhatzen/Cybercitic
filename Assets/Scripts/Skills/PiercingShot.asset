@@ -16,10 +16,10 @@ MonoBehaviour:
   skillDescription: A high-damage shot that pierces through all enemies in a line
   skillIcon: {fileID: 0}
   castIcon: {fileID: 0}
-  cooldownDuration: 8
+  cooldownDuration: 10
   castingTime: 0.1
   skillDuration: 1
-  skillDamage: 25
+  skillDamage: 20
   skillRange: 2
   maxCharges: 1
   skillSound: {fileID: 8300000, guid: 07d297bf05d35204ab41daf1211c2f05, type: 3}

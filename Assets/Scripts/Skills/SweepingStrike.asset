@@ -16,11 +16,11 @@ MonoBehaviour:
   skillDescription: A wide area of damage swept across all enemies
   skillIcon: {fileID: -1758860212, guid: 16906a7cc7ea88e4b844bc945ef5f44f, type: 3}
   castIcon: {fileID: -438391433, guid: 2f02fa3e29d405341bc349b2a4062656, type: 3}
-  cooldownDuration: 5
+  cooldownDuration: 6
   castingTime: 0.1
   skillDuration: 0.5
-  skillDamage: 10
-  skillRange: 6
+  skillDamage: 6
+  skillRange: 4
   maxCharges: 1
   skillSound: {fileID: 8300000, guid: 07d297bf05d35204ab41daf1211c2f05, type: 3}
   skillEffect: {fileID: 1279018785575207751, guid: b510adc856e8171439bd8520fa91495f, type: 3}

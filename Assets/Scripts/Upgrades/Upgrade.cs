@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 
 [CreateAssetMenu(fileName = "Upgrade", menuName = "Scriptable Objects/Upgrade")]
 public class Upgrade : ScriptableObject 
@@ -123,5 +124,5 @@ public class Upgrade : ScriptableObject
     public void UnlockUpgrade()
     {
         isUnlocked = true;
-    }
+    }    
 } 

@@ -133,4 +133,18 @@ public class UpgradeButtonUI : MonoBehaviour
             if (bar != null) bar.Refresh();
         }
     }
+
+    public void SetButtonState(bool state)
+    {
+        if (state == false)
+        {
+            button.interactable = false;
+            Debug.Log($"button state set to false");
+        }
+        else
+        {
+            button.interactable = true;
+            Debug.Log($"button state set to true");
+        }
+    }
 }

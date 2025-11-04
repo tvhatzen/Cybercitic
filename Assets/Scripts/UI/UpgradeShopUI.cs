@@ -150,7 +150,7 @@ public class UpgradeShopUI : MonoBehaviour
             }
         }
 
-        UpdateEquippedDisplay();
+        UpdateEquippedDisplay();        
     }
 
     private BodyPart GetBodyPartFromUpgrade(Upgrade upgrade)
@@ -299,8 +299,7 @@ public class UpgradeShopUI : MonoBehaviour
         }
         else // can't afford
         {
-            int needed = cost - currentCredits;
-            purchaseButtonText.text = $"NEEDED: {needed} "; // ADD IMAGE OF SCRAP
+            purchaseButtonText.text = $"NEEDED: {cost} "; // ADD IMAGE OF SCRAP
             purchaseButtonText.color = cannotAffordColor;
             if (buttonImage != null)
                 buttonImage.color = cannotAffordColor;
@@ -392,7 +391,7 @@ public class UpgradeShopUI : MonoBehaviour
         
         // restart the game
         if (GameState.Instance != null)
-            GameState.Instance.ChangeState(GameState.GameStates.Playing);
+            GameState.Instance.ChangeState(GameStates.Playing);
         else
         {
             // reload current scene 

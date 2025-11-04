@@ -172,7 +172,7 @@ public class Skill : ScriptableObject
     protected virtual void FinishSkill()
     {
         currentCharges--;
-        hasBeenUsed = true; // mark skill as used
+        //hasBeenUsed = true; // mark skill as used
         StartCooldown(); 
     }
 
