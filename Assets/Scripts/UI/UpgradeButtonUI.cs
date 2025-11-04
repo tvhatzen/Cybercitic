@@ -69,6 +69,7 @@ public class UpgradeButtonUI : MonoBehaviour
 
         UpdateLevelIndicators();
         RefreshAttachedUpgradeBars();
+        UpdateButtonState();
     }
 
     private void UpdateLevelIndicators()
@@ -134,17 +135,37 @@ public class UpgradeButtonUI : MonoBehaviour
         }
     }
 
+
+    // Updates the button state based on whether the upgrade is maxed out and if the player can afford it.
+    public void RefreshButtonState()
+    {
+        UpdateButtonState();
+    }
+
+    private void UpdateButtonState()
+    {
+        if (upgrade == null || button == null) return;
+
+        // Check if upgrade is maxed out
+        bool isMaxedOut = upgrade.CurrentLevel >= upgrade.MaxLevel;
+        
+        // Check if player can afford the upgrade
+        bool canAfford = shopUI != null && shopUI.CanAffordUpgrade(upgrade);
+        
+        // Disable button if maxed out or can't afford, enable otherwise
+        bool shouldBeEnabled = !isMaxedOut && canAfford;
+        SetButtonState(shouldBeEnabled);
+    }
+
     public void SetButtonState(bool state)
     {
-        if (state == false)
+        if (button == null) return;
+        
+        button.interactable = state;
+        
+        if (debug)
         {
-            button.interactable = false;
-            Debug.Log($"button state set to false");
-        }
-        else
-        {
-            button.interactable = true;
-            Debug.Log($"button state set to true");
+            Debug.Log($"Button state set to {(state ? "enabled" : "disabled")} for upgrade: {upgrade?.name ?? "null"}");
         }
     }
 }

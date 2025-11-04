@@ -284,7 +284,8 @@ public class UpgradeShopUI : MonoBehaviour
         }
         else if (canAfford && canUpgrade) // can purchase
         {
-            purchaseButtonText.text = $"{scrapSprite} PURCHASE: {cost} "; // ADD IMAGE OF SCRAP
+            string spriteTag = scrapSprite != null ? $"<sprite name=\"{scrapSprite.name}\">" : "";
+            purchaseButtonText.text = $"{spriteTag} PURCHASE: {cost}";
             purchaseButtonText.color = canPurchaseColor;
             if (buttonImage != null)
                 buttonImage.color = canPurchaseColor;
@@ -300,7 +301,8 @@ public class UpgradeShopUI : MonoBehaviour
         }
         else // can't afford
         {
-            purchaseButtonText.text = $"{scrapSprite} NEEDED: {cost} "; // ADD IMAGE OF SCRAP
+            string spriteTag = scrapSprite != null ? $"<sprite name=\"{scrapSprite.name}\">" : "";
+            purchaseButtonText.text = $"{spriteTag} NEEDED: {cost}";
             purchaseButtonText.color = cannotAffordColor;
             if (buttonImage != null)
                 buttonImage.color = cannotAffordColor;
@@ -368,13 +370,23 @@ public class UpgradeShopUI : MonoBehaviour
     {
         if (scrapText != null)
         {
-            scrapText.text = $"{scrapSprite} Scrap: {scrap}"; // ADD IMAGE OF SCRAP
+            string spriteTag = scrapSprite != null ? $"<sprite name=\"{scrapSprite.name}\">" : "";
+            scrapText.text = $"{spriteTag} Scrap: {scrap}";
         }
         
         // update purchase button when credits change
         if (selectedUpgrade != null)
         {
             UpdatePurchaseButton();
+        }
+        
+        // refresh all upgrade button states when credits change
+        foreach (var button in upgradeButtons.Values)
+        {
+            if (button != null)
+            {
+                button.RefreshButtonState();
+            }
         }
     }
 
@@ -445,14 +457,26 @@ public class UpgradeShopUI : MonoBehaviour
 		}
 	}
 
-	private void HideAllSquares()
-	{
-		foreach (var button in upgradeButtons.Values)
-		{
-			if (button != null)
-			{
-				button.HideSquares();
-			}
-		}
-	}
+    private void HideAllSquares()
+    {
+        foreach (var button in upgradeButtons.Values)
+        {
+            if (button != null)
+            {
+                button.HideSquares();
+            }
+        }
+    }
+
+    /// Checks if the player can afford to purchase the given upgrade.
+    public bool CanAffordUpgrade(Upgrade upgrade)
+    {
+        if (upgrade == null) return false;
+
+        int cost = upgrade.GetCost();
+        int currentCredits = CurrencyManager.Instance != null ? CurrencyManager.Instance.Credits : 0;
+        
+        return currentCredits >= cost;
+    }
+
 }

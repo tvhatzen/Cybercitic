@@ -108,14 +108,17 @@ public class ResultsScreenUI : MonoBehaviour
             
             if (floorsText != null) { StartCoroutine(AnimateCountUp(targetFloors, floorsText, "Floors Cleared")); }
             if (enemiesText != null) { StartCoroutine(AnimateCountUp(targetEnemies, enemiesText, "Enemies Killed")); }
-            if (creditsText != null) { StartCoroutine(AnimateCountUp(targetCredits, creditsText, "Scrap Collected")); }
         }
         else
         {
             // otherwise set text immediately without animation
             if (floorsText != null) { floorsText.text = $"Floors Cleared: {targetFloors}"; }
             if (enemiesText != null) { enemiesText.text = $"Enemies Killed: {targetEnemies}"; }
-            if (creditsText != null) { creditsText.text = $"{targetCredits} {scrapSprite} collected"; } // ADD IMAGE OF SCRAP
+            if (creditsText != null) 
+            { 
+                string spriteTag = scrapSprite != null ? $"<sprite name=\"{scrapSprite.name}\">" : "";
+                creditsText.text = $"{spriteTag} Scrap Collected: {targetCredits}"; 
+            }
         }
 
         if(debug) Debug.Log($"[ResultsScreenUI] Displaying results:\n{RunStatsTracker.Instance.GetRunSummary()}");
@@ -130,7 +133,10 @@ public class ResultsScreenUI : MonoBehaviour
             enemiesText.text = "Enemies Killed: 0";
             
         if (creditsText != null)
-            creditsText.text = "0 Collected"; // ADD IMAGE OF SCRAP
+        {
+            string spriteTag = scrapSprite != null ? $"<sprite name=\"{scrapSprite.name}\">" : "";
+            creditsText.text = $"{spriteTag} Scrap Collected: 0";
+        }
     }
 
     private void OnContinueClicked()
