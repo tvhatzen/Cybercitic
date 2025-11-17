@@ -4738,8 +4738,6 @@ MonoBehaviour:
   playerSpawnPoint: {fileID: 2099124944}
   enemyPrefabsForThisFloor:
   - {fileID: 150106152159008451, guid: d7120f27bc6ce4148b12f617ca3d83a1, type: 3}
-  - {fileID: 150106152159008451, guid: d7120f27bc6ce4148b12f617ca3d83a1, type: 3}
-  - {fileID: 150106152159008451, guid: d7120f27bc6ce4148b12f617ca3d83a1, type: 3}
   enemySpawnPoints:
   - {fileID: 1884654317}
   - {fileID: 1749541840}
@@ -4749,7 +4747,7 @@ MonoBehaviour:
   bossFloorInterval: 5
   isFinalFloor: 0
   isRunning: 0
-  debug: 0
+  debug: 1
   _floorProgressBar: {fileID: 1581502389}
 --- !u!4 &1851340614 stripped
 Transform:

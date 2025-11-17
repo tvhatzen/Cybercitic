@@ -5,6 +5,15 @@ using System.Collections.Generic;
 
 public class SkillUI : MonoBehaviour
 {
+    // skill buttons should be a more abstract 'Button' class that handles visuals and input finctionality
+    // can make menu buttons, upgrade buttons, skill buttons, etc. inherit from base button class
+    // components like images, text, button, additional visual elements can be handled in the button class itself
+    // can also set custom colors and change sprites, text, etc. from the button class
+    // example of base class: MenuButton, SkillButton, UpgradeButton
+
+    // SkillButton class should handle its own visuals and input functionality
+    // SkillUI just manages the collection of SkillButtons and their interactions with the PlayerSkills system
+
     [Header("Skill Button References")]
     [SerializeField] private List<SkillButton> skillButtons = new List<SkillButton>();
     
@@ -151,5 +160,3 @@ public class SkillUI : MonoBehaviour
         if(debug) Debug.Log("[SkillUI] All skills cleared");
     }
 }
-
-

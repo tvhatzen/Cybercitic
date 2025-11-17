@@ -3,23 +3,22 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.SceneManagement;
 using System.Collections;
-using UnityEngine.UI;
 
 // each floor should have its own assigned enemies
 // (when splitting into spawner classes, set enemy spawns per floor)
 public class FloorManager : SingletonBase<FloorManager>
 {
     [Header("Player")]
-    public GameObject playerPrefab;
-    public Transform playerSpawnPoint;
+    [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private Transform playerSpawnPoint;
 
     [Header("Enemies")]
-    public List<GameObject> enemyPrefabsForThisFloor;
-    public List<Transform> enemySpawnPoints;
+    [SerializeField] private List<GameObject> enemyPrefabsForThisFloor;
+    [SerializeField] private List<Transform> enemySpawnPoints;
 
     [Header("Boss Settings")]
-    public GameObject bossPrefab;
-    public Transform bossSpawnPoint;
+    [SerializeField] private GameObject bossPrefab;
+    [SerializeField] private Transform bossSpawnPoint;
     public int bossFloorInterval = 5; // Boss every 5 floors (5, 10, 15, 20, etc.)
     public bool isFinalFloor = false;
     public bool isRunning; // track if there's a current run
@@ -32,9 +31,34 @@ public class FloorManager : SingletonBase<FloorManager>
 
     public FloorProgressBar _floorProgressBar;
 
+    public Transform PlayerSpawnPoint
+    {
+        get => playerSpawnPoint;
+        internal set => playerSpawnPoint = value;
+    }
+
+    public IReadOnlyList<Transform> EnemySpawnPoints => enemySpawnPoints;
+
+    public Transform BossSpawnPoint
+    {
+        get => bossSpawnPoint;
+        internal set => bossSpawnPoint = value;
+    }
+
+    internal List<Transform> EnemySpawnPointsInternal => enemySpawnPoints;
+
+    private PlayerSpawner playerSpawner;
+    private EnemySpawner enemySpawner;
+    private BossSpawner bossSpawner;
+    private FloorMusicManager floorMusicManager;
+
     protected override void Awake()
     {
         base.Awake(); 
+        InitializeSystems();
+
+        enemyPrefabsForThisFloor ??= new List<GameObject>();
+        enemySpawnPoints ??= new List<Transform>();
         
         if (Instance == this)
         {
@@ -50,12 +74,35 @@ public class FloorManager : SingletonBase<FloorManager>
         }
     }
 
+    private void InitializeSystems()
+    {
+        playerSpawner = new PlayerSpawner(this);
+        enemySpawner = new EnemySpawner(this);
+        bossSpawner = new BossSpawner(this);
+        floorMusicManager = new FloorMusicManager(this);
+    }
+
+    private FloorSpawnContext BuildSpawnContext()
+    {
+        return new FloorSpawnContext(
+            this,
+            playerPrefab,
+            playerSpawnPoint,
+            enemyPrefabsForThisFloor,
+            enemySpawnPoints,
+            bossPrefab,
+            bossSpawnPoint,
+            CurrentFloor,
+            IsBossFloor());
+    }
+
     void Start()
     {
         if (!hasSpawnedOnLoad)
         {
-            StartCoroutine(SpawnPlayerCoroutine());
-            SpawnEnemies();
+            FloorSpawnContext context = BuildSpawnContext();
+            playerSpawner.Spawn(context);
+            SpawnEnemies(context);
         }
     }
 
@@ -64,12 +111,13 @@ public class FloorManager : SingletonBase<FloorManager>
     {
         IncrementFloor();
 
-        StartCoroutine(SpawnPlayerCoroutine());
+        FloorSpawnContext context = BuildSpawnContext();
+        playerSpawner.Spawn(context);
 
-        SpawnEnemies();
+        SpawnEnemies(context);
 
         // ensure background music updates when progressing floors within the same scene
-        PlayBackgroundMusic();
+        floorMusicManager.PlayForFloor(CurrentFloor);
     }
 
     // increment floor counter and notify listeners (called before scene loads)
@@ -121,79 +169,10 @@ public class FloorManager : SingletonBase<FloorManager>
     private void RefreshSpawnPointReferences()
     {
         if (debug) Debug.Log("[FloorManager] Refreshing spawn point references after scene load");
-        
-        // Refresh player spawn point
-        if (playerSpawnPoint == null)
-        {
-            if (debug) Debug.Log("[FloorManager] PlayerSpawnPoint reference is null, searching for GameObject...");
-            
-            // Try multiple search methods
-            GameObject playerSpawnGO = GameObject.Find("PlayerSpawnPoint");
-            
-            if (playerSpawnGO == null)
-            {
-                // Try finding by tag if it has one
-                playerSpawnGO = GameObject.FindGameObjectWithTag("PlayerSpawn");
-                if (debug) Debug.Log($"[FloorManager] Found by tag 'PlayerSpawn': {playerSpawnGO != null}");
-            }
-            
-            if (playerSpawnGO == null)
-            {
-                // List all GameObjects to see what's available
-                GameObject[] allObjects = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
-                if (debug) Debug.Log($"[FloorManager] Total GameObjects in scene: {allObjects.Length}");
-                foreach (GameObject obj in allObjects)
-                {
-                    if (obj.name.ToLower().Contains("spawn") || obj.name.ToLower().Contains("player"))
-                    {
-                        if (debug) Debug.Log($"[FloorManager] Found related GameObject: '{obj.name}' (Active: {obj.activeInHierarchy})");
-                    }
-                }
-            }
-            
-            if (playerSpawnGO != null)
-            {
-                playerSpawnPoint = playerSpawnGO.transform;
-                if (debug) Debug.Log($"[FloorManager] Found and refreshed PlayerSpawnPoint reference: {playerSpawnPoint.position}");
-            }
-            else
-            {
-                Debug.LogError("[FloorManager] Could not find PlayerSpawnPoint in the new scene!");
-            }
-        }
 
-        // Refresh enemy spawn points
-        for (int i = 0; i < enemySpawnPoints.Count; i++)
-        {
-            if (enemySpawnPoints[i] == null)
-            {
-                GameObject enemySpawnGO = GameObject.Find($"EnemySpawnPoint{i}");
-                if (enemySpawnGO != null)
-                {
-                    enemySpawnPoints[i] = enemySpawnGO.transform;
-                    if (debug) Debug.Log($"[FloorManager] Found and refreshed EnemySpawnPoint{i} reference");
-                }
-                else
-                {
-                    Debug.LogError($"[FloorManager] Could not find EnemySpawnPoint{i} in the new scene!");
-                }
-            }
-        }
-
-        // Refresh boss spawn point
-        if (bossSpawnPoint == null)
-        {
-            GameObject bossSpawnGO = GameObject.Find("BossSpawnPoint");
-            if (bossSpawnGO != null)
-            {
-                bossSpawnPoint = bossSpawnGO.transform;
-                if (debug) Debug.Log("[FloorManager] Found and refreshed BossSpawnPoint reference");
-            }
-            else
-            {
-                Debug.LogError("[FloorManager] Could not find BossSpawnPoint in the new scene!");
-            }
-        }
+        playerSpawner.RefreshSpawnPointReference();
+        enemySpawner.RefreshSpawnPointReferences();
+        bossSpawner.RefreshSpawnPointReference();
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -223,12 +202,14 @@ public class FloorManager : SingletonBase<FloorManager>
         }        
 
         // play music AFTER game state has been set so the correct track is chosen
-        PlayBackgroundMusic();
+        floorMusicManager.PlayForFloor(CurrentFloor);
 
         // reset player position whenever a new floor scene loads
+        FloorSpawnContext context = BuildSpawnContext();
+
         hasSpawnedOnLoad = true;
-        StartCoroutine(SpawnPlayerCoroutine());
-        SpawnEnemies();
+        playerSpawner.Spawn(context);
+        SpawnEnemies(context);
         
         // Check for NextLevelTrigger after spawning
         triggers = FindObjectsByType<trigger>(FindObjectsSortMode.None);
@@ -242,269 +223,28 @@ public class FloorManager : SingletonBase<FloorManager>
         StartCoroutine(CheckTriggerStatusAfterDelay(1f));
     }
 
-    public IEnumerator SpawnPlayerCoroutine()
+    void SpawnEnemies(FloorSpawnContext context)
     {
-        if (debug) Debug.Log($"[FloorManager] SpawnPlayerCoroutine started - Floor: {CurrentFloor}");
-        
-        // wait until PlayerInstance exists
-        while (PlayerInstance.Instance == null)
-            yield return null;
+        enemySpawner.ClearExistingEnemies();
 
-        GameObject playerGO = PlayerInstance.Instance?.gameObject;
-
-        if (playerGO == null)
+        if (context.IsBossFloor)
         {
-            if (playerPrefab != null && playerSpawnPoint != null)
+            if (debug) Debug.Log($"[FloorManager] Boss floor detected ({context.Floor}). Attempting boss spawn.");
+
+            if (context.BossPrefab != null)
             {
-                if (debug) Debug.Log($"[FloorManager] Creating new player at spawn point: {playerSpawnPoint.position}");
-                GameObject newPlayer = Instantiate(playerPrefab, playerSpawnPoint.position, playerSpawnPoint.rotation);
-                playerGO = newPlayer;
+                bossSpawner.Spawn(context);
             }
             else
             {
-                if (debug) Debug.LogError($"No Player prefab ({playerPrefab != null}) or spawn point ({playerSpawnPoint != null}) assigned to FloorManager!");
-                yield break;
+                Debug.LogWarning($"[FloorManager] Boss prefab is missing for floor {context.Floor}. Falling back to regular enemies.");
+                enemySpawner.Spawn(context);
             }
         }
-
-        playerGO.SetActive(true);
-
-        // reset position
-        var movement = playerGO.GetComponent<PlayerMovement>();
-        if (movement != null && playerSpawnPoint != null)
-        {
-            if (debug) Debug.Log($"[FloorManager] Resetting player to spawn point: {playerSpawnPoint.position}");
-            movement.ResetToSpawn(playerSpawnPoint);
-        }
         else
         {
-            if (debug) Debug.LogError($"[FloorManager] Cannot reset player - movement: {movement != null}, spawnPoint: {playerSpawnPoint != null}");
-        }
-
-        // reset health
-        var health = playerGO.GetComponent<HealthSystem>();
-        if (health != null && health.CurrentHealth <= 0)
-        {
-            health.ResetHealth(); // only reset if dead
-
-            // reset skill cooldowns when respawning
-            if (PlayerSkills.Instance != null)
-            {
-                PlayerSkills.Instance.ResetAllSkillCooldowns(); // reset skills when player dies and respawns
-                if (debug) Debug.Log("[FloorManager] Reset all skill cooldowns on player spawn");
-            }
-        }
-           
-        // reset combat state when respawning
-        var combat = playerGO.GetComponent<PlayerCombat>();
-        if (combat != null)
-        {
-            combat.ForceResetCombatState();
-            if (debug) Debug.Log("[FloorManager] Reset player combat state on respawn");
-        }
-
-        // reset all enemy combat states to ensure they can attack again
-        ResetAllEnemyCombatStates();
-        
-        // force enable combat for all enemies after a short delay to ensure player is ready
-        StartCoroutine(ForceEnableEnemyCombatAfterDelay(0.5f));
-
-        yield return null;
-        
-        // make sure EntityData component exists 
-        var entityData = playerGO.GetComponent<EntityData>();
-        if (entityData == null)
-        {
-            Debug.LogError("[FloorManager] Player spawned but EntityData component is missing!");
-        }
-        else
-        {
-            if (debug) Debug.Log($"[FloorManager] Player spawned successfully with EntityData. Speed: {entityData.currentSpeed}");
-        }
-
-        // reset health bar foreground
-        HealthBar healthBar = playerGO.GetComponent<HealthBar>();
-        if (healthBar != null)
-        {
-            healthBar.ResetForeground();
-        }
-
-        playerGO.SetActive(true);
-    }
-
-    void SpawnEnemies()
-    {
-        // clear existing enemies
-        GameObject[] existingEnemies = GameObject.FindGameObjectsWithTag("Enemy");
-        foreach (GameObject enemy in existingEnemies)
-        {
-            Destroy(enemy);
-        }
-
-        // check for boss floor (every 5 floors: 5, 10, 15, 20, etc.)
-        bool isBossFloor = CurrentFloor % bossFloorInterval == 0;
-        if (debug) Debug.Log($"[FloorManager] SpawnEnemies - CurrentFloor: {CurrentFloor}, bossFloorInterval: {bossFloorInterval}, isBossFloor: {isBossFloor}, bossPrefab: {(bossPrefab != null ? bossPrefab.name : "null")}");
-
-        if (isBossFloor && bossPrefab != null)
-        {
-            if (debug) Debug.Log($"[FloorManager] Spawning BOSS for floor {CurrentFloor} (boss floor!)");
-            SpawnBoss();
-        }
-        else
-        {
-            if (debug) Debug.Log($"[FloorManager] Spawning regular enemies for floor {CurrentFloor}");
-            SpawnRegularEnemies();
-        }       
-    }
-
-    private void SpawnBoss()
-    {
-        if (bossSpawnPoint == null)
-        {
-            if (debug) Debug.LogError("[FloorManager] Boss prefab assigned but no boss spawn point set!");
-            return;
-        }
-
-        var boss = Instantiate(bossPrefab, bossSpawnPoint.position, bossSpawnPoint.rotation);
-
-        // scale boss stats based on current floor
-        EnemyStatScaler scaler = boss.GetComponent<EnemyStatScaler>();
-        if (scaler != null)
-        {
-            scaler.ScaleToFloor(CurrentFloor);
-        }
-
-        // update tier indicator
-        EnemyTierVisual visual = boss.GetComponent<EnemyTierVisual>();
-        if (visual != null)
-            visual.RefreshVisual();
-
-        // ensure boss is active
-        if (!boss.activeInHierarchy)
-            boss.SetActive(true);
-
-        // Use centralized Event Bus
-        GameEvents.EnemySpawned(boss);
-
-        if (debug) Debug.Log($"Spawned BOSS for floor {CurrentFloor}");
-        
-        // Check UI state after boss spawn
-        CheckUIStateAfterBossSpawn();
-    }
-    
-    private void CheckUIStateAfterBossSpawn()
-    {
-        if (debug) Debug.Log("[FloorManager] Checking UI state after boss spawn...");
-        
-        // Check if EventSystem exists
-        UnityEngine.EventSystems.EventSystem eventSystem = FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>();
-        if (eventSystem == null)
-        {
-            if (debug) Debug.LogError("[FloorManager] No EventSystem found after boss spawn!");
-        }
-        else
-        {
-            if (debug) Debug.Log($"[FloorManager] EventSystem found: {eventSystem.name} (Active: {eventSystem.gameObject.activeInHierarchy})");
-        }
-        
-        // Check if Canvas exists
-        Canvas canvas = FindFirstObjectByType<Canvas>();
-        if (canvas == null)
-        {
-            if (debug) Debug.LogError("[FloorManager] No Canvas found after boss spawn!");
-        }
-        else
-        {
-            if (debug) Debug.Log($"[FloorManager] Canvas found: {canvas.name} (Active: {canvas.gameObject.activeInHierarchy})");
-        }
-        
-        // Check if skill buttons exist
-        SkillButton[] skillButtons = FindObjectsByType<SkillButton>(FindObjectsSortMode.None);
-        if (debug) Debug.Log($"[FloorManager] Found {skillButtons.Length} skill buttons after boss spawn");
-        
-        foreach (SkillButton button in skillButtons)
-        {
-            if (debug) Debug.Log($"[FloorManager] SkillButton: {button.name} (Active: {button.gameObject.activeInHierarchy}, Interactable: {button.GetComponent<Button>()?.interactable})");
-        }
-        
-        // Check if PlayerSkills exists
-        if (PlayerSkills.Instance == null)
-        {
-            if (debug) Debug.LogError("[FloorManager] PlayerSkills.Instance is null after boss spawn!");
-        }
-        else
-        {
-            if (debug) Debug.Log("[FloorManager] PlayerSkills.Instance is available after boss spawn");
-        }
-    }
-
-    private void SpawnRegularEnemies()
-    {
-        for (int i = 0; i < enemySpawnPoints.Count; i++)
-        {
-            if (i < enemyPrefabsForThisFloor.Count)
-            {
-                GameObject prefab = enemyPrefabsForThisFloor[i];
-                Transform point = enemySpawnPoints[i];
-
-                // check if spawn point exists
-                if (point == null)
-                {
-                    if (debug) Debug.LogError($"[FloorManager] EnemySpawnPoint{i} is null - cannot spawn enemy!");
-                    continue;
-                }
-
-                var enemy = Instantiate(prefab, point.position, point.rotation);
-
-                // scale stats based on current floor
-                EnemyStatScaler scaler = enemy.GetComponent<EnemyStatScaler>();
-                if (scaler != null)
-                    scaler.ScaleToFloor(CurrentFloor);
-
-                // update tier indicator
-                EnemyTierVisual visual = enemy.GetComponent<EnemyTierVisual>();
-                if (visual != null)
-                    visual.RefreshVisual();
-
-                // ensure enemy is active
-                if (!enemy.activeInHierarchy)
-                {
-                    if (debug) Debug.LogWarning($"[FloorManager] Enemy {enemy.name} is not active! Activating...");
-                    enemy.SetActive(true);
-                }
-
-                GameEvents.EnemySpawned(enemy);
-            }
-        }
-
-        if (debug) Debug.Log($"Spawned {Mathf.Min(enemySpawnPoints.Count, enemyPrefabsForThisFloor.Count)} regular enemies for floor {CurrentFloor}");
-        
-        // Check UI state after regular enemy spawn
-        CheckUIStateAfterRegularSpawn();
-    }
-    
-    private void CheckUIStateAfterRegularSpawn()
-    {
-        if (debug) Debug.Log("[FloorManager] Checking UI state after regular enemy spawn...");
-        
-        // Check if EventSystem exists
-        UnityEngine.EventSystems.EventSystem eventSystem = FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>();
-        if (eventSystem == null)
-        {
-            if (debug) Debug.LogError("[FloorManager] No EventSystem found after regular spawn!");
-        }
-        else
-        {
-            if (debug) Debug.Log($"[FloorManager] EventSystem found: {eventSystem.name} (Active: {eventSystem.gameObject.activeInHierarchy})");
-        }
-        
-        // Check if skill buttons exist
-        SkillButton[] skillButtons = FindObjectsByType<SkillButton>(FindObjectsSortMode.None);
-        if (debug) Debug.Log($"[FloorManager] Found {skillButtons.Length} skill buttons after regular spawn");
-        
-        foreach (SkillButton button in skillButtons)
-        {
-            if (debug) Debug.Log($"[FloorManager] SkillButton: {button.name} (Active: {button.gameObject.activeInHierarchy}, Interactable: {button.GetComponent<Button>()?.interactable})");
+            if (debug) Debug.Log($"[FloorManager] Spawning regular enemies for floor {context.Floor}");
+            enemySpawner.Spawn(context);
         }
     }
 
@@ -513,68 +253,6 @@ public class FloorManager : SingletonBase<FloorManager>
     // check if current floor is boss floor
     public bool IsBossFloor() { return CurrentFloor % bossFloorInterval == 0; }
     public bool IsFinalFloor() { return CurrentFloor == 15; }
-
-    // reset all enemy combat states to ensure they can attack again after respawn
-    private void ResetAllEnemyCombatStates()
-    {
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        foreach (GameObject enemy in enemies)
-        {
-            EnemyCombat enemyCombat = enemy.GetComponent<EnemyCombat>();
-            if (enemyCombat != null)
-            {
-                // Force disable combat to reset state
-                enemyCombat.SendMessage("DisableCombat", SendMessageOptions.DontRequireReceiver);
-                if (debug) Debug.Log($"[FloorManager] Reset combat state for enemy: {enemy.name}");
-            }
-        }
-        
-        // Also reset boss combat state if it exists
-        GameObject[] bosses = GameObject.FindGameObjectsWithTag("Boss");
-        foreach (GameObject boss in bosses)
-        {
-            EnemyCombat bossCombat = boss.GetComponent<EnemyCombat>();
-            if (bossCombat != null)
-            {
-                bossCombat.SendMessage("DisableCombat", SendMessageOptions.DontRequireReceiver);
-                if (debug) Debug.Log($"[FloorManager] Reset combat state for boss: {boss.name}");
-            }
-        }
-        
-        if (debug) Debug.Log($"[FloorManager] Reset combat states for {enemies.Length} enemies and {bosses.Length} bosses");
-    }
-
-    // Force enable combat for all enemies after a delay
-    private IEnumerator ForceEnableEnemyCombatAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        
-        // Enable combat for all enemies
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        foreach (GameObject enemy in enemies)
-        {
-            EnemyCombat enemyCombat = enemy.GetComponent<EnemyCombat>();
-            if (enemyCombat != null)
-            {
-                enemyCombat.ForceEnableCombat();
-                if (debug) Debug.Log($"[FloorManager] Force enabled combat for enemy: {enemy.name}");
-            }
-        }
-        
-        // Enable combat for all bosses
-        GameObject[] bosses = GameObject.FindGameObjectsWithTag("Boss");
-        foreach (GameObject boss in bosses)
-        {
-            EnemyCombat bossCombat = boss.GetComponent<EnemyCombat>();
-            if (bossCombat != null)
-            {
-                bossCombat.ForceEnableCombat();
-                if (debug) Debug.Log($"[FloorManager] Force enabled combat for boss: {boss.name}");
-            }
-        }
-        
-        if (debug) Debug.Log($"[FloorManager] Force enabled combat for {enemies.Length} enemies and {bosses.Length} bosses");
-    }
 
     private IEnumerator CheckTriggerStatusAfterDelay(float delay)
     {
@@ -592,41 +270,4 @@ public class FloorManager : SingletonBase<FloorManager>
         if (debug) Debug.Log($"[FloorManager] Trigger by name: {(triggerByName != null ? triggerByName.name + " (Active: " + triggerByName.activeInHierarchy + ")" : "NOT FOUND")}");
     }
 
-    public void PlayBackgroundMusic()
-    {
-        // play floor background music based on current floor
-        if (AudioManager.Instance != null)
-        {
-            string musicTrack = GetMusicTrackForFloor(CurrentFloor);
-            AudioManager.Instance.PlayMusicTrack(musicTrack);
-            
-            if (debug) Debug.Log($"[FloorManager] Playing music track '{musicTrack}' for floor {CurrentFloor}");
-        }
-    }
-
-    private string GetMusicTrackForFloor(int floor)
-    {
-        if (floor >= 1 && floor <= 5)
-        {
-            return "floor1_5";
-        }
-        else if (floor >= 6 && floor <= 10)
-        {
-            return "floor6_10";
-        }
-        else if (floor >= 11 && floor <= 15)
-        {
-            return "floor11_15";
-        }
-        else
-        {
-            // Default to floor1_5 for any floors outside the expected range
-            if (debug) Debug.LogWarning($"[FloorManager] Floor {floor} is outside expected range (1-15), defaulting to floor1_5 music");
-            return "floor1_5";
-        }
-    }
 }
-//  create more general spawner 
-// list of spawners
-// fires off signal to player spawner to run that logic separately
-// set music for floor. is floor is before or onn boss floor interval its the same, then changes
