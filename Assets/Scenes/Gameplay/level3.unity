@@ -185,6 +185,9 @@ MonoBehaviour:
   targetTimeScale: 0.3
   timeSlowDuration: 1
   startDelay: 0.1
+  lockMovementDuringEffect: 1
+  freezeAnimationOnDeath: 1
+  sustainHitEffect: 1
   debug: 1
 --- !u!4 &194203500
 Transform:
@@ -448,7 +451,7 @@ Transform:
   m_GameObject: {fileID: 1250695617}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.57403, y: -1.4119312, z: -0.027100587}
+  m_LocalPosition: {x: -3.57403, y: -1.26, z: -0.027100587}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

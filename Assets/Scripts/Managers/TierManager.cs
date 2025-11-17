@@ -20,6 +20,11 @@ public class TierManager : SingletonBase<TierManager>
     public int CurrentTier => currentTier;
     public int BossesDefeated => bossesDefeated;
 
+    [Header("Enemy Tier Sprites")]
+    [SerializeField] private Sprite tier1Sprite; // insert reference
+    [SerializeField] private Sprite tier2Sprite; // insert reference
+    [SerializeField] private Sprite tier3Sprite; // insert reference
+
     public bool debug = false;
 
     protected override void Awake()
@@ -86,5 +91,16 @@ public class TierManager : SingletonBase<TierManager>
             _ => $"Tier {tier}"
         };
     }
-}
 
+    public Sprite GetTierSprite(int tier)
+    {
+        return tier switch
+        {
+            1 => tier1Sprite,
+            2 => tier2Sprite,
+            3 => tier3Sprite
+        };
+
+        return null;
+    }
+}

@@ -3,7 +3,9 @@ using TMPro;
 
 // provides visual feedback for enemy tiers (right now is text only)
 public class EnemyTierVisual : MonoBehaviour
-{   
+{
+    #region Variables
+
     [Tooltip("Text element to display tier (optional)")]
     [SerializeField] private TextMeshProUGUI tierText;
     
@@ -13,9 +15,12 @@ public class EnemyTierVisual : MonoBehaviour
     [Tooltip("Tier text format")]
     [SerializeField] private string tierTextFormat = "T{0}";
 
+    public Sprite sprite;
 
     private EnemyStatScaler scaler;
     private int currentTier = 1;
+
+    #endregion
 
     [Header("DEBUG")]
     public bool debug = false;
@@ -59,9 +64,12 @@ public class EnemyTierVisual : MonoBehaviour
         
         // get tier color from TierManager (implement later)
         Color tierColor = Color.white;
+        Sprite tierSprite = sprite;
+
         if (TierManager.Instance != null)
         {
             tierColor = TierManager.Instance.GetTierColor(tier);
+            tierSprite = TierManager.Instance.GetTierSprite(tier);
         }
 
         // update tier text
