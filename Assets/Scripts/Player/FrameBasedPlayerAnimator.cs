@@ -173,6 +173,21 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         
         if (debug) Debug.Log("[FrameBasedPlayerAnimator] Animation stopped");
     }
+    
+    // Freeze animation at the current frame (stops animation but keeps current frame visible)
+    public void FreezeAnimationAtCurrentFrame()
+    {
+        if (currentAnimationCoroutine != null)
+        {
+            StopCoroutine(currentAnimationCoroutine);
+            currentAnimationCoroutine = null;
+        }
+        
+        isPlaying = false;
+        // Don't reset currentFrameIndex - keep it at the current frame
+        
+        if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Animation frozen at frame {currentFrameIndex}");
+    }
 
     // Update all body part sprites based on current upgrade levels
     public void UpdateBodyPartSprites()

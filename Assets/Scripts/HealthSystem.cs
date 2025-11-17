@@ -29,12 +29,16 @@ public class HealthSystem : MonoBehaviour
     private bool isShaking = false;
     public float shakeDuration = 0.5f;
     public float shakeMagnitude = 0.1f;
+    private Coroutine deathHitRoutine;
+    private bool deathHitActive = false;
 
     private EntityData entityData;
 
     private Color originalColor;
+    private bool shieldImmunityActive = false;
 
     public bool debug = false;
+    public bool IsShieldImmune => shieldImmunityActive;
 
     private void Awake()
     {
@@ -74,6 +78,18 @@ public class HealthSystem : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
+        // Check shield immunity FIRST - before any other damage processing
+        if (CompareTag("Player") && shieldImmunityActive)
+        {
+            if (debug) Debug.Log($"[HealthSystem] {name} blocked {amount} damage due to active shield (shieldImmunityActive: {shieldImmunityActive})");
+            return;
+        }
+        
+        if (debug && CompareTag("Player"))
+        {
+            Debug.Log($"[HealthSystem] {name} taking damage - shieldImmunityActive: {shieldImmunityActive}");
+        }
+
         // Check for dodge chance first (complete damage avoidance)
         if (entityData != null && entityData.currentDodgeChance > 0)
         {
@@ -187,6 +203,7 @@ public class HealthSystem : MonoBehaviour
         // Ensure any pending shake is cleared after respawn
         isShaking = false;
         StopAllCoroutines();
+        shieldImmunityActive = false;
     }
 
     public void ResetHealthToBase()
@@ -206,6 +223,7 @@ public class HealthSystem : MonoBehaviour
         isDead = false;
         isShaking = false;
         StopAllCoroutines();
+        shieldImmunityActive = false;
     }
 
     // reset all stats to original values (for new game after win)
@@ -236,6 +254,7 @@ public class HealthSystem : MonoBehaviour
         }
         isShaking = false;
         StopAllCoroutines();
+        shieldImmunityActive = false;
     }
 
     // Reset sprite color back to original (removes damage flash effect)
@@ -246,6 +265,12 @@ public class HealthSystem : MonoBehaviour
             spriteRenderer.color = originalColor;
             if (debug) Debug.Log($"[HealthSystem] {name} sprite color reset to original");
         }
+    }
+
+    public void SetShieldImmunity(bool isActive)
+    {
+        shieldImmunityActive = isActive;
+        if (debug) Debug.Log($"[HealthSystem] {name} shield immunity set to {isActive}");
     }
 
     // shake sprite at random distance when damaged
@@ -273,6 +298,52 @@ public class HealthSystem : MonoBehaviour
         // Return to original position
         transform.position = originalPosition;
         isShaking = false;
+    }
+
+    public void BeginDeathHitEffect()
+    {
+        if (deathHitActive) return;
+
+        deathHitActive = true;
+        originalPosition = transform.position;
+
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = flashColor;
+        }
+
+        deathHitRoutine = StartCoroutine(DeathHitEffect());
+    }
+
+    public void EndDeathHitEffect()
+    {
+        if (!deathHitActive) return;
+
+        deathHitActive = false;
+
+        if (deathHitRoutine != null)
+        {
+            StopCoroutine(deathHitRoutine);
+            deathHitRoutine = null;
+        }
+
+        transform.position = originalPosition;
+        ResetSpriteColor();
+    }
+
+    private IEnumerator DeathHitEffect()
+    {
+        while (deathHitActive)
+        {
+            float x = Random.Range(-1f, 1f) * shakeMagnitude;
+            float y = Random.Range(-1f, 1f) * shakeMagnitude;
+
+            transform.position = originalPosition + new Vector3(x, y, 0f);
+
+            yield return null;
+        }
+
+        transform.position = originalPosition;
     }
 
     private void Die()
@@ -307,9 +378,20 @@ public class HealthSystem : MonoBehaviour
         // if its the player, show Results
         if (CompareTag("Player"))
         {
-            // disable player prefab and trigger results
-            gameObject.SetActive(false);
-            GameState.Instance.OnPlayerDeath();
+            // Check if death camera is handling the transition
+            // If so, delay disabling player and state change until after effect completes
+            if (!PlayerDeathCamera.IsHandlingDeathTransition)
+            {
+                // disable player prefab and trigger results immediately
+                gameObject.SetActive(false);
+                GameState.Instance.OnPlayerDeath();
+            }
+            else
+            {
+                // Keep player active during death camera effect
+                // PlayerDeathCamera will disable it after the effect completes
+                if(debug) Debug.Log("[HealthSystem] Death camera effect is active, keeping player active and delaying GameState.OnPlayerDeath()");
+            }
         }
         else if (CompareTag("Boss") && FloorManager.Instance.IsFinalFloor()) // check if is final boss floor 
         {

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System;
+using System.Reflection;
 
 [CreateAssetMenu(fileName = "Skill", menuName = "Scriptable Objects/Skill")]
 public class Skill : ScriptableObject
@@ -104,7 +105,54 @@ public class Skill : ScriptableObject
         yield return new WaitForSeconds(castingTime);
         
         if(debug) Debug.Log($"[Skill] {skillName} - Applying effects");
+        
+        // Debug: Check what type this actually is
+        Debug.Log($"[Skill] DEBUG: Calling ApplySkillEffects on type: {this.GetType().Name}");
+        
         ApplySkillEffects();
+        
+        // WORKAROUND: If this is a Shield, manually apply shield immunity directly
+        // (This is a workaround in case the override isn't being called due to Unity ScriptableObject type issues)
+        // Check by skill name since ScriptableObjects can lose their derived type
+        if (skillName.ToLower().Contains("shield"))
+        {
+            Debug.LogError($"[Skill] WORKAROUND: Detected Shield skill (name: {skillName}), manually applying shield immunity!");
+            try
+            {
+                // Directly apply shield immunity to player's HealthSystem
+                if (PlayerInstance.Instance != null)
+                {
+                    var playerHealthSystem = PlayerInstance.Instance.GetComponent<HealthSystem>();
+                    if (playerHealthSystem != null)
+                    {
+                        playerHealthSystem.SetShieldImmunity(true);
+                        Debug.LogError($"[Skill] WORKAROUND: Shield immunity enabled on {PlayerInstance.Instance.name}!");
+                        
+                        // Verify it was set
+                        if (playerHealthSystem.IsShieldImmune)
+                        {
+                            Debug.LogError("[Skill] WORKAROUND: Confirmed - shieldImmunityActive is now TRUE");
+                        }
+                        else
+                        {
+                            Debug.LogError("[Skill] WORKAROUND: ERROR - shieldImmunityActive is still FALSE after SetShieldImmunity(true)!");
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("[Skill] WORKAROUND: Player HealthSystem not found!");
+                    }
+                }
+                else
+                {
+                    Debug.LogError("[Skill] WORKAROUND: PlayerInstance.Instance is null!");
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"[Skill] WORKAROUND: Exception applying shield immunity: {e.Message}\n{e.StackTrace}");
+            }
+        }
         
         if(debug) Debug.Log($"[Skill] {skillName} - Waiting for skill duration: {skillDuration}s");
         yield return new WaitForSeconds(skillDuration);
@@ -171,6 +219,20 @@ public class Skill : ScriptableObject
 
     protected virtual void FinishSkill()
     {
+        // Remove shield immunity if this was a Shield skill
+        if (skillName.ToLower().Contains("shield"))
+        {
+            if (PlayerInstance.Instance != null)
+            {
+                var playerHealthSystem = PlayerInstance.Instance.GetComponent<HealthSystem>();
+                if (playerHealthSystem != null)
+                {
+                    playerHealthSystem.SetShieldImmunity(false);
+                    if (debug) Debug.Log($"[Skill] Shield immunity removed from {PlayerInstance.Instance.name}");
+                }
+            }
+        }
+        
         currentCharges--;
         //hasBeenUsed = true; // mark skill as used
         StartCooldown(); 

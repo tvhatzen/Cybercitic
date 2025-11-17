@@ -24,4 +24,4 @@ MonoBehaviour:
   maxCharges: 1
   skillSound: {fileID: 8300000, guid: b71915c3bea24544d8870cc25d1d4d75, type: 3}
   skillEffect: {fileID: 3508616903913414704, guid: 3f12b369229f13c4e83a8f10b61daab8, type: 3}
-  debug: 0
+  debug: 1
