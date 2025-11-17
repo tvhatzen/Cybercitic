@@ -253,9 +253,19 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
                 currentFrameIndex = i;
                 var frame = sequence.frames[i];
                 
+                // Track which body parts have been updated to prevent duplicates
+                HashSet<UpgradeShopUI.BodyPart> updatedBodyParts = new HashSet<UpgradeShopUI.BodyPart>();
+                
                 // update all body part sprites for this animation frame
                 foreach (var bodyPartFrame in frame.bodyPartFrames)
                 {
+                    // Skip if this body part has already been updated in this frame
+                    if (updatedBodyParts.Contains(bodyPartFrame.bodyPart))
+                    {
+                        if (debug) Debug.LogWarning($"[FrameBasedPlayerAnimator] Skipping duplicate body part '{bodyPartFrame.bodyPart}' in frame {i} of animation '{sequence.animationName}'");
+                        continue;
+                    }
+                    
                     if (bodyPartFrame.spriteRenderer != null)
                     {
                         // get the appropriate sprite for this animation frame and upgrade level
@@ -263,6 +273,7 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
                         if (targetSprite != null)
                         {
                             bodyPartFrame.spriteRenderer.sprite = targetSprite;
+                            updatedBodyParts.Add(bodyPartFrame.bodyPart);
                         }
                     }
                 }
@@ -316,9 +327,19 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
             currentFrameIndex = i;
             var frame = sequence.frames[i];
             
+            // Track which body parts have been updated to prevent duplicates
+            HashSet<UpgradeShopUI.BodyPart> updatedBodyParts = new HashSet<UpgradeShopUI.BodyPart>();
+            
             // update all body part sprites for this animation frame
             foreach (var bodyPartFrame in frame.bodyPartFrames)
             {
+                // Skip if this body part has already been updated in this frame
+                if (updatedBodyParts.Contains(bodyPartFrame.bodyPart))
+                {
+                    if (debug) Debug.LogWarning($"[FrameBasedPlayerAnimator] Skipping duplicate body part '{bodyPartFrame.bodyPart}' in frame {i} of animation '{sequence.animationName}'");
+                    continue;
+                }
+                
                 if (bodyPartFrame.spriteRenderer != null)
                 {
                     // get the appropriate sprite for this animation frame and upgrade level
@@ -326,6 +347,7 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
                     if (targetSprite != null)
                     {
                         bodyPartFrame.spriteRenderer.sprite = targetSprite;
+                        updatedBodyParts.Add(bodyPartFrame.bodyPart);
                     }
                 }
             }
