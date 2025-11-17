@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 // dynamically add audio listener component to anything using the PlaySound / music methods
 // will need a transform as well to place the source
@@ -55,6 +56,10 @@ public class AudioManager : SingletonBase<AudioManager>
     // PlayerPrefs keys
     private const string MusicVolumeKey = "audio_music_volume";
     private const string SfxVolumeKey = "audio_sfx_volume";
+
+    // slider
+    [SerializeField] private Slider musicSlider;
+    [SerializeField] private Slider SFXSlider;
 
     private void Start()
     {
@@ -215,23 +220,21 @@ public class AudioManager : SingletonBase<AudioManager>
     }
 
     // volume settings
-    public void SetMusicVolume(float volume)
+    public void SetMusicVolume()
     {
-        float clamped = Mathf.Clamp01(volume);
+        // float clamped = Mathf.Clamp01(volume);
         if (musicSource != null)
         {
-            musicSource.volume = clamped;
-            if (debug) Debug.Log($"[AudioManager] Applied Music volume to AudioSource: {musicSource.volume:0.###} (from slider {volume:0.###})");
+            musicSource.volume = musicSlider.value;
         }
     }
 
-    public void SetSFXVolume(float volume)
+    public void SetSFXVolume()
     {
-        float clamped = Mathf.Clamp01(volume);
+        // float clamped = Mathf.Clamp01(volume);
         if (sfxSource != null)
         {
-            sfxSource.volume = clamped;
-            if (debug) Debug.Log($"[AudioManager] Applied SFX volume to AudioSource: {sfxSource.volume:0.###} (from slider {volume:0.###})");
+            sfxSource.volume = SFXSlider.value;
         }
     }
 
@@ -264,27 +267,4 @@ public class AudioManager : SingletonBase<AudioManager>
         PlayMusic(floor11_15 != null ? floor11_15 : backgroundMusic);
     }
 
-    // UI helpers for sliders (hook to Slider.onValueChanged)
-    public void OnMusicSliderChanged(float value)
-    {
-        if (debug) Debug.Log($"[AudioManager] Music slider changed: raw={value:0.###}");
-        SetMusicVolume(value);
-    }
-
-    public void OnSfxSliderChanged(float value)
-    {
-        if (debug) Debug.Log($"[AudioManager] SFX slider changed: raw={value:0.###}");
-        SetSFXVolume(value);
-    }
-
-    // Getters for initializing slider values
-    public float GetMusicVolume()
-    {
-        return musicSource != null ? musicSource.volume : PlayerPrefs.GetFloat(MusicVolumeKey, 1f);
-    }
-
-    public float GetSfxVolume()
-    {
-        return sfxSource != null ? sfxSource.volume : PlayerPrefs.GetFloat(SfxVolumeKey, 1f);
-    }
 }

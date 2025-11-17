@@ -26,7 +26,7 @@ public class Skill : ScriptableObject
     
     [Header("Audio/Visual")]
     [SerializeField] private AudioClip skillSound;
-    [SerializeField] protected ParticleSystem skillEffect;
+    [SerializeField] protected ParticleSystem skillEffect; // !! shield now using sprites
     
     // runtime data
     [NonSerialized] public SkillStates currentState = SkillStates.ReadyToUse;

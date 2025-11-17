@@ -4,6 +4,7 @@ using TMPro;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using static GameState;
+using Unity.VisualScripting;
 
 /// <summary>
 /// Main upgrade shop UI controller
@@ -18,7 +19,7 @@ public class UpgradeShopUI : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private Button doneButton;
     [SerializeField] private TextMeshProUGUI scrapText;
-    [SerializeField] private Sprite scrapSprite;
+    [SerializeField] private Sprite scrapSprite; // make it appear higher Y
 
     [Header("Center Panel - Upgrade Buttons")]
     [SerializeField] private UpgradeButtonUI coreButton;
@@ -285,6 +286,7 @@ public class UpgradeShopUI : MonoBehaviour
         else if (canAfford && canUpgrade) // can purchase
         {
             string spriteTag = scrapSprite != null ? $"<sprite name=\"{scrapSprite.name}\">" : "";
+            // set position offset
             purchaseButtonText.text = $"{spriteTag} PURCHASE: {cost}";
             purchaseButtonText.color = canPurchaseColor;
             if (buttonImage != null)
@@ -302,6 +304,7 @@ public class UpgradeShopUI : MonoBehaviour
         else // can't afford
         {
             string spriteTag = scrapSprite != null ? $"<sprite name=\"{scrapSprite.name}\">" : "";
+            // set position offset
             purchaseButtonText.text = $"{spriteTag} NEEDED: {cost}";
             purchaseButtonText.color = cannotAffordColor;
             if (buttonImage != null)
@@ -453,7 +456,7 @@ public class UpgradeShopUI : MonoBehaviour
 		// Show only for the selected button when details panel is open
 		if (detailsPanel != null && detailsPanel.activeSelf && selectedButton != null)
 		{
-			selectedButton.ShowSquares();
+			//selectedButton.ShowSquares();
 		}
 	}
 

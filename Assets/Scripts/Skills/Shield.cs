@@ -192,6 +192,8 @@ public class Shield : Skill
     
     private void CreateShieldEffect()
     {
+        // with new shield, instantiate shield child obj, start loop
+
         if (shieldPrefab != null)
         {
             // Activate the shield prefab if it exists

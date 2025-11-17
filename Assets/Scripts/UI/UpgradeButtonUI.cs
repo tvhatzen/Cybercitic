@@ -71,7 +71,7 @@ public class UpgradeButtonUI : MonoBehaviour
     {
         if (upgrade == null) return;
 
-        UpdateLevelIndicators();
+        //UpdateLevelIndicators();
         RefreshAttachedUpgradeBars();
         UpdateButtonState();
     }
