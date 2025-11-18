@@ -253,7 +253,7 @@ MonoBehaviour:
   testSkills:
   - {fileID: 11400000, guid: c7e2318ea9b8a71448b6758afe178809, type: 2}
   - {fileID: 11400000, guid: 96215e4c0ebad41468707bb8ab9751ef, type: 2}
-  - {fileID: 11400000, guid: 5cd98970d1809cb42a216b227c1365be, type: 2}
+  - {fileID: 11400000, guid: 2a64b413e3e54014caba40a0152c6266, type: 2}
   debug: 0
 --- !u!1 &292962103432916016
 GameObject:

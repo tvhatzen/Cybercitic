@@ -5,8 +5,8 @@ public class PlayerVisualFeedback : MonoBehaviour
 {
     [Header("Targeting Icon")]
     // the icon GameObject to display above the current target
-    // make this an array so i can play frame animation
     [SerializeField] private GameObject targetingIcon;
+    private TargetingIconAnim targetingIconAnim; // animation component for the targeting icon
 
     private Transform currentTarget; // track current target for icon positioning
 
@@ -28,6 +28,16 @@ public class PlayerVisualFeedback : MonoBehaviour
         if (frameAnimator == null)
         {
             frameAnimator = GetComponent<FrameBasedPlayerAnimator>();
+        }
+
+        // Get or add TargetingIconAnim component to the targeting icon
+        if (targetingIcon != null)
+        {
+            targetingIconAnim = targetingIcon.GetComponent<TargetingIconAnim>();
+            if (targetingIconAnim == null)
+            {
+                targetingIconAnim = targetingIcon.AddComponent<TargetingIconAnim>();
+            }
         }
     }
 
@@ -73,14 +83,26 @@ public class PlayerVisualFeedback : MonoBehaviour
         if (targetingIcon == null) return;
 
         // if there's a valid current target, show and position the icon
-        if (currentTarget != null)
+        if (currentTarget != null && !currentTarget.CompareTag("Boss"))
         {
             targetingIcon.SetActive(true);
             targetingIcon.transform.position = currentTarget.position + iconOffset;
+            
+            // Start animation if not already animating
+            if (targetingIconAnim != null)
+            {
+                targetingIconAnim.StartAnimation();
+            }
         }
-        else if (currentTarget == null || currentTarget.CompareTag("Boss")) 
-        { 
-            targetingIcon.SetActive(false); // no target, hide the icon
+        else
+        {
+            // no target, hide the icon and stop animation
+            targetingIcon.SetActive(false);
+            
+            if (targetingIconAnim != null)
+            {
+                targetingIconAnim.StopAnimation();
+            }
         }
     }
 

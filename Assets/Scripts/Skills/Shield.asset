@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0f048a40312d884eaeef32a5eb8de10, type: 3}
+  m_Script: {fileID: 11500000, guid: 3f77d74a87bd9d643872df19b7e45a3a, type: 3}
   m_Name: Shield
   m_EditorClassIdentifier: 
   skillName: Shield
@@ -25,3 +25,7 @@ MonoBehaviour:
   skillSound: {fileID: 8300000, guid: b71915c3bea24544d8870cc25d1d4d75, type: 3}
   skillEffect: {fileID: 0}
   debug: 0
+  damageReduction: 100
+  shieldDuration: 8
+  shieldPrefab: {fileID: 5797999489625556508, guid: 7a22dd5956021214cb17aa6506c2e431, type: 3}
+  shieldScale: {x: 0.1, y: 0.1, z: 0.1}

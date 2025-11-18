@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5797999489625556508
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1696357643308424948}
+  - component: {fileID: 6155375846287178562}
+  m_Layer: 0
+  m_Name: Shield
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1696357643308424948
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5797999489625556508}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &6155375846287178562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5797999489625556508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 866e10a201542ef43a7ca59a64ad8a99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shieldAnim:
+  - {fileID: 21300000, guid: cc0ea91944d6e7744a1c97bcbf79889e, type: 3}
+  - {fileID: 21300000, guid: a27fb1973041b3c44b6b25a0df67943b, type: 3}
+  - {fileID: 21300000, guid: fe5c0091076b7884491f4e6ffd5b1f2c, type: 3}
+  - {fileID: 21300000, guid: c8aeb0e963b02ce4084a7c15ed0fe8fe, type: 3}
+  - {fileID: 21300000, guid: 04bc8a70c6de44f499b1af5f65066de9, type: 3}
+  - {fileID: 21300000, guid: 76e60311f6fdf28488029e5f52033e88, type: 3}
+  - {fileID: 21300000, guid: 3cfcef61de92a2e42aad78bbc0d59884, type: 3}
+  - {fileID: 21300000, guid: aac16ba4ed7a5d9428ba1a6bebdcc308, type: 3}
+  - {fileID: 21300000, guid: 2005a27c0848de742a7ad7d17224d95c, type: 3}
+  - {fileID: 21300000, guid: 613da952d9666ca48813a27652fb3cd8, type: 3}
+  frameRate: 12

@@ -25,12 +25,13 @@ public class Skill : ScriptableObject
     [SerializeField] private int maxCharges = 1;
     
     [Header("Audio/Visual")]
-    [SerializeField] private AudioClip skillSound;
+    [SerializeField] protected AudioClip skillSound;
     [SerializeField] protected ParticleSystem skillEffect; // !! shield now using sprites
     
     // runtime data
     [NonSerialized] public SkillStates currentState = SkillStates.ReadyToUse;
     [NonSerialized] public float currentCooldown = 0f;
+    [NonSerialized] public float currentSkillDuration = 0f; // remaining skill duration
     [NonSerialized] public int currentCharges = 0;
     [NonSerialized] public bool isUnlocked = false;
     [NonSerialized] public bool hasBeenUsed = false; // track if skill has been used this run
@@ -59,6 +60,8 @@ public class Skill : ScriptableObject
     public float CooldownDuration => cooldownDuration;
     public float CurrentCooldown => currentCooldown;
     public float CooldownProgress => currentCooldown / cooldownDuration;
+    public float CurrentSkillDuration => currentSkillDuration;
+    public float SkillDurationProgress => skillDuration > 0 ? currentSkillDuration / skillDuration : 0f;
     public bool IsOnCooldown => currentState == SkillStates.Cooldown;
     public bool IsReady => currentState == SkillStates.ReadyToUse && isUnlocked;
     public bool IsUnlocked => isUnlocked;
@@ -72,6 +75,7 @@ public class Skill : ScriptableObject
     {
         currentState = isUnlocked ? SkillStates.ReadyToUse : SkillStates.Locked;
         currentCooldown = 0f;
+        currentSkillDuration = 0f;
         currentCharges = maxCharges;
         hasBeenUsed = false; // initialize as not used
     }
@@ -155,7 +159,18 @@ public class Skill : ScriptableObject
         }
         
         if(debug) Debug.Log($"[Skill] {skillName} - Waiting for skill duration: {skillDuration}s");
-        yield return new WaitForSeconds(skillDuration);
+        
+        // Track skill duration progress
+        currentSkillDuration = skillDuration;
+        float elapsedTime = 0f;
+        while (elapsedTime < skillDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            currentSkillDuration = skillDuration - elapsedTime;
+            if (currentSkillDuration < 0f) currentSkillDuration = 0f;
+            yield return null;
+        }
+        currentSkillDuration = 0f;
         
         if(debug) Debug.Log($"[Skill] {skillName} - Finishing skill");
         FinishSkill();
@@ -233,6 +248,7 @@ public class Skill : ScriptableObject
             }
         }
         
+        currentSkillDuration = 0f;
         currentCharges--;
         //hasBeenUsed = true; // mark skill as used
         StartCooldown(); 
@@ -296,6 +312,7 @@ public class Skill : ScriptableObject
         {
             currentState = SkillStates.ReadyToUse;
             currentCooldown = 0f;
+            currentSkillDuration = 0f;
             currentCharges = maxCharges;
             hasBeenUsed = false; // reset the used flag on respawn
             if (debug) Debug.Log($"[Skill] {skillName} cooldown reset - ready to use!");

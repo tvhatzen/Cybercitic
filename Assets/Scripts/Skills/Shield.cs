@@ -7,14 +7,15 @@ public class Shield : Skill
     [Header("Shield Specific")]
     [SerializeField] private float damageReduction = 0.5f; // 50% damage reduction
     [SerializeField] private float shieldDuration = 8f; // How long the shield lasts
-    [SerializeField] private ParticleSystem shieldEffect; // Visual effect for the shield
-    [SerializeField] private GameObject shieldPrefab;
+    public GameObject shieldPrefab; // Shield GameObject with ShieldAnim component
+    [SerializeField] private Vector3 shieldScale = Vector3.one; // Scale of the shield sprite (adjust to resize)
 
     private bool isShieldActive = false;
     private float originalDefense = 0f;
     private EntityData playerEntityData;
     private bool hasOriginalDefenseBeenSaved = false;
     private HealthSystem playerHealthSystem;
+    private ShieldAnim currentShieldAnim; // Reference to the active shield animation
 
     protected override void ApplySkillEffects()
     {
@@ -23,7 +24,12 @@ public class Shield : Skill
         
         try
         {
-            base.ApplySkillEffects();
+            
+            // Play sound effect
+            if (skillSound != null && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySound(skillSound);
+            }
             
             // Always log this critical operation (debug flag may not work on ScriptableObjects)
             Debug.Log($"[Shield] ApplySkillEffects called! Providing {damageReduction * 100}% damage reduction for {shieldDuration} seconds!");
@@ -50,6 +56,13 @@ public class Shield : Skill
         {
             Debug.LogError($"[Shield] EXCEPTION in ApplySkillEffects: {e.Message}\n{e.StackTrace}");
         }
+    }
+    
+    // Override to prevent particle effects from showing (we use sprite animation instead)
+    protected override void PlaySkillParticleEffect()
+    {
+        // Do nothing - we use sprite frame animation instead of particles
+        if(debug) Debug.Log("[Shield] Skipping particle effect - using sprite animation instead");
     }
     
     public void ApplyShield()
@@ -192,61 +205,127 @@ public class Shield : Skill
     
     private void CreateShieldEffect()
     {
-        // with new shield, instantiate shield child obj, start loop
+        if (PlayerInstance.Instance == null)
+        {
+            Debug.LogWarning("[Shield] PlayerInstance not found - cannot create shield effect");
+            return;
+        }
+
+        // Remove any existing shield animation first
+        if (currentShieldAnim != null)
+        {
+            currentShieldAnim.StopShieldAnimation();
+            // Destroy the old shield object
+            if (currentShieldAnim.gameObject != null)
+            {
+                Destroy(currentShieldAnim.gameObject);
+            }
+            currentShieldAnim = null;
+        }
 
         if (shieldPrefab != null)
         {
-            // Activate the shield prefab if it exists
-            shieldPrefab.SetActive(true);
-            if(debug) Debug.Log("[Shield] Shield visual effect activated");
-        }
-        else if (PlayerInstance.Instance != null)
-        {
-            // Use skillEffect from base class if available, otherwise use shieldEffect
-            ParticleSystem effectPrefab = skillEffect != null ? skillEffect : shieldEffect;
+            // Instantiate the shield prefab as a child of the player
+            GameObject shieldObj = Instantiate(shieldPrefab, PlayerInstance.Instance.transform);
+            shieldObj.name = "ShieldEffect"; // Use consistent name for easy finding
             
-            if (effectPrefab != null)
+            // Handle RectTransform conversion if needed (UI to world space)
+            // Note: When parenting a RectTransform to a regular Transform, Unity handles it,
+            // but we ensure the SpriteRenderer works correctly for world space rendering
+            RectTransform rectTransform = shieldObj.GetComponent<RectTransform>();
+            if (rectTransform != null)
             {
-                // Instantiate shield visual effect on player
-                ParticleSystem shield = Instantiate(effectPrefab, PlayerInstance.Instance.transform);
-                shield.name = "ShieldEffect";
-                
-                if(debug) Debug.Log("[Shield] Shield visual effect created");
+                // Convert RectTransform size to scale if needed
+                // For world space sprites, we'll use the regular transform
+                // The RectTransform won't interfere with world space rendering
+            }
+            
+            // Reset transform to ensure proper positioning
+            shieldObj.transform.localPosition = Vector3.zero;
+            shieldObj.transform.localRotation = Quaternion.identity;
+            shieldObj.transform.localScale = shieldScale; // Apply custom scale
+            
+            // Ensure the GameObject is active
+            shieldObj.SetActive(true);
+            
+            // Get ShieldAnim component (should already be on the prefab)
+            currentShieldAnim = shieldObj.GetComponent<ShieldAnim>();
+            if (currentShieldAnim == null)
+            {
+                Debug.LogWarning("[Shield] ShieldAnim component not found on prefab, adding it");
+                currentShieldAnim = shieldObj.AddComponent<ShieldAnim>();
+            }
+            
+            // Ensure SpriteRenderer is properly configured for world space
+            SpriteRenderer spriteRenderer = shieldObj.GetComponent<SpriteRenderer>();
+            if (spriteRenderer == null)
+            {
+                spriteRenderer = shieldObj.AddComponent<SpriteRenderer>();
+            }
+            // Set sorting order so shield appears in front of player
+            spriteRenderer.sortingOrder = 10;
+            spriteRenderer.sortingLayerName = "Default";
+            
+            // Verify the sprite array is populated
+            if (currentShieldAnim.shieldAnim == null || currentShieldAnim.shieldAnim.Length == 0)
+            {
+                Debug.LogWarning("[Shield] ShieldAnim sprite array is empty! Make sure sprites are assigned in the prefab.");
             }
             else
             {
-                if(debug) Debug.LogWarning("[Shield] No shield effect prefab assigned");
+                // Start the animation
+                currentShieldAnim.AnimateShield();
+                Debug.Log($"[Shield] Shield frame animation started with {currentShieldAnim.shieldAnim.Length} sprites");
             }
         }
         else
         {
-            if(debug) Debug.LogWarning("[Shield] PlayerInstance not found");
+            Debug.LogWarning("[Shield] Shield prefab is not assigned in the ScriptableObject! Please assign the Shield prefab in the Inspector.");
+            
+            // Create a new GameObject with ShieldAnim component as fallback
+            GameObject shieldObj = new GameObject("ShieldEffect");
+            shieldObj.transform.SetParent(PlayerInstance.Instance.transform);
+            shieldObj.transform.localPosition = Vector3.zero;
+            shieldObj.transform.localRotation = Quaternion.identity;
+            shieldObj.transform.localScale = shieldScale; // Apply custom scale
+            
+            currentShieldAnim = shieldObj.AddComponent<ShieldAnim>();
+            Debug.LogWarning("[Shield] Created fallback Shield GameObject - sprites need to be assigned!");
         }
     }
     
     private void RemoveShieldEffect()
     {
-        // Deactivate the shield prefab if it exists
-        if (shieldPrefab != null)
+        // Stop the shield animation and destroy the GameObject
+        if (currentShieldAnim != null)
         {
-            shieldPrefab.SetActive(false);
-            if(debug) Debug.Log("[Shield] Shield prefab deactivated");
+            currentShieldAnim.StopShieldAnimation();
+            Debug.Log("[Shield] Shield animation stopped");
+            
+            // Always destroy the instantiated shield object
+            if (currentShieldAnim.gameObject != null)
+            {
+                Destroy(currentShieldAnim.gameObject);
+                Debug.Log("[Shield] Shield GameObject destroyed");
+            }
+            
+            currentShieldAnim = null;
         }
-        else if (PlayerInstance.Instance != null)
+        
+        // Fallback: Try to find and remove any shield effect by name
+        if (PlayerInstance.Instance != null)
         {
-            // Find and destroy shield effect
             Transform shieldEffectTransform = PlayerInstance.Instance.transform.Find("ShieldEffect");
             if (shieldEffectTransform != null)
             {
-                // Stop the particle system before destroying
-                ParticleSystem shieldParticles = shieldEffectTransform.GetComponent<ParticleSystem>();
-                if (shieldParticles != null)
+                ShieldAnim anim = shieldEffectTransform.GetComponent<ShieldAnim>();
+                if (anim != null)
                 {
-                    shieldParticles.Stop();
+                    anim.StopShieldAnimation();
                 }
                 
                 Destroy(shieldEffectTransform.gameObject);
-                if(debug) Debug.Log("[Shield] Shield visual effect removed");
+                Debug.Log("[Shield] Shield visual effect removed (fallback cleanup)");
             }
         }
     }

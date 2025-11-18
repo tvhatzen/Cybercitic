@@ -90,6 +90,13 @@ public class SkillButton : MonoBehaviour
             skillNameText.gameObject.SetActive(false);
         }
 
+        // Hide duration bar initially
+        if (skillDuration != null)
+        {
+            skillDuration.gameObject.SetActive(false);
+            skillDuration.value = 0f;
+        }
+
         SetButtonActive(true);
     }
 
@@ -196,6 +203,11 @@ public class SkillButton : MonoBehaviour
         {
             case Skill.SkillStates.ReadyToUse:
                 SetButtonState(readyColor, 0f, "");
+                // Hide duration bar when skill is ready
+                if (skillDuration != null)
+                {
+                    skillDuration.gameObject.SetActive(false);
+                }
                 if(debug) Debug.Log($"[SkillButton] {assignedSkill.SkillName} - READY TO USE");
                 break;
 
@@ -204,8 +216,18 @@ public class SkillButton : MonoBehaviour
                 cooldownText.fontSize = 16; // change text size
                 if (debug) Debug.Log($"[SkillButton] {assignedSkill.SkillName} is CASTING");
 
-                // show duration bar, decrease with casting time until duration
-                skillDuration.value = assignedSkill.castingTime / assignedSkill.skillDuration;
+                // Show duration bar depleting from full to empty as skill duration runs out
+                if (skillDuration != null)
+                {
+                    float durationProgress = assignedSkill.SkillDurationProgress;
+                    skillDuration.value = durationProgress;
+                    skillDuration.gameObject.SetActive(durationProgress > 0f);
+                    
+                    if (debug && durationProgress > 0f)
+                    {
+                        Debug.Log($"[SkillButton] {assignedSkill.SkillName} duration: {assignedSkill.CurrentSkillDuration:F1}s / {assignedSkill.skillDuration:F1}s (progress: {durationProgress:F2})");
+                    }
+                }
 
                 break;
 
@@ -214,11 +236,21 @@ public class SkillButton : MonoBehaviour
                 float remainingTime = assignedSkill.CurrentCooldown;
                 SetButtonState(cooldownColor, progress, $"{remainingTime:F1}s");
                 cooldownText.fontSize = 30; // change text size
+                // Hide duration bar during cooldown
+                if (skillDuration != null)
+                {
+                    skillDuration.gameObject.SetActive(false);
+                }
                 if (debug) Debug.Log($"[SkillButton] {assignedSkill.SkillName} cooldown: {remainingTime:F1}s (progress: {progress:F2})");
                 break;
 
             case Skill.SkillStates.Locked:
                 SetButtonState(cooldownColor, 1f, "LOCKED");
+                // Hide duration bar when locked
+                if (skillDuration != null)
+                {
+                    skillDuration.gameObject.SetActive(false);
+                }
                 if(debug) Debug.Log($"[SkillButton] {assignedSkill.SkillName} - LOCKED");
                 break;
         }
