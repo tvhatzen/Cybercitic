@@ -9,6 +9,46 @@ public class EnemySpawner : SpawnerBase
     {
     }
 
+    public List<string> enemyNames = new List<string>();
+
+    // dictionary to correlate floor number to enemies (3)
+    public Dictionary<int, List<string>> enemiesForThisFloor = new Dictionary<int, List<string>>();
+
+    // new spawning system
+    // get prefabs from names, instantiate at spawnpoint(s)
+    // eventually, refresh when going to new floor 
+    // find index of dictionary -> to floor level
+
+    public void ClearEnemies()
+    {
+        enemiesForThisFloor.Clear();
+    }
+
+    public void GetPrefabFromName(string name)
+    {
+        // get prefab based on name given
+        // name = GameObject.FindGameObjectWithTag($"{name}");
+    }
+
+    public void LoadEnemySpawnData()
+    {
+        enemiesForThisFloor.Add(1, new List<string> { "Enemy_Basic", "Enemy_Basic", "Enemy_Basic" });
+        enemiesForThisFloor.Add(2, new List<string> { "Enemy_Basic", "Enemy_Basic", "Enemy_Elite" });
+        enemiesForThisFloor.Add(3, new List<string> { "Enemy_Basic", "Enemy_Elite", "Enemy_Elite" });
+        enemiesForThisFloor.Add(4, new List<string> { "Enemy_Elite", "Enemy_Elite", "Enemy_Elite" });
+        enemiesForThisFloor.Add(5, new List<string> { "Enemy_Boss" });
+        enemiesForThisFloor.Add(6, new List<string> { "Enemy_Basic", "Enemy_Basic", "Enemy_Basic" });
+        enemiesForThisFloor.Add(7, new List<string> { "Enemy_Basic", "Enemy_Basic", "Enemy_Elite" });
+        enemiesForThisFloor.Add(8, new List<string> { "Enemy_Basic", "Enemy_Elite", "Enemy_Elite" });
+        enemiesForThisFloor.Add(9, new List<string> { "Enemy_Elite", "Enemy_Elite", "Enemy_Elite" });
+        enemiesForThisFloor.Add(10, new List<string> { "Enemy_Boss" });
+        enemiesForThisFloor.Add(11, new List<string> { "Enemy_Basic", "Enemy_Basic", "Enemy_Basic" });
+        enemiesForThisFloor.Add(12, new List<string> { "Enemy_Basic", "Enemy_Basic", "Enemy_Elite" });
+        enemiesForThisFloor.Add(13, new List<string> { "Enemy_Basic", "Enemy_Elite", "Enemy_Elite" });
+        enemiesForThisFloor.Add(14, new List<string> { "Enemy_Elite", "Enemy_Elite", "Enemy_Elite" });
+        enemiesForThisFloor.Add(15, new List<string> { "Enemy_Boss" });
+    }
+
     public void ClearExistingEnemies()
     {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -29,7 +69,7 @@ public class EnemySpawner : SpawnerBase
         }
     }
 
-    public override void Spawn(FloorSpawnContext context)
+    public override void Spawn(FloorSpawnContext context) // take in dictionary?
     {
         if (context.IsBossFloor)
         {
@@ -44,7 +84,8 @@ public class EnemySpawner : SpawnerBase
             if (i >= context.EnemyPrefabs.Count)
                 break;
 
-            GameObject prefab = context.EnemyPrefabs[i];
+            // make this the index of the current floor (would need to be multiple)
+            GameObject prefab = context.EnemyPrefabs[i]; // needs change
             Transform point = context.EnemySpawnPoints[i];
 
             if (prefab == null)
@@ -126,6 +167,3 @@ public class EnemySpawner : SpawnerBase
         DebugLog($"[EnemySpawner] Enabled combat for {enemiesEnabled} enemies");
     }
 }
-
-// use a data type to assign what enemies need to spawn on what floor
-// when changing floors, go to the next index

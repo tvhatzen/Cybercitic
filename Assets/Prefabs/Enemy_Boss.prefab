@@ -328,6 +328,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackCooldown: 1
   attackRange: 2
+  animDuration: 0.1
+  animMagnitude: 5
+  isAttacking: 0
   debug: 0
 --- !u!114 &4571561975590357121
 MonoBehaviour:
@@ -359,12 +362,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3471d6d786b858149a2979b1dd8241b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tierText: {fileID: 0}
+  tierText: {fileID: 4373705514091660939}
   showTierText: 1
   tierTextFormat: LV{0}
-  baseSprite: {fileID: 21300000, guid: 2deb47d05df8b3346b958961892d79c6, type: 3}
-  tier1Sprite: {fileID: 21300000, guid: 2deb47d05df8b3346b958961892d79c6, type: 3}
-  tier2Sprite: {fileID: 21300000, guid: 9bef8e370830e7f47a4e47c9988b4545, type: 3}
+  baseSprite: {fileID: 21300000, guid: 86fad8e93ba5c064c8f9388a1bd8766c, type: 3}
+  tier1Sprite: {fileID: 21300000, guid: 86fad8e93ba5c064c8f9388a1bd8766c, type: 3}
+  tier2Sprite: {fileID: 21300000, guid: 883e350545c558845b254e0469a3bb5c, type: 3}
   tier3Sprite: {fileID: 21300000, guid: dca071000c6b2f14a8a32e97c25fecf9, type: 3}
   debug: 1
 --- !u!1 &4327393865251945093
