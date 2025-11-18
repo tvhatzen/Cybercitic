@@ -9,6 +9,8 @@ public class PlayerVisualFeedback : MonoBehaviour
     private TargetingIconAnim targetingIconAnim; // animation component for the targeting icon
 
     private Transform currentTarget; // track current target for icon positioning
+    private Transform previousTarget; // track previous target to detect changes
+    private bool animationStartedForCurrentTarget = false; // track if animation has started for current target
 
     // offset position of the icon above the target
     [SerializeField] private Vector3 iconOffset = new Vector3(0f, 0.5f, 0f);
@@ -76,7 +78,12 @@ public class PlayerVisualFeedback : MonoBehaviour
             AudioManager.Instance.PlaySound("damaged");
     }
 
-    private void HandleTargetChanged(Transform oldTarget, Transform newTarget) { currentTarget = newTarget;  }
+    private void HandleTargetChanged(Transform oldTarget, Transform newTarget) 
+    { 
+        previousTarget = currentTarget;
+        currentTarget = newTarget;
+        animationStartedForCurrentTarget = false; // Reset flag when target changes
+    }
 
     private void UpdateTargetingIcon()
     {
@@ -85,23 +92,41 @@ public class PlayerVisualFeedback : MonoBehaviour
         // if there's a valid current target, show and position the icon
         if (currentTarget != null && !currentTarget.CompareTag("Boss"))
         {
-            targetingIcon.SetActive(true);
+            bool wasInactive = !targetingIcon.activeSelf;
+            
+            // Ensure the icon is active
+            if (wasInactive)
+            {
+                targetingIcon.SetActive(true);
+            }
+            
+            // Always update position every frame to follow the target (even if it moves)
             targetingIcon.transform.position = currentTarget.position + iconOffset;
             
-            // Start animation if not already animating
-            if (targetingIconAnim != null)
+            // Start animation only once per target - when target changes or icon was just activated
+            if (!animationStartedForCurrentTarget && (currentTarget != previousTarget || wasInactive))
             {
-                targetingIconAnim.StartAnimation();
+                if (targetingIconAnim != null)
+                {
+                    targetingIconAnim.StartAnimation();
+                    animationStartedForCurrentTarget = true; // Mark that we've started animation for this target
+                    previousTarget = currentTarget; // Update previousTarget so condition becomes false on next frame
+                }
             }
         }
         else
         {
             // no target, hide the icon and stop animation
-            targetingIcon.SetActive(false);
-            
-            if (targetingIconAnim != null)
+            if (targetingIcon.activeSelf)
             {
-                targetingIconAnim.StopAnimation();
+                targetingIcon.SetActive(false);
+                
+                if (targetingIconAnim != null)
+                {
+                    targetingIconAnim.StopAnimation();
+                }
+                
+                animationStartedForCurrentTarget = false; // Reset flag when no target
             }
         }
     }

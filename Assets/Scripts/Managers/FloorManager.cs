@@ -172,8 +172,12 @@ public class FloorManager : SingletonBase<FloorManager>
         if (debug) Debug.Log("[FloorManager] Refreshing spawn point references after scene load");
 
         playerSpawner.RefreshSpawnPointReference();
-        enemySpawner.RefreshSpawnPointReferences();
-        bossSpawner.RefreshSpawnPointReference();
+        
+        // Refresh SpawnManager's spawn point references
+        if (SpawnManager.Instance != null)
+        {
+            SpawnManager.Instance.RefreshSpawnPointReferences();
+        }
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -226,26 +230,15 @@ public class FloorManager : SingletonBase<FloorManager>
 
     void SpawnEnemies(FloorSpawnContext context)
     {
-        enemySpawner.ClearExistingEnemies();
-
-        if (context.IsBossFloor)
+        // Use SpawnManager for enemy/boss spawning instead of old spawner classes
+        if (SpawnManager.Instance != null)
         {
-            if (debug) Debug.Log($"[FloorManager] Boss floor detected ({context.Floor}). Attempting boss spawn.");
-
-            if (context.BossPrefab != null)
-            {
-                bossSpawner.Spawn(context);
-            }
-            else
-            {
-                Debug.LogWarning($"[FloorManager] Boss prefab is missing for floor {context.Floor}. Falling back to regular enemies.");
-                enemySpawner.Spawn(context);
-            }
+            if (debug) Debug.Log($"[FloorManager] Using SpawnManager to spawn enemies for floor {context.Floor}");
+            SpawnManager.Instance.SpawnEnemies();
         }
         else
         {
-            if (debug) Debug.Log($"[FloorManager] Spawning regular enemies for floor {context.Floor}");
-            enemySpawner.Spawn(context);
+            Debug.LogWarning("[FloorManager] SpawnManager.Instance is null! Cannot spawn enemies.");
         }
     }
 

@@ -6,6 +6,7 @@ public class TargetingIconAnim : MonoBehaviour
     [Header("Animation Settings")]
     public Sprite[] targetingIconSprites;
     public float frameRate = 12f; // frames per second
+    public bool debug = false;
     
     private SpriteRenderer spriteRenderer;
     private Coroutine animationCoroutine;
@@ -15,10 +16,6 @@ public class TargetingIconAnim : MonoBehaviour
     {
         // Get the SpriteRenderer component
         spriteRenderer = GetComponent<SpriteRenderer>();
-        if (spriteRenderer == null)
-        {
-            spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
-        }
         
         // Configure sprite renderer for world space rendering
         if (spriteRenderer != null)
@@ -44,25 +41,31 @@ public class TargetingIconAnim : MonoBehaviour
             return;
         }
 
-        // Don't restart if already animating
-        if (animating)
-        {
-            return;
-        }
-
-        animating = true;
+        // Stop any existing animation first
         if (animationCoroutine != null)
         {
             StopCoroutine(animationCoroutine);
+            animationCoroutine = null;
         }
         
-        // Ensure sprite renderer is enabled
+        animating = true;
+        
+        // Ensure sprite renderer is enabled and set the first sprite immediately
         if (spriteRenderer != null)
         {
             spriteRenderer.enabled = true;
+            // Set the first sprite immediately so it's visible right away
+            if (targetingIconSprites[0] != null)
+            {
+                spriteRenderer.sprite = targetingIconSprites[0];
+            }
         }
         
-        animationCoroutine = StartCoroutine(AnimationLoop());
+        // Only start animation loop if we have more than one sprite
+        if (targetingIconSprites.Length > 1)
+        {
+            animationCoroutine = StartCoroutine(AnimationLoop());
+        }
     }
 
     // Stop the targeting icon animation
@@ -87,22 +90,53 @@ public class TargetingIconAnim : MonoBehaviour
     private IEnumerator AnimationLoop()
     {
         float frameTime = 1f / frameRate;
-        int currentFrame = 0;
+        int currentFrame = 1; // Start at frame 1 since frame 0 is already displayed
 
-        while (animating && targetingIconSprites != null && targetingIconSprites.Length > 0)
+        // If only one sprite, exit early
+        if (targetingIconSprites.Length <= 1)
         {
-            // Set the current sprite
-            if (spriteRenderer != null && targetingIconSprites[currentFrame] != null)
+            if (debug) Debug.Log("[TargetingIconAnim] Only one sprite, no animation needed");
+            yield break;
+        }
+
+        if (debug) Debug.Log($"[TargetingIconAnim] Starting animation loop with {targetingIconSprites.Length} sprites at {frameRate} fps");
+
+        while (animating && targetingIconSprites != null && targetingIconSprites.Length > 1)
+        {
+            // Wait for the frame duration
+            yield return new WaitForSeconds(frameTime);
+
+            // Check if we're still animating (might have been stopped)
+            if (!animating)
             {
-                spriteRenderer.sprite = targetingIconSprites[currentFrame];
+                if (debug) Debug.Log("[TargetingIconAnim] Animation stopped, exiting loop");
+                break;
             }
 
-            // Wait for the next frame
-            yield return new WaitForSeconds(frameTime);
+            // Ensure GameObject is still active (coroutines can't run on inactive objects)
+            if (!gameObject.activeInHierarchy)
+            {
+                if (debug) Debug.LogWarning("[TargetingIconAnim] GameObject is inactive, pausing animation");
+                animating = false;
+                break;
+            }
+
+            // Set the current sprite
+            if (spriteRenderer != null && currentFrame < targetingIconSprites.Length && targetingIconSprites[currentFrame] != null)
+            {
+                spriteRenderer.sprite = targetingIconSprites[currentFrame];
+                if (debug) Debug.Log($"[TargetingIconAnim] Set sprite to frame {currentFrame}");
+            }
+            else
+            {
+                if (debug) Debug.LogWarning($"[TargetingIconAnim] Failed to set sprite at frame {currentFrame}");
+            }
 
             // Move to the next frame, loop back to 0 if at the end
             currentFrame = (currentFrame + 1) % targetingIconSprites.Length;
         }
+
+        if (debug) Debug.Log("[TargetingIconAnim] Animation loop ended");
     }
 }
 
