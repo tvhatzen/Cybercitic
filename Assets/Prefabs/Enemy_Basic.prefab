@@ -177,7 +177,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackCooldown: 0.95
   attackRange: 2
-  debug: 0
+  animDuration: 0.1
+  animMagnitude: 5
+  isAttacking: 0
+  debug: 1
 --- !u!114 &7473089266629081275
 MonoBehaviour:
   m_ObjectHideFlags: 0

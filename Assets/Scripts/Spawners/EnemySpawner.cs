@@ -126,3 +126,6 @@ public class EnemySpawner : SpawnerBase
         DebugLog($"[EnemySpawner] Enabled combat for {enemiesEnabled} enemies");
     }
 }
+
+// use a data type to assign what enemies need to spawn on what floor
+// when changing floors, go to the next index

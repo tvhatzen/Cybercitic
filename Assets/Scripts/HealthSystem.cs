@@ -95,7 +95,7 @@ public class HealthSystem : MonoBehaviour
             if (dodgeRoll < entityData.currentDodgeChance)
             {
                 if(debug) Debug.Log($"{name} dodged the attack! (Roll: {dodgeRoll:F2} < Dodge: {entityData.currentDodgeChance:F2})");
-                //AudioManager.Instance.PlaySound("dodge");
+                AudioManager.Instance.PlaySound("dodge");
 
                 return; 
             }
@@ -380,8 +380,7 @@ public class HealthSystem : MonoBehaviour
         // if its the player, show Results
         if (CompareTag("Player"))
         {
-            // Check if death camera is handling the transition
-            // If so, delay disabling player and state change until after effect completes
+            // delay disabling player and state change until after death camera effect completes
             if (!PlayerDeathCamera.IsHandlingDeathTransition)
             {
                 // disable player prefab and trigger results immediately
@@ -390,7 +389,7 @@ public class HealthSystem : MonoBehaviour
             }
             else
             {
-                // Keep player active during death camera effect
+                // keep player active during death camera effect
                 // PlayerDeathCamera will disable it after the effect completes
                 if(debug) Debug.Log("[HealthSystem] Death camera effect is active, keeping player active and delaying GameState.OnPlayerDeath()");
             }

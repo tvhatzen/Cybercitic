@@ -3,39 +3,33 @@ using UnityEngine;
 
 public class PlayerDeathCamera : MonoBehaviour
 {
+    #region Variables
+
     [Header("Camera Settings")]
-    [Tooltip("The camera to zoom in. If not assigned, will find Main Camera.")]
     [SerializeField] private Camera targetCamera;
-    
-    [Tooltip("How much to zoom in (multiplier for camera size/field of view). Lower values = more zoom.")]
     [SerializeField] private float zoomAmount = 0.5f;
-    
-    [Tooltip("Duration of the zoom effect in seconds")]
     [SerializeField] private float zoomDuration = 1.5f;
     
     [Header("Time Settings")]
     [Tooltip("Final time scale when player dies (0 = paused, 0.5 = half speed, etc.)")]
     [SerializeField] private float targetTimeScale = 0.3f;
-    
-    [Tooltip("Duration to slow down time in seconds")]
     [SerializeField] private float timeSlowDuration = 1.0f;
     
     [Header("Timing")]
-    [Tooltip("Delay before starting the effect (in seconds)")]
     [SerializeField] private float startDelay = 0.1f;
 
     [Header("Player Presentation")]
-    [Tooltip("Should the player's movement be locked during the death effect?")]
     [SerializeField] private bool lockMovementDuringEffect = true;
-    [Tooltip("Freeze the player's animation at the current frame when death occurs.")]
     [SerializeField] private bool freezeAnimationOnDeath = true;
-    [Tooltip("Keep the hit flash + shake visuals active until the effect finishes.")]
     [SerializeField] private bool sustainHitEffect = true;
     
+    // references
     private HealthSystem playerHealthSystem;
     private GameObject playerObject;
     private PlayerMovement playerMovement;
     private FrameBasedPlayerAnimator playerAnimator;
+
+    // camera elements
     private float originalCameraSize;
     private float originalFieldOfView;
     private bool isOrthographic;
@@ -43,7 +37,9 @@ public class PlayerDeathCamera : MonoBehaviour
     private static bool isHandlingDeathTransition = false;
     
     public static bool IsHandlingDeathTransition => isHandlingDeathTransition;
-    
+
+    #endregion
+
     public bool debug = false;
     
     private void Awake()
@@ -66,19 +62,18 @@ public class PlayerDeathCamera : MonoBehaviour
     
     private void Start()
     {
-        // Try to find camera if not already found
+        // Try to find camera
         if (targetCamera == null)
         {
             FindActiveCamera();
         }
         
-        // Store original camera values if found
+        // Store original camera values
         StoreOriginalCameraValues();
     }
     
     private void FindActiveCamera()
     {
-        // First try Main Camera
         if (targetCamera == null)
         {
             targetCamera = Camera.main;
@@ -96,25 +91,7 @@ public class PlayerDeathCamera : MonoBehaviour
                     break;
                 }
             }
-        }
-        
-        // Last resort: check if player has a camera child
-        if (targetCamera == null && playerObject != null)
-        {
-            targetCamera = playerObject.GetComponentInChildren<Camera>();
-        }
-        
-        if (debug)
-        {
-            if (targetCamera != null)
-            {
-                Debug.Log($"[PlayerDeathCamera] Found camera: {targetCamera.name}");
-            }
-            else
-            {
-                Debug.LogWarning("[PlayerDeathCamera] No camera found!");
-            }
-        }
+        }       
     }
     
     private void StoreOriginalCameraValues()

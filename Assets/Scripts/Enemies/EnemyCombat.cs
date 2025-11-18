@@ -14,6 +14,12 @@ public class EnemyCombat : MonoBehaviour
     private float nextAttackTime;
     protected  HealthSystem health;
 
+    [Header("Attack Anim")]
+    private Vector3 originalPosition;
+    public float animDuration = 0.1f;
+    public float animMagnitude = 5;
+    public bool isAttacking = false;
+
     private EntityData entityData;
 
     // only attack if player is in combat
@@ -84,10 +90,38 @@ public class EnemyCombat : MonoBehaviour
 
     protected virtual void AttackTarget(HealthSystem target)
     {
+        // store position
+        originalPosition = gameObject.transform.position;
+
         if (target == null) return;
+
+        // make simple attack anim (bounce sprite on y, like dmg shake)
+        //StartCoroutine(AtkAnim());
 
         target.TakeDamage(damage);
         if(debug) Debug.Log($"[EnemyCombat] {name} attacked {target.name} for {damage} damage!");
+    }
+
+    IEnumerator AtkAnim()
+    {
+        isAttacking = true;
+        float elapsed = 0f;
+
+        while (elapsed < animDuration)
+        {
+            // move sprite
+            transform.position = originalPosition + new Vector3(0f, 1f, 0f) * animMagnitude;
+
+            // increment elapsed time
+            elapsed += Time.deltaTime;
+
+            // wait for next frame
+            yield return null;
+        }
+
+        // Return to original position
+        transform.position = originalPosition;
+        isAttacking = false;
     }
 
     private void EnableCombat(Transform[] enemiesInCombat)
