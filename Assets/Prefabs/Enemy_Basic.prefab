@@ -245,7 +245,11 @@ MonoBehaviour:
   tierText: {fileID: 8432002103512341160}
   showTierText: 1
   tierTextFormat: LV{0}
-  debug: 0
+  baseSprite: {fileID: 21300000, guid: 88d828bffa0f3de4c949da55484166b5, type: 3}
+  tier1Sprite: {fileID: 21300000, guid: 88d828bffa0f3de4c949da55484166b5, type: 3}
+  tier2Sprite: {fileID: 21300000, guid: 34b573b03234705469ec9bfa66fd8c17, type: 3}
+  tier3Sprite: {fileID: 21300000, guid: 86fad8e93ba5c064c8f9388a1bd8766c, type: 3}
+  debug: 1
 --- !u!1 &530826170337910495
 GameObject:
   m_ObjectHideFlags: 0
@@ -280,8 +284,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -16.1}
-  m_SizeDelta: {x: 20, y: 10.57}
+  m_AnchoredPosition: {x: 0, y: -16.6}
+  m_SizeDelta: {x: 21.9, y: 10.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8600116324585793065
 CanvasRenderer:
@@ -355,7 +359,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.3, y: -15.2}
+  m_AnchoredPosition: {x: -0.7, y: -15}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7667764509827544636
@@ -413,8 +417,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 9
-  m_fontSizeBase: 9
+  m_fontSize: 7
+  m_fontSizeBase: 7
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -451,7 +455,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 91.2405, y: 18.335842, z: 88.67652, w: 19.394592}
+  m_margin: {x: 89.60607, y: 21.788473, z: 88.85264, w: 19.394592}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

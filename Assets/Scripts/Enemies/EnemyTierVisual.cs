@@ -15,7 +15,10 @@ public class EnemyTierVisual : MonoBehaviour
     [Tooltip("Tier text format")]
     [SerializeField] private string tierTextFormat = "T{0}";
 
-    public Sprite sprite;
+    public Sprite baseSprite;
+    public Sprite tier1Sprite;
+    public Sprite tier2Sprite;
+    public Sprite tier3Sprite;
 
     private EnemyStatScaler scaler;
     private int currentTier = 1;
@@ -64,12 +67,13 @@ public class EnemyTierVisual : MonoBehaviour
         
         // get tier color from TierManager (implement later)
         Color tierColor = Color.white;
-        Sprite tierSprite = sprite;
+        Sprite tierSprite = baseSprite; // change sprite based on tier
 
         if (TierManager.Instance != null)
         {
             tierColor = TierManager.Instance.GetTierColor(tier);
-            tierSprite = TierManager.Instance.GetTierSprite(tier);
+            tierSprite = TierManager.Instance.GetTierSprite(tier); // get sprite per tier,
+                                                                   // !! change this since sprites are now assigned per enemy type
         }
 
         // update tier text
@@ -77,6 +81,7 @@ public class EnemyTierVisual : MonoBehaviour
         {
             tierText.text = string.Format(tierTextFormat, tier);
             tierText.color = tierColor;
+            baseSprite = tierSprite; // apply changed sprite
         }
     }
 

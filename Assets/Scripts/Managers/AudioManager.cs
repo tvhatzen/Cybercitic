@@ -42,6 +42,7 @@ public class AudioManager : SingletonBase<AudioManager>
     [SerializeField] private AudioClip damaged;
     [SerializeField] private AudioClip die;
     [SerializeField] private AudioClip useSkill;
+    [SerializeField] private AudioClip dodge;
 
     [Header("Enemy")]
     [SerializeField] private AudioClip enemyAttack;
@@ -165,7 +166,9 @@ public class AudioManager : SingletonBase<AudioManager>
                 return die;
             case "useskill":
                 return useSkill;
-            
+            case "dodge":
+                return dodge;
+
             // enemy sounds
             case "enemyattack":
                 return enemyAttack;

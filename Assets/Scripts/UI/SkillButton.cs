@@ -13,6 +13,7 @@ public class SkillButton : MonoBehaviour
     [SerializeField] private TextMeshProUGUI skillNameText; 
     [SerializeField] private TextMeshProUGUI keyLabel;
     [SerializeField] private GameObject toolTip;
+    [SerializeField] private Slider skillDuration;
 
     [Header("Visual Settings")]
     [SerializeField] private Color readyColor = Color.white;
@@ -202,6 +203,10 @@ public class SkillButton : MonoBehaviour
                 SetButtonState(castingColor, 0f, "CASTING");
                 cooldownText.fontSize = 16; // change text size
                 if (debug) Debug.Log($"[SkillButton] {assignedSkill.SkillName} is CASTING");
+
+                // show duration bar, decrease with casting time until duration
+                skillDuration.value = assignedSkill.castingTime / assignedSkill.skillDuration;
+
                 break;
 
             case Skill.SkillStates.Cooldown:

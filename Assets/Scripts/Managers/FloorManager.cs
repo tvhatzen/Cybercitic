@@ -13,6 +13,7 @@ public class FloorManager : SingletonBase<FloorManager>
     [SerializeField] private Transform playerSpawnPoint;
 
     [Header("Enemies")]
+    // change this to use the specified enemies per floor
     [SerializeField] private List<GameObject> enemyPrefabsForThisFloor;
     [SerializeField] private List<Transform> enemySpawnPoints;
 

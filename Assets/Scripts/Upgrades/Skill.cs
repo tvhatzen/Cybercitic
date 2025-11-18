@@ -16,8 +16,8 @@ public class Skill : ScriptableObject
     
     [Header("Cooldown Settings")]
     [SerializeField] private float cooldownDuration = 5f;
-    [SerializeField] private float castingTime = 1f;
-    [SerializeField] private float skillDuration = 2f;
+    public float castingTime = 1f;
+    public float skillDuration = 2f;
     
     [Header("Skill Effects")]
     public int skillDamage = 50;
@@ -105,9 +105,9 @@ public class Skill : ScriptableObject
         yield return new WaitForSeconds(castingTime);
         
         if(debug) Debug.Log($"[Skill] {skillName} - Applying effects");
-        
+
         // Debug: Check what type this actually is
-        Debug.Log($"[Skill] DEBUG: Calling ApplySkillEffects on type: {this.GetType().Name}");
+        if (debug) Debug.Log($"[Skill] DEBUG: Calling ApplySkillEffects on type: {this.GetType().Name}");
         
         ApplySkillEffects();
         
@@ -116,7 +116,7 @@ public class Skill : ScriptableObject
         // Check by skill name since ScriptableObjects can lose their derived type
         if (skillName.ToLower().Contains("shield"))
         {
-            Debug.LogError($"[Skill] WORKAROUND: Detected Shield skill (name: {skillName}), manually applying shield immunity!");
+            if (debug) Debug.LogError($"[Skill] WORKAROUND: Detected Shield skill (name: {skillName}), manually applying shield immunity!");
             try
             {
                 // Directly apply shield immunity to player's HealthSystem
@@ -126,31 +126,31 @@ public class Skill : ScriptableObject
                     if (playerHealthSystem != null)
                     {
                         playerHealthSystem.SetShieldImmunity(true);
-                        Debug.LogError($"[Skill] WORKAROUND: Shield immunity enabled on {PlayerInstance.Instance.name}!");
+                        if (debug) Debug.LogError($"[Skill] WORKAROUND: Shield immunity enabled on {PlayerInstance.Instance.name}!");
                         
                         // Verify it was set
                         if (playerHealthSystem.IsShieldImmune)
                         {
-                            Debug.LogError("[Skill] WORKAROUND: Confirmed - shieldImmunityActive is now TRUE");
+                            if (debug) Debug.LogError("[Skill] WORKAROUND: Confirmed - shieldImmunityActive is now TRUE");
                         }
                         else
                         {
-                            Debug.LogError("[Skill] WORKAROUND: ERROR - shieldImmunityActive is still FALSE after SetShieldImmunity(true)!");
+                            if (debug) Debug.LogError("[Skill] WORKAROUND: ERROR - shieldImmunityActive is still FALSE after SetShieldImmunity(true)!");
                         }
                     }
                     else
                     {
-                        Debug.LogError("[Skill] WORKAROUND: Player HealthSystem not found!");
+                        if (debug) Debug.LogError("[Skill] WORKAROUND: Player HealthSystem not found!");
                     }
                 }
                 else
                 {
-                    Debug.LogError("[Skill] WORKAROUND: PlayerInstance.Instance is null!");
+                    if (debug) Debug.LogError("[Skill] WORKAROUND: PlayerInstance.Instance is null!");
                 }
             }
             catch (System.Exception e)
             {
-                Debug.LogError($"[Skill] WORKAROUND: Exception applying shield immunity: {e.Message}\n{e.StackTrace}");
+                if (debug) Debug.LogError($"[Skill] WORKAROUND: Exception applying shield immunity: {e.Message}\n{e.StackTrace}");
             }
         }
         

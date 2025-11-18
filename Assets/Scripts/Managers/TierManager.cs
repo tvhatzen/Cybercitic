@@ -98,9 +98,10 @@ public class TierManager : SingletonBase<TierManager>
         {
             1 => tier1Sprite,
             2 => tier2Sprite,
-            3 => tier3Sprite
+            3 => tier3Sprite,
+            _ => tier1Sprite // fallback
         };
-
-        return null;
     }
 }
+// need tiers 1-3 for basic/elite/boss
+// reference sprite by name / path , or each prefab gets assigned tier sprite variables

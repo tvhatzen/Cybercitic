@@ -71,8 +71,6 @@ public class HealthSystem : MonoBehaviour
 
     private void OnEnable()
     {
-        // When objects are disabled (e.g., on death) while shaking, the coroutine stops
-        // without resetting the flag. Ensure the shake state is cleared whenever re-enabled.
         isShaking = false;
     }
 
@@ -97,9 +95,8 @@ public class HealthSystem : MonoBehaviour
             if (dodgeRoll < entityData.currentDodgeChance)
             {
                 if(debug) Debug.Log($"{name} dodged the attack! (Roll: {dodgeRoll:F2} < Dodge: {entityData.currentDodgeChance:F2})");
-                
-                GameEvents.RequestSound("dodge"); 
-                
+                //AudioManager.Instance.PlaySound("dodge");
+
                 return; 
             }
         }
@@ -169,6 +166,11 @@ public class HealthSystem : MonoBehaviour
     {
         if (healthText != null && entityData != null)
         {
+            // make sure if health is less than or = 0, shows 0
+            int healthInt = currentHealth;
+            if (healthInt <= 0)
+                currentHealth = 0;
+
             healthText.text = $"{currentHealth} / {entityData.baseHealth}";
         }
     }
