@@ -255,6 +255,11 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
                 
                 // Track which body parts have been updated to prevent duplicates
                 HashSet<UpgradeShopUI.BodyPart> updatedBodyParts = new HashSet<UpgradeShopUI.BodyPart>();
+                // Track which sprite renderers have been updated to ensure we only update each once
+                HashSet<SpriteRenderer> updatedRenderers = new HashSet<SpriteRenderer>();
+                
+                // First, hide all sprite renderers that are not part of this frame
+                HideUnusedSpriteRenderers(frame, sequence);
                 
                 // update all body part sprites for this animation frame
                 foreach (var bodyPartFrame in frame.bodyPartFrames)
@@ -266,6 +271,13 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
                         continue;
                     }
                     
+                    // Skip if this sprite renderer has already been updated
+                    if (bodyPartFrame.spriteRenderer != null && updatedRenderers.Contains(bodyPartFrame.spriteRenderer))
+                    {
+                        if (debug) Debug.LogWarning($"[FrameBasedPlayerAnimator] Skipping duplicate sprite renderer for body part '{bodyPartFrame.bodyPart}' in frame {i}");
+                        continue;
+                    }
+                    
                     if (bodyPartFrame.spriteRenderer != null)
                     {
                         // get the appropriate sprite for this animation frame and upgrade level
@@ -273,7 +285,9 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
                         if (targetSprite != null)
                         {
                             bodyPartFrame.spriteRenderer.sprite = targetSprite;
+                            bodyPartFrame.spriteRenderer.enabled = true;
                             updatedBodyParts.Add(bodyPartFrame.bodyPart);
+                            updatedRenderers.Add(bodyPartFrame.spriteRenderer);
                         }
                     }
                 }
@@ -329,6 +343,11 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
             
             // Track which body parts have been updated to prevent duplicates
             HashSet<UpgradeShopUI.BodyPart> updatedBodyParts = new HashSet<UpgradeShopUI.BodyPart>();
+            // Track which sprite renderers have been updated to ensure we only update each once
+            HashSet<SpriteRenderer> updatedRenderers = new HashSet<SpriteRenderer>();
+            
+            // First, hide all sprite renderers that are not part of this frame
+            HideUnusedSpriteRenderers(frame, sequence);
             
             // update all body part sprites for this animation frame
             foreach (var bodyPartFrame in frame.bodyPartFrames)
@@ -340,6 +359,13 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
                     continue;
                 }
                 
+                // Skip if this sprite renderer has already been updated
+                if (bodyPartFrame.spriteRenderer != null && updatedRenderers.Contains(bodyPartFrame.spriteRenderer))
+                {
+                    if (debug) Debug.LogWarning($"[FrameBasedPlayerAnimator] Skipping duplicate sprite renderer for body part '{bodyPartFrame.bodyPart}' in frame {i}");
+                    continue;
+                }
+                
                 if (bodyPartFrame.spriteRenderer != null)
                 {
                     // get the appropriate sprite for this animation frame and upgrade level
@@ -347,7 +373,9 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
                     if (targetSprite != null)
                     {
                         bodyPartFrame.spriteRenderer.sprite = targetSprite;
+                        bodyPartFrame.spriteRenderer.enabled = true;
                         updatedBodyParts.Add(bodyPartFrame.bodyPart);
+                        updatedRenderers.Add(bodyPartFrame.spriteRenderer);
                     }
                 }
             }
@@ -481,6 +509,40 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
     public void PlayStandingAnimation() { PlayAnimation("Standing"); }
     public void PlayDamageAnimation() => PlayAnimation("Damage");
     public void PlayDeathAnimation() => PlayAnimation("Death");
+
+    // Hide sprite renderers that are duplicates for the same body part in the current frame
+    private void HideUnusedSpriteRenderers(AnimationFrame currentFrame, AnimationSequence sequence)
+    {
+        // Collect all sprite renderers that should be visible in this frame (first one for each body part)
+        Dictionary<UpgradeShopUI.BodyPart, SpriteRenderer> visibleRenderers = new Dictionary<UpgradeShopUI.BodyPart, SpriteRenderer>();
+        
+        // First pass: identify which sprite renderer should be visible for each body part
+        foreach (var bodyPartFrame in currentFrame.bodyPartFrames)
+        {
+            if (bodyPartFrame.spriteRenderer != null)
+            {
+                // Only keep the first sprite renderer for each body part
+                if (!visibleRenderers.ContainsKey(bodyPartFrame.bodyPart))
+                {
+                    visibleRenderers[bodyPartFrame.bodyPart] = bodyPartFrame.spriteRenderer;
+                }
+            }
+        }
+        
+        // Second pass: hide any duplicate sprite renderers for the same body parts in this frame
+        foreach (var bodyPartFrame in currentFrame.bodyPartFrames)
+        {
+            if (bodyPartFrame.spriteRenderer != null && visibleRenderers.ContainsKey(bodyPartFrame.bodyPart))
+            {
+                // If this is not the designated visible renderer for this body part, hide it
+                if (visibleRenderers[bodyPartFrame.bodyPart] != bodyPartFrame.spriteRenderer)
+                {
+                    bodyPartFrame.spriteRenderer.enabled = false;
+                    if (debug) Debug.LogWarning($"[FrameBasedPlayerAnimator] Hiding duplicate sprite renderer for {bodyPartFrame.bodyPart} in frame to prevent double rendering");
+                }
+            }
+        }
+    }
 
     // debugging
     public string GetCurrentAnimation() => currentAnimation;
