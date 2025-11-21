@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerDeathCamera : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class PlayerDeathCamera : MonoBehaviour
     [SerializeField] private Camera targetCamera;
     [SerializeField] private float zoomAmount = 0.5f;
     [SerializeField] private float zoomDuration = 1.5f;
+    [SerializeField] private bool centerOnPlayer = true;
     
     [Header("Time Settings")]
     [Tooltip("Final time scale when player dies (0 = paused, 0.5 = half speed, etc.)")]
@@ -23,6 +25,11 @@ public class PlayerDeathCamera : MonoBehaviour
     [SerializeField] private bool freezeAnimationOnDeath = true;
     [SerializeField] private bool sustainHitEffect = true;
     
+    [Header("Vignette Effect")]
+    [Tooltip("Image component for the vignette effect. Should be a full-screen sprite that fades in during death.")]
+    [SerializeField] private Image vignetteSprite;
+    [SerializeField] private float vignetteMaxAlpha = 0.8f;
+    
     // references
     private HealthSystem playerHealthSystem;
     private GameObject playerObject;
@@ -33,8 +40,12 @@ public class PlayerDeathCamera : MonoBehaviour
     private float originalCameraSize;
     private float originalFieldOfView;
     private bool isOrthographic;
+    private Vector3 originalCameraPosition;
     private bool effectActive = false;
     private static bool isHandlingDeathTransition = false;
+    
+    // vignette elements
+    private float originalVignetteAlpha = 0f;
     
     public static bool IsHandlingDeathTransition => isHandlingDeathTransition;
 
@@ -107,6 +118,17 @@ public class PlayerDeathCamera : MonoBehaviour
             {
                 originalFieldOfView = targetCamera.fieldOfView;
             }
+            originalCameraPosition = targetCamera.transform.position;
+        }
+        
+        // Store original vignette alpha
+        if (vignetteSprite != null)
+        {
+            originalVignetteAlpha = vignetteSprite.color.a;
+            // Ensure vignette starts invisible
+            Color vignetteColor = vignetteSprite.color;
+            vignetteColor.a = 0f;
+            vignetteSprite.color = vignetteColor;
         }
     }
     
@@ -117,6 +139,9 @@ public class PlayerDeathCamera : MonoBehaviour
         {
             playerHealthSystem.OnDeath += OnPlayerDeath;
         }
+        
+        // Subscribe to game state changes to hide vignette when leaving Results screen
+        GameEvents.OnGameStateChanged += OnGameStateChanged;
     }
     
     private void OnDisable()
@@ -125,6 +150,36 @@ public class PlayerDeathCamera : MonoBehaviour
         if (playerHealthSystem != null)
         {
             playerHealthSystem.OnDeath -= OnPlayerDeath;
+        }
+        
+        // Unsubscribe from game state changes
+        GameEvents.OnGameStateChanged -= OnGameStateChanged;
+    }
+    
+    private void OnGameStateChanged(GameState.GameStates newState)
+    {
+        // Hide vignette when leaving the Results screen
+        if (newState != GameState.GameStates.Results && vignetteSprite != null)
+        {
+            HideVignette();
+        }
+    }
+    
+    private void HideVignette()
+    {
+        if (vignetteSprite != null)
+        {
+            Color vignetteColor = vignetteSprite.color;
+            vignetteColor.a = 0f;
+            vignetteSprite.color = vignetteColor;
+            
+            // Optionally disable the GameObject to ensure it's hidden
+            if (vignetteSprite.gameObject != null)
+            {
+                vignetteSprite.gameObject.SetActive(false);
+            }
+            
+            if (debug) Debug.Log("[PlayerDeathCamera] Vignette hidden");
         }
     }
     
@@ -141,6 +196,11 @@ public class PlayerDeathCamera : MonoBehaviour
             {
                 FindActiveCamera();
                 StoreOriginalCameraValues();
+            }
+            else
+            {
+                // Update camera position in case it moved
+                originalCameraPosition = targetCamera.transform.position;
             }
             
             if (targetCamera == null)
@@ -168,9 +228,10 @@ public class PlayerDeathCamera : MonoBehaviour
             yield return new WaitForSecondsRealtime(startDelay);
         }
         
-        // Start both effects simultaneously
+        // Start all effects simultaneously
         Coroutine zoomCoroutine = null;
         Coroutine timeCoroutine = null;
+        Coroutine vignetteCoroutine = null;
         
         if (targetCamera != null)
         {
@@ -182,13 +243,27 @@ public class PlayerDeathCamera : MonoBehaviour
             if (debug) Debug.LogWarning("[PlayerDeathCamera] No camera found, skipping zoom");
         }
         
+        if (vignetteSprite != null)
+        {
+            if (debug) Debug.Log("[PlayerDeathCamera] Starting vignette fade-in coroutine");
+            vignetteCoroutine = StartCoroutine(FadeInVignette());
+        }
+        else
+        {
+            if (debug) Debug.LogWarning("[PlayerDeathCamera] No vignette sprite found, skipping vignette effect");
+        }
+        
         if (debug) Debug.Log("[PlayerDeathCamera] Starting time slowdown coroutine");
         timeCoroutine = StartCoroutine(SlowTime());
         
-        // Wait for both coroutines to complete
+        // Wait for all coroutines to complete
         if (zoomCoroutine != null)
         {
             yield return zoomCoroutine;
+        }
+        if (vignetteCoroutine != null)
+        {
+            yield return vignetteCoroutine;
         }
         if (timeCoroutine != null)
         {
@@ -259,6 +334,39 @@ public class PlayerDeathCamera : MonoBehaviour
         float startSize = isOrthographic ? targetCamera.orthographicSize : targetCamera.fieldOfView;
         float targetSize = startSize * zoomAmount;
         
+        // Store camera position and calculate target position (centered on player)
+        Vector3 startPosition = targetCamera.transform.position;
+        Vector3 targetPosition = startPosition;
+        
+        if (centerOnPlayer && playerObject != null)
+        {
+            // Calculate position to center player on screen
+            // For orthographic: position camera so player is at center
+            // For perspective: position camera so player is at center of view
+            Vector3 playerPosition = playerObject.transform.position;
+            
+            // Keep the camera's Z position (depth) but center X and Y on player
+            if (isOrthographic)
+            {
+                targetPosition = new Vector3(playerPosition.x, playerPosition.y, startPosition.z);
+            }
+            else
+            {
+                // For perspective cameras, we need to account for the camera's forward direction
+                // Calculate offset to center player in view
+                Vector3 cameraForward = targetCamera.transform.forward;
+                float distanceToPlayer = Vector3.Distance(startPosition, playerPosition);
+                targetPosition = playerPosition - cameraForward * distanceToPlayer;
+                // Preserve original Z if it's a 2D setup
+                if (Mathf.Approximately(startPosition.z, playerPosition.z))
+                {
+                    targetPosition.z = startPosition.z;
+                }
+            }
+            
+            if (debug) Debug.Log($"[PlayerDeathCamera] Centering camera on player: {startPosition} -> {targetPosition}");
+        }
+        
         if (debug) Debug.Log($"[PlayerDeathCamera] Starting zoom from {startSize} to {targetSize} (camera: {targetCamera.name})");
         
         float elapsed = 0f;
@@ -276,6 +384,7 @@ public class PlayerDeathCamera : MonoBehaviour
             // Smooth easing curve (ease-in-out)
             t = t * t * (3f - 2f * t);
             
+            // Apply zoom
             if (isOrthographic)
             {
                 targetCamera.orthographicSize = Mathf.Lerp(startSize, targetSize, t);
@@ -285,10 +394,16 @@ public class PlayerDeathCamera : MonoBehaviour
                 targetCamera.fieldOfView = Mathf.Lerp(startSize, targetSize, t);
             }
             
+            // Apply camera position centering
+            if (centerOnPlayer)
+            {
+                targetCamera.transform.position = Vector3.Lerp(startPosition, targetPosition, t);
+            }
+            
             yield return null;
         }
         
-        // Ensure we reach the target value
+        // Ensure we reach the target values
         if (targetCamera != null && targetCamera.gameObject.activeInHierarchy)
         {
             if (isOrthographic)
@@ -298,6 +413,11 @@ public class PlayerDeathCamera : MonoBehaviour
             else
             {
                 targetCamera.fieldOfView = targetSize;
+            }
+            
+            if (centerOnPlayer)
+            {
+                targetCamera.transform.position = targetPosition;
             }
         }
     }
@@ -328,6 +448,59 @@ public class PlayerDeathCamera : MonoBehaviour
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
     }
     
+    private IEnumerator FadeInVignette()
+    {
+        if (vignetteSprite == null)
+        {
+            if (debug) Debug.LogWarning("[PlayerDeathCamera] Vignette sprite is null, cannot fade in");
+            yield break;
+        }
+        
+        // Ensure vignette GameObject is active
+        if (!vignetteSprite.gameObject.activeInHierarchy)
+        {
+            if (debug) Debug.Log("[PlayerDeathCamera] Activating vignette GameObject");
+            vignetteSprite.gameObject.SetActive(true);
+        }
+        
+        // Ensure vignette Image component is enabled
+        vignetteSprite.enabled = true;
+        
+        Color vignetteColor = vignetteSprite.color;
+        float startAlpha = vignetteColor.a;
+        float targetAlpha = vignetteMaxAlpha;
+        
+        if (debug) Debug.Log($"[PlayerDeathCamera] Starting vignette fade-in from {startAlpha} to {targetAlpha}. GameObject active: {vignetteSprite.gameObject.activeInHierarchy}, Image enabled: {vignetteSprite.enabled}");
+        
+        float elapsed = 0f;
+        while (elapsed < zoomDuration)
+        {
+            if (vignetteSprite == null || !vignetteSprite.gameObject.activeInHierarchy)
+            {
+                if (debug) Debug.LogWarning("[PlayerDeathCamera] Vignette sprite became null/inactive during fade");
+                yield break;
+            }
+            
+            elapsed += Time.unscaledDeltaTime; // Use unscaled time so fade continues even when time is slowed
+            float t = elapsed / zoomDuration;
+            
+            // Smooth easing curve (ease-in-out)
+            t = t * t * (3f - 2f * t);
+            
+            vignetteColor.a = Mathf.Lerp(startAlpha, targetAlpha, t);
+            vignetteSprite.color = vignetteColor;
+            
+            yield return null;
+        }
+        
+        // Ensure we reach the target alpha
+        if (vignetteSprite != null && vignetteSprite.gameObject.activeInHierarchy)
+        {
+            vignetteColor.a = targetAlpha;
+            vignetteSprite.color = vignetteColor;
+        }
+    }
+    
     // Public method to reset camera and time (useful for respawn)
     public void ResetDeathCamera()
     {
@@ -341,7 +514,13 @@ public class PlayerDeathCamera : MonoBehaviour
             {
                 targetCamera.fieldOfView = originalFieldOfView;
             }
+            
+            // Reset camera position
+            targetCamera.transform.position = originalCameraPosition;
         }
+        
+        // Reset vignette - hide it completely
+        HideVignette();
         
         Time.timeScale = 1f;
         Time.fixedDeltaTime = 0.02f;

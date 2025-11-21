@@ -116,8 +116,7 @@ public class ResultsScreenUI : MonoBehaviour
             if (enemiesText != null) { enemiesText.text = $"Enemies Killed: {targetEnemies}"; }
             if (creditsText != null) 
             { 
-                string spriteTag = scrapSprite != null ? $"<sprite name=\"{scrapSprite.name}\">" : "";
-                creditsText.text = $"{spriteTag} Scrap Collected: {targetCredits}"; 
+                creditsText.text = $": {targetCredits}"; 
             }
         }
 
@@ -134,8 +133,7 @@ public class ResultsScreenUI : MonoBehaviour
             
         if (creditsText != null)
         {
-            string spriteTag = scrapSprite != null ? $"<sprite name=\"{scrapSprite.name}\">" : "";
-            creditsText.text = $"{spriteTag} Scrap Collected: 0";
+            creditsText.text = "Scrap Collected: 0";
         }
     }
 

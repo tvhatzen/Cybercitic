@@ -69,6 +69,29 @@ public class UpgradeShopUI : MonoBehaviour
 
     #endregion
 
+    private string GetSpriteTag(TextMeshProUGUI textComponent)
+    {
+        if (scrapSprite == null || textComponent == null)
+            return "";
+
+        // Try to find the sprite in the TMP sprite asset
+        TMP_SpriteAsset spriteAsset = textComponent.spriteAsset;
+        if (spriteAsset != null && spriteAsset.spriteInfoList != null)
+        {
+            for (int i = 0; i < spriteAsset.spriteInfoList.Count; i++)
+            {
+                var spriteInfo = spriteAsset.spriteInfoList[i];
+                if (spriteInfo.name == scrapSprite.name)
+                {
+                    return $"<sprite index={i} voffset=0.3>";
+                }
+            }
+        }
+
+        // Fallback: try using the sprite name (requires sprite to be in asset)
+        return $"<sprite name=\"{scrapSprite.name}\" voffset=0.3>";
+    }
+
     private void Awake()
     {
         // button dictionary
@@ -285,9 +308,7 @@ public class UpgradeShopUI : MonoBehaviour
         }
         else if (canAfford && canUpgrade) // can purchase
         {
-            string spriteTag = scrapSprite != null ? $"<sprite name=\"{scrapSprite.name}\">" : "";
-            // set position offset
-            purchaseButtonText.text = $"{spriteTag} PURCHASE: {cost}";
+            purchaseButtonText.text = $"PURCHASE: {cost}";
             purchaseButtonText.color = canPurchaseColor;
             if (buttonImage != null)
                 buttonImage.color = canPurchaseColor;
@@ -303,9 +324,7 @@ public class UpgradeShopUI : MonoBehaviour
         }
         else // can't afford
         {
-            string spriteTag = scrapSprite != null ? $"<sprite name=\"{scrapSprite.name}\">" : "";
-            // set position offset
-            purchaseButtonText.text = $"{spriteTag} NEEDED: {cost}";
+            purchaseButtonText.text = $"NEEDED: {cost}";
             purchaseButtonText.color = cannotAffordColor;
             if (buttonImage != null)
                 buttonImage.color = cannotAffordColor;
@@ -373,8 +392,7 @@ public class UpgradeShopUI : MonoBehaviour
     {
         if (scrapText != null)
         {
-            string spriteTag = scrapSprite != null ? $"<sprite name=\"{scrapSprite.name}\">" : "";
-            scrapText.text = $"{spriteTag}: {scrap}";
+            scrapText.text = $"{scrap}";
         }
         
         // update purchase button when credits change
