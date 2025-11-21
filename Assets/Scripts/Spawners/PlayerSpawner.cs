@@ -50,7 +50,8 @@ public class PlayerSpawner : SpawnerBase
         playerGO.SetActive(true);
 
         ResetPlayerState(playerGO, context);
-        ResetCombat();
+        // Note: ResetCombat() is now called by FloorManager after enemies are spawned
+        // to ensure enemies exist when combat is enabled
 
         yield return null;
 
@@ -112,6 +113,14 @@ public class PlayerSpawner : SpawnerBase
 
     protected override float DefaultCombatEnableDelay => 0.5f;
 
+    protected override IEnumerator ForceEnableCombatAfterDelay(float delay)
+    {
+        DebugLog($"[PlayerSpawner] Starting combat enable delay: {delay} seconds");
+        yield return new WaitForSeconds(delay);
+        DebugLog("[PlayerSpawner] Delay complete, enabling combat...");
+        EnableCombatImmediate();
+    }
+
     protected override void DisableCombatants()
     {
         int enemiesDisabled = ApplyCombatAction("Enemy", (enemy, combat) =>
@@ -131,18 +140,97 @@ public class PlayerSpawner : SpawnerBase
 
     protected override void EnableCombatImmediate()
     {
+        Debug.Log("[PlayerSpawner] EnableCombatImmediate called");
+        
+        // Count enemies before trying to enable
+        GameObject[] allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
+        GameObject[] allBosses = GameObject.FindGameObjectsWithTag("Boss");
+        Debug.Log($"[PlayerSpawner] Found {allEnemies.Length} enemies and {allBosses.Length} bosses with tags");
+        
         int enemiesEnabled = ApplyCombatAction("Enemy", (enemy, combat) =>
         {
-            combat.ForceEnableCombat();
+            Debug.Log($"[PlayerSpawner] Attempting to enable combat for enemy: {enemy.name}");
+            try
+            {
+                combat.ForceEnableCombat();
+                Debug.Log($"[PlayerSpawner] Successfully called ForceEnableCombat for enemy: {enemy.name}");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"[PlayerSpawner] ForceEnableCombat failed for {enemy.name}: {e.Message}");
+            }
             DebugLog($"[PlayerSpawner] Force enabled combat for enemy: {enemy.name}");
         });
 
         int bossesEnabled = ApplyCombatAction("Boss", (boss, combat) =>
         {
-            combat.ForceEnableCombat();
+            Debug.Log($"[PlayerSpawner] Attempting to enable combat for boss: {boss.name}");
+            try
+            {
+                combat.ForceEnableCombat();
+                Debug.Log($"[PlayerSpawner] Successfully called ForceEnableCombat for boss: {boss.name}");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"[PlayerSpawner] ForceEnableCombat failed for {boss.name}: {e.Message}");
+            }
             DebugLog($"[PlayerSpawner] Force enabled combat for boss: {boss.name}");
         });
 
-        DebugLog($"[PlayerSpawner] Force enabled combat for {enemiesEnabled} enemies and {bossesEnabled} bosses");
+        Debug.Log($"[PlayerSpawner] Force enabled combat for {enemiesEnabled} enemies and {bossesEnabled} bosses");
+        
+        // If no enemies were found, retry after a short delay (enemies might not be loaded yet)
+        if (enemiesEnabled == 0 && bossesEnabled == 0 && floorManager != null)
+        {
+            Debug.Log("[PlayerSpawner] No enemies found, retrying combat enable after delay...");
+            floorManager.StartCoroutine(RetryEnableCombat());
+        }
+    }
+    
+    private IEnumerator RetryEnableCombat()
+    {
+        const int maxRetries = 10;
+        const float retryDelay = 0.2f;
+        
+        for (int i = 0; i < maxRetries; i++)
+        {
+            yield return new WaitForSeconds(retryDelay);
+            
+            int enemiesEnabled = ApplyCombatAction("Enemy", (enemy, combat) =>
+            {
+                try
+                {
+                    combat.ForceEnableCombat();
+                    Debug.Log($"[PlayerSpawner] Retry {i + 1}: Successfully called ForceEnableCombat for enemy: {enemy.name}");
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"[PlayerSpawner] Retry {i + 1}: ForceEnableCombat failed for {enemy.name}: {e.Message}");
+                }
+                DebugLog($"[PlayerSpawner] Retry {i + 1}: Force enabled combat for enemy: {enemy.name}");
+            });
+
+            int bossesEnabled = ApplyCombatAction("Boss", (boss, combat) =>
+            {
+                try
+                {
+                    combat.ForceEnableCombat();
+                    Debug.Log($"[PlayerSpawner] Retry {i + 1}: Successfully called ForceEnableCombat for boss: {boss.name}");
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"[PlayerSpawner] Retry {i + 1}: ForceEnableCombat failed for {boss.name}: {e.Message}");
+                }
+                DebugLog($"[PlayerSpawner] Retry {i + 1}: Force enabled combat for boss: {boss.name}");
+            });
+            
+            if (enemiesEnabled > 0 || bossesEnabled > 0)
+            {
+                DebugLog($"[PlayerSpawner] Successfully enabled combat on retry {i + 1}: {enemiesEnabled} enemies, {bossesEnabled} bosses");
+                yield break;
+            }
+        }
+        
+        DebugLog($"[PlayerSpawner] Failed to enable combat after {maxRetries} retries");
     }
 }

@@ -17,6 +17,7 @@ public class SceneLoader : SingletonBase<SceneLoader>
     private bool isTransitioning = false;
     private RectTransform transitionRectTransform;
     private static SceneLoader instance;
+    private Vector2 originalImageSize;
     
     protected override void Awake()
     {
@@ -27,10 +28,28 @@ public class SceneLoader : SingletonBase<SceneLoader>
         {
             transitionRectTransform = transitionImage.GetComponent<RectTransform>();
 
-            // start with transition image off-screen
-            if (transitionRectTransform != null)
+            // Preserve the original sprite/texture resolution
+            if (transitionImage != null && transitionRectTransform != null)
             {
-                transitionRectTransform.anchoredPosition = new Vector2(-Screen.width, 0);
+                if (transitionImage.sprite != null)
+                {
+                    // Use the sprite's native size
+                    originalImageSize = transitionImage.sprite.rect.size;
+                    transitionRectTransform.sizeDelta = originalImageSize;
+                    if (debug) Debug.Log($"[SceneLoader] Preserved transition image resolution: {originalImageSize}");
+                }
+                else if (transitionImage.mainTexture != null)
+                {
+                    // Fallback to texture size if no sprite
+                    originalImageSize = new Vector2(transitionImage.mainTexture.width, transitionImage.mainTexture.height);
+                    transitionRectTransform.sizeDelta = originalImageSize;
+                    if (debug) Debug.Log($"[SceneLoader] Preserved transition image resolution from texture: {originalImageSize}");
+                }
+
+                // start with transition image off-screen to the left
+                // Account for image width (anchoredPosition is center, so subtract half width)
+                float offScreenLeft = -Screen.width - (originalImageSize.x / 2f);
+                transitionRectTransform.anchoredPosition = new Vector2(offScreenLeft, 0);
             }
             
             if (debug) Debug.Log("[SceneLoader] Singleton instance created and initialized");
@@ -118,15 +137,19 @@ public class SceneLoader : SingletonBase<SceneLoader>
         if (slideIn)
         {
             // Start off-screen left, slide to center *** (change to up/down)
-            startPosition = new Vector2(-Screen.width, 0);
+            // Account for image width (anchoredPosition is center, so subtract half width)
+            float offScreenLeft = -Screen.width - (originalImageSize.x / 2f);
+            startPosition = new Vector2(offScreenLeft, 0);
             endPosition = Vector2.zero;
             if (debug) Debug.Log("[SceneLoader] Starting slide-in animation");
         }
         else
         {
             // Start at center, slide off-screen right
+            // Move far enough right to account for image width (anchoredPosition is center, so add half width)
             startPosition = Vector2.zero;
-            endPosition = new Vector2(Screen.width, 0);
+            float offScreenRight = Screen.width + (originalImageSize.x / 2f);
+            endPosition = new Vector2(offScreenRight, 0);
             if (debug) Debug.Log("[SceneLoader] Starting slide-out animation");
         }
         

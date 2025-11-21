@@ -463,7 +463,7 @@ MonoBehaviour:
   tier1Sprite: {fileID: 21300000, guid: 34b573b03234705469ec9bfa66fd8c17, type: 3}
   tier2Sprite: {fileID: 21300000, guid: ae99d5c2da1937046be666004194c888, type: 3}
   tier3Sprite: {fileID: 21300000, guid: 9bef8e370830e7f47a4e47c9988b4545, type: 3}
-  debug: 1
+  debug: 0
 --- !u!1 &5529376648108772861
 GameObject:
   m_ObjectHideFlags: 0

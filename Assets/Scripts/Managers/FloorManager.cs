@@ -104,6 +104,9 @@ public class FloorManager : SingletonBase<FloorManager>
             FloorSpawnContext context = BuildSpawnContext();
             playerSpawner.Spawn(context);
             SpawnEnemies(context);
+            
+            // Enable combat after enemies are spawned (ensures enemies exist when combat is enabled)
+            StartCoroutine(EnableCombatAfterEnemySpawn());
         }
     }
 
@@ -116,6 +119,9 @@ public class FloorManager : SingletonBase<FloorManager>
         playerSpawner.Spawn(context);
 
         SpawnEnemies(context);
+        
+        // Enable combat after enemies are spawned (ensures enemies exist when combat is enabled)
+        StartCoroutine(EnableCombatAfterEnemySpawn());
 
         // ensure background music updates when progressing floors within the same scene
         floorMusicManager.PlayForFloor(CurrentFloor);
@@ -216,6 +222,10 @@ public class FloorManager : SingletonBase<FloorManager>
         playerSpawner.Spawn(context);
         SpawnEnemies(context);
         
+        // Enable combat after enemies are spawned (ensures enemies exist when combat is enabled)
+        // Wait a frame to ensure all enemies are fully instantiated
+        StartCoroutine(EnableCombatAfterEnemySpawn());
+        
         // Check for NextLevelTrigger after spawning
         triggers = FindObjectsByType<trigger>(FindObjectsSortMode.None);
         if (debug) Debug.Log($"[FloorManager] After spawning - Found {triggers.Length} trigger(s) in scene {scene.name}");
@@ -240,6 +250,51 @@ public class FloorManager : SingletonBase<FloorManager>
         {
             Debug.LogWarning("[FloorManager] SpawnManager.Instance is null! Cannot spawn enemies.");
         }
+    }
+    
+    private IEnumerator EnableCombatAfterEnemySpawn()
+    {
+        // Wait a frame to ensure all enemies are fully instantiated and active
+        yield return null;
+        yield return null;
+        
+        Debug.Log("[FloorManager] Enabling combat after enemy spawn");
+        
+        // Count enemies before enabling combat
+        GameObject[] enemiesBefore = GameObject.FindGameObjectsWithTag("Enemy");
+        GameObject[] bossesBefore = GameObject.FindGameObjectsWithTag("Boss");
+        Debug.Log($"[FloorManager] Found {enemiesBefore.Length} enemies and {bossesBefore.Length} bosses before enabling combat");
+        
+        playerSpawner.ResetCombat();
+        
+        // Verify combat was enabled
+        yield return new WaitForSeconds(0.6f); // Wait for the delay + a bit more
+        GameObject[] enemiesAfter = GameObject.FindGameObjectsWithTag("Enemy");
+        Debug.Log($"[FloorManager] After ResetCombat: Found {enemiesAfter.Length} enemies in scene");
+        
+        // Check if enemies have EnemyCombat component
+        foreach (GameObject enemy in enemiesAfter)
+        {
+            var combat = enemy.GetComponent<EnemyCombat>();
+            if (combat != null)
+            {
+                Debug.Log($"[FloorManager] Enemy {enemy.name} has EnemyCombat component");
+            }
+            else
+            {
+                Debug.LogWarning($"[FloorManager] Enemy {enemy.name} does NOT have EnemyCombat component!");
+            }
+        }
+        
+        // Check again after a longer delay to see if they're still enabled
+        yield return new WaitForSeconds(1f);
+        Debug.Log($"[FloorManager] Checking enemy combat state again after additional delay...");
+        GameObject[] enemiesLater = GameObject.FindGameObjectsWithTag("Enemy");
+        Debug.Log($"[FloorManager] Found {enemiesLater.Length} enemies after additional delay");
+        
+        // Try to enable combat one more time to ensure it's enabled
+        Debug.Log("[FloorManager] Force enabling combat one more time to ensure it's active...");
+        playerSpawner.ResetCombat(0f); // Enable immediately without delay
     }
 
     public void SetBossFloorInterval(int interval) { bossFloorInterval = interval; }

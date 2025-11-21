@@ -215,6 +215,41 @@ public class PlayerDeathCamera : MonoBehaviour
         }
     }
     
+    // Public method to trigger death camera effect (for boss defeat on final floor)
+    public void TriggerDeathCameraEffect()
+    {
+        if (effectActive)
+        {
+            if (debug) Debug.LogWarning("[PlayerDeathCamera] Effect already active, ignoring trigger");
+            return;
+        }
+        
+        // Set flag immediately
+        isHandlingDeathTransition = true;
+        
+        // Find camera again in case it changed
+        if (targetCamera == null || !targetCamera.gameObject.activeInHierarchy)
+        {
+            FindActiveCamera();
+            StoreOriginalCameraValues();
+        }
+        else
+        {
+            // Update camera position in case it moved
+            originalCameraPosition = targetCamera.transform.position;
+        }
+        
+        if (targetCamera == null)
+        {
+            if (debug) Debug.LogError("[PlayerDeathCamera] Cannot start effect - no camera found!");
+            isHandlingDeathTransition = false;
+            return;
+        }
+        
+        if (debug) Debug.Log("[PlayerDeathCamera] Triggering death camera effect for final boss defeat");
+        StartCoroutine(DeathCameraEffect());
+    }
+    
     private IEnumerator DeathCameraEffect()
     {
         effectActive = true;

@@ -63,16 +63,28 @@ public abstract class SpawnerBase
             return 0;
 
         GameObject[] combatants = GameObject.FindGameObjectsWithTag(tag);
+        Debug.Log($"[SpawnerBase] ApplyCombatAction for tag '{tag}': Found {combatants.Length} objects with this tag");
+        
         int affected = 0;
+        int missingComponent = 0;
 
         foreach (GameObject combatant in combatants)
         {
             EnemyCombat enemyCombat = combatant.GetComponent<EnemyCombat>();
             if (enemyCombat == null)
+            {
+                missingComponent++;
+                Debug.LogWarning($"[SpawnerBase] {combatant.name} has tag '{tag}' but no EnemyCombat component!");
                 continue;
+            }
 
             action(combatant, enemyCombat);
             affected++;
+        }
+        
+        if (missingComponent > 0)
+        {
+            Debug.LogWarning($"[SpawnerBase] {missingComponent} objects with tag '{tag}' were skipped due to missing EnemyCombat component");
         }
 
         return affected;

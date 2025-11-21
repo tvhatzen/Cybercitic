@@ -2383,7 +2383,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4451793912747890822, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 4451793912747890822, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: m_LocalRotation.x
@@ -2391,7 +2391,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4451793912747890822, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 4451793912747890822, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: m_LocalRotation.z
@@ -2399,7 +2399,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4451793912747890822, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 5033096746197110924, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2698,7 +2698,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  debug: 0
+  debug: 1
 --- !u!1 &968809784 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8080904249325530013, guid: daa8428dff4e7d44b87a0a3a6db1d8e7, type: 3}
@@ -5090,7 +5090,7 @@ MonoBehaviour:
   bossFloorInterval: 5
   isFinalFloor: 0
   isRunning: 0
-  debug: 0
+  debug: 1
   _floorProgressBar: {fileID: 1581502389}
 --- !u!114 &1849688762 stripped
 MonoBehaviour:

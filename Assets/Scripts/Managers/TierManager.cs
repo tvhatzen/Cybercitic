@@ -40,6 +40,22 @@ public class TierManager : SingletonBase<TierManager>
         // check for boss
         if (entity != null && entity.CompareTag("Boss"))
         {
+            // Check if this is the final floor (floor 15) boss
+            if (FloorManager.Instance != null && FloorManager.Instance.IsFinalFloor())
+            {
+                // Trigger death camera effect for final boss defeat
+                PlayerDeathCamera deathCamera = FindFirstObjectByType<PlayerDeathCamera>();
+                if (deathCamera != null)
+                {
+                    if (debug) Debug.Log("[TierManager] Final boss defeated on floor 15, triggering death camera effect");
+                    deathCamera.TriggerDeathCameraEffect();
+                }
+                else
+                {
+                    if (debug) Debug.LogWarning("[TierManager] Final boss defeated but PlayerDeathCamera not found");
+                }
+            }
+            
             IncrementTier();
         }
     }

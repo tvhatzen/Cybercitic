@@ -201,8 +201,20 @@ public class Skill : ScriptableObject
             Vector3 playerPos = PlayerInstance.Instance.transform.position;
             Vector3 playerForward = PlayerInstance.Instance.transform.forward;
             
+            // WORKAROUND: If this is a PiercingShot, apply ONLY 90 degrees rotation on Y axis
+            Quaternion effectRotation;
+            if (skillName == "Piercing Shot" || this.GetType().Name == "PiercingShot")
+            {
+                effectRotation = Quaternion.Euler(0, 90, 0);
+                Debug.Log($"[Skill] {skillName} - Using 90° Y rotation for PiercingShot (type: {this.GetType().Name})");
+            }
+            else
+            {
+                effectRotation = Quaternion.LookRotation(playerForward);
+            }
+            
             // Instantiate particle effect
-            ParticleSystem effect = Instantiate(skillEffect, playerPos, Quaternion.LookRotation(playerForward));
+            ParticleSystem effect = Instantiate(skillEffect, playerPos, effectRotation);
             effect.Play();
             
             if(debug) Debug.Log($"[Skill] {skillName} particle effect started");
