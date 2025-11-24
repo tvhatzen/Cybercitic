@@ -310,3 +310,6 @@ public class SkillButton : MonoBehaviour
     public void ShowTooltip() => toolTip.SetActive(true);
     public void HideTooltip() => toolTip.SetActive(false);
 }
+
+// when casting and showing cooldown text,
+// instead have cooldown overlay scale like its going from foll to gone

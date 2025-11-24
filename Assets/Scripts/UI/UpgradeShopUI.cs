@@ -324,7 +324,7 @@ public class UpgradeShopUI : MonoBehaviour
         }
         else // can't afford
         {
-            purchaseButtonText.text = $"NEEDED: {cost}";
+            purchaseButtonText.text = $"COST: {cost}";
             purchaseButtonText.color = cannotAffordColor;
             if (buttonImage != null)
                 buttonImage.color = cannotAffordColor;
