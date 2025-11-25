@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Game.Skills;
 
 public class BossLoot : EnemyLoot
 {

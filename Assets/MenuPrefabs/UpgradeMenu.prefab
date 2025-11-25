@@ -1015,7 +1015,7 @@ MonoBehaviour:
   - {fileID: 4552641440010361308}
   - {fileID: 1662524787322287176}
   - {fileID: 8053224164009408090}
-  debug: 1
+  debug: 0
 --- !u!1 &2629371304990745828
 GameObject:
   m_ObjectHideFlags: 0
@@ -1722,7 +1722,7 @@ MonoBehaviour:
   - {fileID: 8196461449524955778}
   - {fileID: 3769149635074146673}
   - {fileID: 6761219527021391839}
-  debug: 1
+  debug: 0
 --- !u!1 &4853650430040517506
 GameObject:
   m_ObjectHideFlags: 0
@@ -2503,7 +2503,7 @@ MonoBehaviour:
   canPurchaseColor: {r: 0, g: 1, b: 0, a: 1}
   cannotAffordColor: {r: 1, g: 0, b: 0, a: 1}
   maxLevelColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  debug: 1
+  debug: 0
 --- !u!1 &6037972455042014278
 GameObject:
   m_ObjectHideFlags: 0
@@ -3325,7 +3325,7 @@ MonoBehaviour:
   detailsPanel: {fileID: 5361700416725473830}
   upgradeButtons: []
   equippedDisplays: []
-  debug: 1
+  debug: 0
 --- !u!1 &8080904249325530013
 GameObject:
   m_ObjectHideFlags: 0

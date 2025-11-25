@@ -1,359 +1,289 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using Game.Skills;
 
-[CreateAssetMenu(fileName = "Shield", menuName = "Scriptable Objects/Skills/Shield")]
-public class Shield : Skill
+namespace Game.Skills
 {
-    [Header("Shield Specific")]
-    [SerializeField] private float damageReduction = 0.5f; // 50% damage reduction
-    [SerializeField] private float shieldDuration = 8f; // How long the shield lasts
-    public GameObject shieldPrefab; // Shield GameObject with ShieldAnim component
-    [SerializeField] private Vector3 shieldScale = Vector3.one; // Scale of the shield sprite (adjust to resize)
+    [CreateAssetMenu(fileName = "Shield", menuName = "Scriptable Objects/Skills/Shield")]
+    public class Shield : Skill, ISkillEffect
+    {
+        [Header("Shield Specific")]
+        [SerializeField] private float damageReduction = 0.5f; // 50% damage reduction
+        [SerializeField] private float shieldDuration = 8f; // How long the shield lasts
+        public GameObject shieldPrefab; // Shield GameObject with ShieldAnim component
+        [SerializeField] private Vector3 shieldScale = Vector3.one; // Scale of the shield sprite 
 
-    private bool isShieldActive = false;
-    private float originalDefense = 0f;
-    private EntityData playerEntityData;
-    private bool hasOriginalDefenseBeenSaved = false;
-    private HealthSystem playerHealthSystem;
-    private ShieldAnim currentShieldAnim; // Reference to the active shield animation
+        // Static dictionary to track shield state per instance 
+        private static Dictionary<SkillInstance, ShieldState> shieldStates = new Dictionary<SkillInstance, ShieldState>();
 
-    protected override void ApplySkillEffects()
-    {
-        // Log immediately to verify this method is being called
-        Debug.LogError("[Shield] ===== SHIELD ApplySkillEffects() OVERRIDE CALLED =====");
-        
-        try
+        private class ShieldState
         {
-            
-            // Play sound effect
-            if (skillSound != null && AudioManager.Instance != null)
-            {
-                AudioManager.Instance.PlaySound(skillSound);
-            }
-            
-            // Always log this critical operation (debug flag may not work on ScriptableObjects)
-            Debug.Log($"[Shield] ApplySkillEffects called! Providing {damageReduction * 100}% damage reduction for {shieldDuration} seconds!");
-            
-            // Apply shield effect
-            ApplyShield();
-            
-            // Verify shield was applied - always check this
-            if (playerHealthSystem != null)
-            {
-                bool isImmune = playerHealthSystem.IsShieldImmune;
-                Debug.Log($"[Shield] Verification - playerHealthSystem.IsShieldImmune = {isImmune}");
-                if (!isImmune)
-                {
-                    Debug.LogError("[Shield] WARNING: Shield immunity was NOT set correctly!");
-                }
-            }
-            else
-            {
-                Debug.LogError("[Shield] ERROR: playerHealthSystem is NULL after ApplyShield()!");
-            }
+            public bool isShieldActive = false;
+            public float originalDefense = 0f;
+            public bool hasOriginalDefenseBeenSaved = false;
+            public MonoBehaviour playerEntityData;
+            public MonoBehaviour playerHealthSystem;
+            public ShieldAnim currentShieldAnim;
+            public Coroutine durationCoroutine;
         }
-        catch (System.Exception e)
+
+        public void ApplyEffects(SkillInstance instance, ISkillDependencies dependencies)
         {
-            Debug.LogError($"[Shield] EXCEPTION in ApplySkillEffects: {e.Message}\n{e.StackTrace}");
-        }
-    }
-    
-    // Override to prevent particle effects from showing (we use sprite animation instead)
-    protected override void PlaySkillParticleEffect()
-    {
-        // Do nothing - we use sprite frame animation instead of particles
-        if(debug) Debug.Log("[Shield] Skipping particle effect - using sprite animation instead");
-    }
-    
-    public void ApplyShield()
-    {
-        // Get player's components - always get fresh references
-        if (PlayerInstance.Instance != null)
-        {
-            // Always get fresh references to ensure we have the current player instance
-            // (in case player was respawned or recreated)
-            GameObject player = PlayerInstance.Instance.gameObject;
-            playerEntityData = player.GetComponent<EntityData>();
-            playerHealthSystem = player.GetComponent<HealthSystem>();
+            UnityEngine.Debug.LogError("[Shield] ===== SHIELD ApplyEffects() CALLED =====");
             
-            Debug.Log($"[Shield] Looking for HealthSystem on {player.name}...");
-            
-            // Set shield immunity FIRST - this is critical!
-            // Always log these critical operations (debug flag may not work on ScriptableObjects)
-            if (playerHealthSystem != null)
+            try
             {
-                playerHealthSystem.SetShieldImmunity(true);
-                isShieldActive = true;
-                Debug.Log($"[Shield] Player shield immunity enabled on {PlayerInstance.Instance.name} (HealthSystem found directly)");
+                UnityEngine.Debug.Log($"[Shield] ApplyEffects called! Providing {damageReduction * 100}% damage reduction for {shieldDuration} seconds!");
                 
-                // Double-check it was set
-                if (playerHealthSystem.IsShieldImmune)
+                // Get or create shield state for this instance
+                if (!shieldStates.ContainsKey(instance))
                 {
-                    Debug.Log($"[Shield] Confirmed: shieldImmunityActive is now TRUE");
+                    shieldStates[instance] = new ShieldState();
+                }
+                var state = shieldStates[instance];
+                
+                // Apply shield effect
+                ApplyShield(instance, dependencies, state);
+                
+                // Verify shield was applied
+                if (state.playerHealthSystem != null)
+                {
+                    var isImmuneProperty = state.playerHealthSystem.GetType().GetProperty("IsShieldImmune",
+                        System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                    if (isImmuneProperty != null)
+                    {
+                        bool isImmune = (bool)isImmuneProperty.GetValue(state.playerHealthSystem);
+                        UnityEngine.Debug.Log($"[Shield] Verification - playerHealthSystem.IsShieldImmune = {isImmune}");
+                        if (!isImmune)
+                        {
+                            UnityEngine.Debug.LogError("[Shield] WARNING: Shield immunity was NOT set correctly!");
+                        }
+                    }
                 }
                 else
                 {
-                    Debug.LogError($"[Shield] ERROR: SetShieldImmunity(true) was called but IsShieldImmune is still FALSE!");
+                    UnityEngine.Debug.LogError("[Shield] ERROR: playerHealthSystem is NULL after ApplyShield()!");
+                }
+            }
+            catch (System.Exception e)
+            {
+                UnityEngine.Debug.LogError($"[Shield] EXCEPTION in ApplyEffects: {e.Message}\n{e.StackTrace}");
+            }
+        }
+
+        public void CleanupEffects(SkillInstance instance, ISkillDependencies dependencies)
+        {
+            if (shieldStates.TryGetValue(instance, out var state))
+            {
+                RemoveShield(instance, dependencies, state);
+            }
+        }
+
+        public Quaternion GetEffectRotation(Vector3 playerForward, Quaternion defaultRotation)
+        {
+            // Shield doesn't need special rotation
+            return defaultRotation;
+        }
+    
+        private void ApplyShield(SkillInstance instance, ISkillDependencies dependencies, ShieldState state)
+        {
+            if (dependencies?.PlayerTransform == null)
+            {
+                if (Debug) UnityEngine.Debug.LogError("[Shield] PlayerInstance not found!");
+                return;
+            }
+
+            GameObject player = dependencies.PlayerTransform.gameObject;
+            
+            // Get EntityData and HealthSystem using reflection
+            var entityDataType = System.Type.GetType("EntityData") ?? System.Type.GetType("EntityData, Assembly-CSharp");
+            var healthSystemType = System.Type.GetType("HealthSystem") ?? System.Type.GetType("HealthSystem, Assembly-CSharp");
+            
+            if (entityDataType != null)
+            {
+                state.playerEntityData = player.GetComponent(entityDataType) as MonoBehaviour;
+            }
+            
+            if (healthSystemType != null)
+            {
+                state.playerHealthSystem = player.GetComponent(healthSystemType) as MonoBehaviour;
+                if (state.playerHealthSystem == null)
+                {
+                    state.playerHealthSystem = player.GetComponentInChildren(healthSystemType) as MonoBehaviour;
+                }
+            }
+            
+            UnityEngine.Debug.Log($"[Shield] Looking for HealthSystem on {player.name}...");
+            
+            // Set shield immunity
+            if (state.playerHealthSystem != null)
+            {
+                var setShieldMethod = state.playerHealthSystem.GetType().GetMethod("SetShieldImmunity",
+                    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                if (setShieldMethod != null)
+                {
+                    setShieldMethod.Invoke(state.playerHealthSystem, new object[] { true });
+                    state.isShieldActive = true;
+                    UnityEngine.Debug.Log($"[Shield] Player shield immunity enabled on {player.name}");
                 }
             }
             else
             {
-                // Try to find HealthSystem in children as fallback
-                playerHealthSystem = PlayerInstance.Instance.GetComponentInChildren<HealthSystem>();
-                if (playerHealthSystem != null)
-                {
-                    playerHealthSystem.SetShieldImmunity(true);
-                    isShieldActive = true;
-                    Debug.Log($"[Shield] Found HealthSystem in children, shield immunity enabled on {PlayerInstance.Instance.name}");
-                    
-                    // Double-check it was set
-                    if (playerHealthSystem.IsShieldImmune)
-                    {
-                        Debug.Log($"[Shield] Confirmed: shieldImmunityActive is now TRUE (found in children)");
-                    }
-                    else
-                    {
-                        Debug.LogError($"[Shield] ERROR: SetShieldImmunity(true) was called but IsShieldImmune is still FALSE!");
-                    }
-                }
-                else
-                {
-                    Debug.LogError($"[Shield] Player HealthSystem not found on {PlayerInstance.Instance.name} or its children! Shield immunity will not work!");
-                    Debug.LogError($"[Shield] PlayerInstance has {PlayerInstance.Instance.GetComponents<Component>().Length} components");
-                }
+                UnityEngine.Debug.LogError($"[Shield] Player HealthSystem not found on {player.name}!");
             }
             
             // Apply defense boost if EntityData exists
-            if (playerEntityData != null)
+            if (state.playerEntityData != null)
             {
-                // Store original defense value only once
-                if (!hasOriginalDefenseBeenSaved)
+                var currentDefenseProperty = state.playerEntityData.GetType().GetProperty("currentDefense",
+                    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                if (currentDefenseProperty != null)
                 {
-                    originalDefense = playerEntityData.currentDefense;
-                    hasOriginalDefenseBeenSaved = true;
-                    if(debug) Debug.Log($"[Shield] Original defense saved: {originalDefense:F2}");
+                    if (!state.hasOriginalDefenseBeenSaved)
+                    {
+                        state.originalDefense = (float)currentDefenseProperty.GetValue(state.playerEntityData);
+                        state.hasOriginalDefenseBeenSaved = true;
+                        if (Debug) UnityEngine.Debug.Log($"[Shield] Original defense saved: {state.originalDefense:F2}");
+                    }
+                    
+                    float shieldDefense = state.originalDefense + damageReduction;
+                    shieldDefense = Mathf.Clamp01(shieldDefense);
+                    currentDefenseProperty.SetValue(state.playerEntityData, shieldDefense);
+                    
+                    if (Debug) UnityEngine.Debug.Log($"[Shield] Applied shield! Defense: {state.originalDefense:F2} -> {shieldDefense:F2}");
                 }
-                
-                // Apply shield damage reduction by setting defense to our damage reduction value
-                float shieldDefense = originalDefense + damageReduction;
-                shieldDefense = Mathf.Clamp01(shieldDefense);
-                
-                playerEntityData.currentDefense = shieldDefense;
-                
-                if(debug) Debug.Log($"[Shield] Applied shield! Defense: {originalDefense:F2} -> {playerEntityData.currentDefense:F2} (Added {damageReduction * 100}% reduction)");
-            }
-            else
-            {
-                if(debug) Debug.LogWarning("[Shield] Player EntityData not found! Defense boost will not apply, but immunity should still work.");
             }
             
-            // Start shield duration timer
-            if (PlayerSkills.Instance != null)
-            {
-                PlayerSkills.Instance.StartCoroutine(ShieldDurationTimer());
-            }
+            // Start shield duration timer using SkillController (handled by SkillController's duration system)
+            // The SkillController will call CleanupEffects when duration expires
             
             // Create visual effect
-            CreateShieldEffect();
+            CreateShieldEffect(dependencies, state);
         }
-        else
-        {
-            if(debug) Debug.LogError("[Shield] PlayerInstance not found!");
-        }
-    }
     
-    private IEnumerator ShieldDurationTimer()
-    {
-        if(debug) Debug.Log($"[Shield] Shield duration timer started for {shieldDuration} seconds");
-        
-        yield return new WaitForSeconds(shieldDuration);
-        
-        // Remove shield effect
-        RemoveShield();
-    }
+        private void RemoveShield(SkillInstance instance, ISkillDependencies dependencies, ShieldState state)
+        {
+            if (!state.isShieldActive) return;
+            
+            // Stop coroutine if running
+            if (state.durationCoroutine != null && dependencies?.PlayerTransform != null)
+            {
+                var monoBehaviour = dependencies.PlayerTransform.GetComponent<MonoBehaviour>();
+                if (monoBehaviour != null)
+                {
+                    monoBehaviour.StopCoroutine(state.durationCoroutine);
+                }
+            }
+            
+            // Disable shield immunity
+            if (state.playerHealthSystem != null)
+            {
+                var setShieldMethod = state.playerHealthSystem.GetType().GetMethod("SetShieldImmunity",
+                    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                if (setShieldMethod != null)
+                {
+                    setShieldMethod.Invoke(state.playerHealthSystem, new object[] { false });
+                    if (Debug) UnityEngine.Debug.Log("[Shield] Player shield immunity disabled");
+                }
+            }
+            
+            // Restore original defense
+            if (state.playerEntityData != null && state.hasOriginalDefenseBeenSaved)
+            {
+                var currentDefenseProperty = state.playerEntityData.GetType().GetProperty("currentDefense",
+                    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                if (currentDefenseProperty != null)
+                {
+                    currentDefenseProperty.SetValue(state.playerEntityData, state.originalDefense);
+                    if (Debug) UnityEngine.Debug.Log($"[Shield] Shield expired! Defense restored to {state.originalDefense:F2}");
+                }
+            }
+            
+            state.isShieldActive = false;
+            state.hasOriginalDefenseBeenSaved = false;
+            
+            // Remove visual effect
+            RemoveShieldEffect(state);
+        }
     
-    private void RemoveShield()
-    {
-        if (!isShieldActive) return;
-        
-        // Always disable shield immunity first, regardless of other components
-        if (playerHealthSystem != null)
+        private void CreateShieldEffect(ISkillDependencies dependencies, ShieldState state)
         {
-            playerHealthSystem.SetShieldImmunity(false);
-            if (debug) Debug.Log("[Shield] Player shield immunity disabled");
-        }
-        else
-        {
-            if (debug) Debug.LogWarning("[Shield] Player HealthSystem not found when removing shield!");
-        }
-        
-        // Restore original defense value if EntityData exists
-        if (playerEntityData != null)
-        {
-            playerEntityData.currentDefense = originalDefense;
-            if(debug) Debug.Log($"[Shield] Shield expired! Defense restored to {originalDefense:F2}");
-        }
-        
-        isShieldActive = false;
-        
-        // Reset the flag so shield can be used again
-        hasOriginalDefenseBeenSaved = false;
-        
-        // Remove visual effect
-        RemoveShieldEffect();
-    }
-    
-    private void CreateShieldEffect()
-    {
-        if (PlayerInstance.Instance == null)
-        {
-            Debug.LogWarning("[Shield] PlayerInstance not found - cannot create shield effect");
-            return;
-        }
+            if (dependencies?.PlayerTransform == null)
+            {
+                UnityEngine.Debug.LogWarning("[Shield] PlayerInstance not found - cannot create shield effect");
+                return;
+            }
 
-        // Remove any existing shield animation first
-        if (currentShieldAnim != null)
-        {
-            currentShieldAnim.StopShieldAnimation();
-            // Destroy the old shield object
-            if (currentShieldAnim.gameObject != null)
+            // Remove any existing shield animation first
+            if (state.currentShieldAnim != null)
             {
-                Destroy(currentShieldAnim.gameObject);
+                state.currentShieldAnim.StopShieldAnimation();
+                if (state.currentShieldAnim.gameObject != null)
+                {
+                    Object.Destroy(state.currentShieldAnim.gameObject);
+                }
+                state.currentShieldAnim = null;
             }
-            currentShieldAnim = null;
-        }
 
-        if (shieldPrefab != null)
-        {
-            // Instantiate the shield prefab as a child of the player
-            GameObject shieldObj = Instantiate(shieldPrefab, PlayerInstance.Instance.transform);
-            shieldObj.name = "ShieldEffect"; // Use consistent name for easy finding
-            
-            // Handle RectTransform conversion if needed (UI to world space)
-            // Note: When parenting a RectTransform to a regular Transform, Unity handles it,
-            // but we ensure the SpriteRenderer works correctly for world space rendering
-            RectTransform rectTransform = shieldObj.GetComponent<RectTransform>();
-            if (rectTransform != null)
+            if (shieldPrefab != null)
             {
-                // Convert RectTransform size to scale if needed
-                // For world space sprites, we'll use the regular transform
-                // The RectTransform won't interfere with world space rendering
-            }
-            
-            // Reset transform to ensure proper positioning
-            shieldObj.transform.localPosition = Vector3.zero;
-            shieldObj.transform.localRotation = Quaternion.identity;
-            shieldObj.transform.localScale = shieldScale; // Apply custom scale
-            
-            // Ensure the GameObject is active
-            shieldObj.SetActive(true);
-            
-            // Get ShieldAnim component (should already be on the prefab)
-            currentShieldAnim = shieldObj.GetComponent<ShieldAnim>();
-            if (currentShieldAnim == null)
-            {
-                Debug.LogWarning("[Shield] ShieldAnim component not found on prefab, adding it");
-                currentShieldAnim = shieldObj.AddComponent<ShieldAnim>();
-            }
-            
-            // Ensure SpriteRenderer is properly configured for world space
-            SpriteRenderer spriteRenderer = shieldObj.GetComponent<SpriteRenderer>();
-            if (spriteRenderer == null)
-            {
-                spriteRenderer = shieldObj.AddComponent<SpriteRenderer>();
-            }
-            // Set sorting order so shield appears in front of player
-            spriteRenderer.sortingOrder = 10;
-            spriteRenderer.sortingLayerName = "Default";
-            
-            // Verify the sprite array is populated
-            if (currentShieldAnim.shieldAnim == null || currentShieldAnim.shieldAnim.Length == 0)
-            {
-                Debug.LogWarning("[Shield] ShieldAnim sprite array is empty! Make sure sprites are assigned in the prefab.");
+                GameObject shieldObj = Object.Instantiate(shieldPrefab, dependencies.PlayerTransform);
+                shieldObj.name = "ShieldEffect";
+                
+                shieldObj.transform.localPosition = Vector3.zero;
+                shieldObj.transform.localRotation = Quaternion.identity;
+                shieldObj.transform.localScale = shieldScale;
+                shieldObj.SetActive(true);
+                
+                state.currentShieldAnim = shieldObj.GetComponent<ShieldAnim>();
+                if (state.currentShieldAnim == null)
+                {
+                    UnityEngine.Debug.LogWarning("[Shield] ShieldAnim component not found on prefab, adding it");
+                    state.currentShieldAnim = shieldObj.AddComponent<ShieldAnim>();
+                }
+                
+                SpriteRenderer spriteRenderer = shieldObj.GetComponent<SpriteRenderer>();
+                if (spriteRenderer == null)
+                {
+                    spriteRenderer = shieldObj.AddComponent<SpriteRenderer>();
+                }
+                spriteRenderer.sortingOrder = 10;
+                spriteRenderer.sortingLayerName = "Default";
+                
+                if (state.currentShieldAnim.shieldAnim == null || state.currentShieldAnim.shieldAnim.Length == 0)
+                {
+                    UnityEngine.Debug.LogWarning("[Shield] ShieldAnim sprite array is empty!");
+                }
+                else
+                {
+                    state.currentShieldAnim.AnimateShield();
+                    UnityEngine.Debug.Log($"[Shield] Shield frame animation started with {state.currentShieldAnim.shieldAnim.Length} sprites");
+                }
             }
             else
             {
-                // Start the animation
-                currentShieldAnim.AnimateShield();
-                Debug.Log($"[Shield] Shield frame animation started with {currentShieldAnim.shieldAnim.Length} sprites");
+                UnityEngine.Debug.LogWarning("[Shield] Shield prefab is not assigned!");
             }
         }
-        else
-        {
-            Debug.LogWarning("[Shield] Shield prefab is not assigned in the ScriptableObject! Please assign the Shield prefab in the Inspector.");
-            
-            // Create a new GameObject with ShieldAnim component as fallback
-            GameObject shieldObj = new GameObject("ShieldEffect");
-            shieldObj.transform.SetParent(PlayerInstance.Instance.transform);
-            shieldObj.transform.localPosition = Vector3.zero;
-            shieldObj.transform.localRotation = Quaternion.identity;
-            shieldObj.transform.localScale = shieldScale; // Apply custom scale
-            
-            currentShieldAnim = shieldObj.AddComponent<ShieldAnim>();
-            Debug.LogWarning("[Shield] Created fallback Shield GameObject - sprites need to be assigned!");
-        }
-    }
     
-    private void RemoveShieldEffect()
-    {
-        // Stop the shield animation and destroy the GameObject
-        if (currentShieldAnim != null)
+        private void RemoveShieldEffect(ShieldState state)
         {
-            currentShieldAnim.StopShieldAnimation();
-            Debug.Log("[Shield] Shield animation stopped");
-            
-            // Always destroy the instantiated shield object
-            if (currentShieldAnim.gameObject != null)
+            if (state.currentShieldAnim != null)
             {
-                Destroy(currentShieldAnim.gameObject);
-                Debug.Log("[Shield] Shield GameObject destroyed");
-            }
-            
-            currentShieldAnim = null;
-        }
-        
-        // Fallback: Try to find and remove any shield effect by name
-        if (PlayerInstance.Instance != null)
-        {
-            Transform shieldEffectTransform = PlayerInstance.Instance.transform.Find("ShieldEffect");
-            if (shieldEffectTransform != null)
-            {
-                ShieldAnim anim = shieldEffectTransform.GetComponent<ShieldAnim>();
-                if (anim != null)
+                state.currentShieldAnim.StopShieldAnimation();
+                if (state.currentShieldAnim.gameObject != null)
                 {
-                    anim.StopShieldAnimation();
+                    Object.Destroy(state.currentShieldAnim.gameObject);
                 }
-                
-                Destroy(shieldEffectTransform.gameObject);
-                Debug.Log("[Shield] Shield visual effect removed (fallback cleanup)");
+                state.currentShieldAnim = null;
             }
         }
-    }
-    
-    // Override FinishSkill to ensure shield is removed when skill ends
-    protected override void FinishSkill()
-    {
-        // Remove shield if it's still active
-        if (isShieldActive)
+
+        public override SkillInstance CreateInstance(bool isUnlocked = false)
         {
-            RemoveShield();
+            var instance = base.CreateInstance(isUnlocked);
+            return instance;
         }
-        
-        base.FinishSkill();
-    }
-    
-    // Override ResetCooldown to ensure shield is removed when skill is reset
-    public override void ResetCooldown()
-    {
-        // Remove shield if it's still active
-        if (isShieldActive)
-        {
-            RemoveShield();
-        }
-        
-        // Reset the flag
-        hasOriginalDefenseBeenSaved = false;
-        
-        base.ResetCooldown();
     }
 }

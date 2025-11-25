@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Game.Skills;
 
 [System.Serializable]
 public class SkillButton : MonoBehaviour
@@ -21,6 +22,8 @@ public class SkillButton : MonoBehaviour
     [SerializeField] private Color castingColor = Color.yellow;
 
     private Skill assignedSkill;
+    private SkillInstance skillInstance;
+    private SkillManager skillManager;
     private int slotIndex;
 
     [Header("DEBUG")]
@@ -29,6 +32,9 @@ public class SkillButton : MonoBehaviour
     public void Initialize(int index)
     {
         slotIndex = index;
+        
+        // Find SkillManager
+        skillManager = FindFirstObjectByType<SkillManager>();
 
         // set up button click listener
         if (button != null)
@@ -103,15 +109,26 @@ public class SkillButton : MonoBehaviour
     public void SetSkill(Skill skill)
     {
         assignedSkill = skill;
+        
+        // Get skill instance from SkillManager
+        if (skillManager != null && skill != null)
+        {
+            skillInstance = skillManager.GetSkillInstance(skill);
+        }
+        else
+        {
+            skillInstance = null;
+        }
 
         if (skill != null)
         {
             SetButtonActive(true);
 
-            // set skill icon
-            if (skillIcon != null && skill.Icon != null)
+            // set skill icon - use SkillInstance icon if available, otherwise use SkillIcon
+            Sprite iconToUse = skillInstance?.Icon ?? skill.SkillIcon;
+            if (skillIcon != null && iconToUse != null)
             {
-                skillIcon.sprite = skill.Icon;
+                skillIcon.sprite = iconToUse;
                 skillIcon.enabled = true;
                 skillIcon.color = readyColor; 
             }
@@ -172,9 +189,9 @@ public class SkillButton : MonoBehaviour
         }
         
         // Check if assignedSkill is ready
-        if (assignedSkill != null && !assignedSkill.IsReady)
+        if (skillInstance != null && !skillInstance.IsReady)
         {
-            if (debug) Debug.LogWarning($"[SkillButton] Skill {assignedSkill.SkillName} is not ready (State: {assignedSkill.CurrentState})");
+            if (debug) Debug.LogWarning($"[SkillButton] Skill {assignedSkill.SkillName} is not ready (State: {skillInstance.CurrentState})");
         }
         
         if (assignedSkill != null && PlayerSkills.Instance != null)
@@ -196,12 +213,23 @@ public class SkillButton : MonoBehaviour
             if(debug) Debug.Log($"[SkillButton] Slot {slotIndex} - No skill assigned");
             return;
         }
-
-        if(debug) Debug.Log($"[SkillButton] Slot {slotIndex} - {assignedSkill.SkillName} State: {assignedSkill.CurrentState}, Ready: {assignedSkill.IsReady}, Cooldown: {assignedSkill.CurrentCooldown:F1}s");
-
-        switch (assignedSkill.CurrentState)
+        
+        // Update skill instance reference
+        if (skillManager != null && assignedSkill != null)
         {
-            case Skill.SkillStates.ReadyToUse:
+            skillInstance = skillManager.GetSkillInstance(assignedSkill);
+        }
+        
+        if (skillInstance == null)
+        {
+            return;
+        }
+
+        if(debug) Debug.Log($"[SkillButton] Slot {slotIndex} - {assignedSkill.SkillName} State: {skillInstance.CurrentState}, Ready: {skillInstance.IsReady}, Cooldown: {skillInstance.CurrentCooldown:F1}s");
+
+        switch (skillInstance.CurrentState)
+        {
+            case SkillInstance.SkillStates.ReadyToUse:
                 SetButtonState(readyColor, 0f, "");
                 // Hide duration bar when skill is ready
                 if (skillDuration != null)
@@ -211,7 +239,7 @@ public class SkillButton : MonoBehaviour
                 if(debug) Debug.Log($"[SkillButton] {assignedSkill.SkillName} - READY TO USE");
                 break;
 
-            case Skill.SkillStates.Casting:
+            case SkillInstance.SkillStates.Casting:
                 SetButtonState(castingColor, 0f, "CASTING");
                 cooldownText.fontSize = 16; // change text size
                 if (debug) Debug.Log($"[SkillButton] {assignedSkill.SkillName} is CASTING");
@@ -219,21 +247,21 @@ public class SkillButton : MonoBehaviour
                 // Show duration bar depleting from full to empty as skill duration runs out
                 if (skillDuration != null)
                 {
-                    float durationProgress = assignedSkill.SkillDurationProgress;
+                    float durationProgress = skillInstance.SkillDurationProgress;
                     skillDuration.value = durationProgress;
                     skillDuration.gameObject.SetActive(durationProgress > 0f);
                     
                     if (debug && durationProgress > 0f)
                     {
-                        Debug.Log($"[SkillButton] {assignedSkill.SkillName} duration: {assignedSkill.CurrentSkillDuration:F1}s / {assignedSkill.skillDuration:F1}s (progress: {durationProgress:F2})");
+                        Debug.Log($"[SkillButton] {assignedSkill.SkillName} duration: {skillInstance.CurrentSkillDuration:F1}s / {assignedSkill.SkillDuration:F1}s (progress: {durationProgress:F2})");
                     }
                 }
 
                 break;
 
-            case Skill.SkillStates.Cooldown:
-                float progress = assignedSkill.CooldownProgress;
-                float remainingTime = assignedSkill.CurrentCooldown;
+            case SkillInstance.SkillStates.Cooldown:
+                float progress = skillInstance.CooldownProgress;
+                float remainingTime = skillInstance.CurrentCooldown;
                 SetButtonState(cooldownColor, progress, $"{remainingTime:F1}s");
                 cooldownText.fontSize = 30; // change text size
                 // Hide duration bar during cooldown
@@ -244,7 +272,7 @@ public class SkillButton : MonoBehaviour
                 if (debug) Debug.Log($"[SkillButton] {assignedSkill.SkillName} cooldown: {remainingTime:F1}s (progress: {progress:F2})");
                 break;
 
-            case Skill.SkillStates.Locked:
+            case SkillInstance.SkillStates.Locked:
                 SetButtonState(cooldownColor, 1f, "LOCKED");
                 // Hide duration bar when locked
                 if (skillDuration != null)
@@ -296,7 +324,7 @@ public class SkillButton : MonoBehaviour
 
         if (button != null)
         {
-            button.interactable = assignedSkill != null && assignedSkill.IsReady;
+            button.interactable = skillInstance != null && skillInstance.IsReady;
             if(debug) Debug.Log($"[SkillButton] Button interactable: {button.interactable}");
         }
         else

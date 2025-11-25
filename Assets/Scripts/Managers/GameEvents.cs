@@ -1,5 +1,6 @@
 using System;  
 using UnityEngine;
+using Game.Skills;
 
 public class GameEvents : SingletonBase<GameEvents>
 {

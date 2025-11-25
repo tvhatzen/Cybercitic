@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using Game.Skills;
 
 public class PlayerSkills : SingletonBase<PlayerSkills>
 {
@@ -18,6 +19,21 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
 
     public bool debug = false;
 
+    private SkillManager skillManager;
+
+    protected override void Awake()
+    {
+        base.Awake(); 
+        
+        // Get or create SkillManager
+        skillManager = GetComponent<SkillManager>();
+        if (skillManager == null)
+        {
+            skillManager = gameObject.AddComponent<SkillManager>();
+            if (debug) Debug.Log("[PlayerSkills] Created SkillManager component");
+        }
+    }
+
     private void Start()
     {
         InitializeSkills();
@@ -30,14 +46,7 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
 
     private void InitializeSkills()
     {
-        // initialize all equipped skills
-        foreach (var skill in equippedSkills)
-        {
-            if (skill != null)
-            {
-                skill.Initialize();
-            }
-        }
+        // Skills are now initialized through SkillManager
     }
 
     private void HandleSkillInput()
@@ -67,7 +76,13 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
             return false;
         }
 
-        bool success = skill.Activate();
+        if (skillManager == null)
+        {
+            if(debug) Debug.LogError("[PlayerSkills] SkillManager is null!");
+            return false;
+        }
+
+        bool success = skillManager.ActivateSkill(skill);
         if (success)
         {
             GameEvents.SkillActivated(skill);
@@ -94,9 +109,11 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
             return false;
         }
         
-        if(debug) Debug.Log($"[PlayerSkills] Activating skill at index {skillIndex}: {skill.SkillName} (State: {skill.CurrentState}, Ready: {skill.IsReady})");
+        // Get skill instance to check state
+        SkillInstance instance = skillManager?.GetSkillInstance(skill);
+        string stateInfo = instance != null ? $"State: {instance.CurrentState}, Ready: {instance.IsReady}" : "State: Unknown";
+        if(debug) Debug.Log($"[PlayerSkills] Activating skill at index {skillIndex}: {skill.SkillName} ({stateInfo})");
 
-        // Note: Individual skills will handle their own particle effects
         AudioManager.Instance.PlaySound("useSkill");
 
         return ActivateSkill(skill);
@@ -130,8 +147,12 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
 
         // equip skill
         equippedSkills[slotIndex] = skill;
-        skill.Initialize();
-        skill.UnlockSkill();
+        
+        // Use SkillManager to unlock and manage the skill
+        if (skillManager != null)
+        {
+            skillManager.UnlockSkill(skill);
+        }
         
         GameEvents.SkillUnlocked(skill);
         if(debug) Debug.Log($"Equipped skill {skill.SkillName} to slot {slotIndex}");
@@ -144,7 +165,10 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
         Skill skill = equippedSkills[slotIndex];
         if (skill != null)
         {
-            skill.LockSkill();
+            if (skillManager != null)
+            {
+                skillManager.LockSkill(skill);
+            }
             equippedSkills[slotIndex] = null;
             if(debug) Debug.Log($"Unequipped skill from slot {slotIndex}");
         }
@@ -188,12 +212,9 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
     {
         if (debug) Debug.Log("[PlayerSkills] Resetting all skill cooldowns");
         
-        foreach (var skill in equippedSkills)
+        if (skillManager != null)
         {
-            if (skill != null)
-            {
-                skill.ResetCooldown();
-            }
+            skillManager.ResetAllCooldowns();
         }
     }
 
@@ -207,7 +228,10 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
         {
             if (equippedSkills[i] != null)
             {
-                equippedSkills[i].LockSkill();
+                if (skillManager != null)
+                {
+                    skillManager.LockSkill(equippedSkills[i]);
+                }
                 equippedSkills[i] = null;
             }
         }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Game.Skills;
 
 /// <summary>
 /// EntityStats is a PLAYER-ONLY singleton for managing upgrades and skills.
