@@ -21,7 +21,7 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
     [System.Serializable]
     public class BodyPartFrame
     {
-        public UpgradeShopUI.BodyPart bodyPart;
+        public Upgrade.BodyPart bodyPart;
         public SpriteRenderer spriteRenderer;
         public Sprite baseSprite; // base sprite (level 0)
         public List<Sprite> upgradedSprites = new List<Sprite>(); // upgraded sprites (level 1, 2, 3)
@@ -56,7 +56,7 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
     [SerializeField] private bool debug = false;
 
     private Dictionary<string, AnimationSequence> animationLookup = new Dictionary<string, AnimationSequence>();
-    private Dictionary<UpgradeShopUI.BodyPart, BodyPartFrame> bodyPartLookup = new Dictionary<UpgradeShopUI.BodyPart, BodyPartFrame>();
+    private Dictionary<Upgrade.BodyPart, BodyPartFrame> bodyPartLookup = new Dictionary<Upgrade.BodyPart, BodyPartFrame>();
     private Coroutine currentAnimationCoroutine;
 
     #endregion
@@ -228,17 +228,10 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         }
     }
 
-    private UpgradeShopUI.BodyPart GetBodyPartFromUpgrade(Upgrade upgrade)
+    private Upgrade.BodyPart GetBodyPartFromUpgrade(Upgrade upgrade)
     {
-        string name = upgrade.UpgradeName.ToLower();
-
-        if (name.Contains("core")) return UpgradeShopUI.BodyPart.Core;
-        if (name.Contains("left arm")) return UpgradeShopUI.BodyPart.LeftArm;
-        if (name.Contains("right arm")) return UpgradeShopUI.BodyPart.RightArm;
-        if (name.Contains("left leg")) return UpgradeShopUI.BodyPart.LeftLeg;
-        if (name.Contains("right leg")) return UpgradeShopUI.BodyPart.RightLeg;
-
-        return UpgradeShopUI.BodyPart.Core;
+        if (upgrade == null) return Upgrade.BodyPart.Core;
+        return upgrade.GetBodyPart();
     }
 
     private IEnumerator PlayAnimationSequence(AnimationSequence sequence)
@@ -254,7 +247,7 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
                 var frame = sequence.frames[i];
                 
                 // Track which body parts have been updated to prevent duplicates
-                HashSet<UpgradeShopUI.BodyPart> updatedBodyParts = new HashSet<UpgradeShopUI.BodyPart>();
+                HashSet<Upgrade.BodyPart> updatedBodyParts = new HashSet<Upgrade.BodyPart>();
                 // Track which sprite renderers have been updated to ensure we only update each once
                 HashSet<SpriteRenderer> updatedRenderers = new HashSet<SpriteRenderer>();
                 
@@ -342,7 +335,7 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
             var frame = sequence.frames[i];
             
             // Track which body parts have been updated to prevent duplicates
-            HashSet<UpgradeShopUI.BodyPart> updatedBodyParts = new HashSet<UpgradeShopUI.BodyPart>();
+            HashSet<Upgrade.BodyPart> updatedBodyParts = new HashSet<Upgrade.BodyPart>();
             // Track which sprite renderers have been updated to ensure we only update each once
             HashSet<SpriteRenderer> updatedRenderers = new HashSet<SpriteRenderer>();
             
@@ -440,7 +433,7 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Animation '{sequence.animationName}' completed once");
     }
 
-    private Upgrade GetUpgradeForBodyPart(UpgradeShopUI.BodyPart bodyPart)
+    private Upgrade GetUpgradeForBodyPart(Upgrade.BodyPart bodyPart)
     {
         if (UpgradeManager.Instance == null) return null;
 
@@ -514,7 +507,7 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
     private void HideUnusedSpriteRenderers(AnimationFrame currentFrame, AnimationSequence sequence)
     {
         // Collect all sprite renderers that should be visible in this frame (first one for each body part)
-        Dictionary<UpgradeShopUI.BodyPart, SpriteRenderer> visibleRenderers = new Dictionary<UpgradeShopUI.BodyPart, SpriteRenderer>();
+        Dictionary<Upgrade.BodyPart, SpriteRenderer> visibleRenderers = new Dictionary<Upgrade.BodyPart, SpriteRenderer>();
         
         // First pass: identify which sprite renderer should be visible for each body part
         foreach (var bodyPartFrame in currentFrame.bodyPartFrames)

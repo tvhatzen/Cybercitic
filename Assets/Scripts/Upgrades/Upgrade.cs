@@ -18,6 +18,7 @@ public class Upgrade : ScriptableObject
     
     [Header("Stat Modifications")]
     [SerializeField] private UpgradeType upgradeType;
+    [SerializeField] private BodyPart bodyPart = BodyPart.Core;
     public float statIncreasePerLevel = 0.1f;
     
     // Runtime data
@@ -32,6 +33,17 @@ public class Upgrade : ScriptableObject
         Defense,
         DodgeChance
     }
+
+    public enum BodyPart
+    {
+        Core,
+        LeftArm,
+        RightArm,
+        LeftLeg,
+        RightLeg
+    }
+
+    public BodyPart GetBodyPart() => bodyPart;
 
     public string UpgradeName => upgradeName;
     public string Description => upgradeDescription;

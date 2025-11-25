@@ -16,11 +16,11 @@ public class EquippedUpgradeDisplay : MonoBehaviour
     [SerializeField] private GameObject nonPurchasedSquarePrefab;
     
     [Header("Settings")]
-    [SerializeField] private UpgradeShopUI.BodyPart bodyPart;
+    [SerializeField] private Upgrade.BodyPart bodyPart;
     
     private List<GameObject> levelSquares = new List<GameObject>();
 
-    public UpgradeShopUI.BodyPart BodyPart => bodyPart;
+    public Upgrade.BodyPart BodyPart => bodyPart;
     
     public bool debug = false;
 

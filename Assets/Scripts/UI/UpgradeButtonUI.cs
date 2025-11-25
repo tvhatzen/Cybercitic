@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using Cybercitic.UI;
 
 // Shows icon and level indicators, selects upgrade when clicked
 public class UpgradeButtonUI : MonoBehaviour
@@ -19,13 +20,13 @@ public class UpgradeButtonUI : MonoBehaviour
     [SerializeField] private Sprite cannotPurchase;
 
     private Upgrade upgrade;
-    private UpgradeShopUI shopUI;
+    private UpgradeShopController controller;
     private List<GameObject> levelSquares = new List<GameObject>();
     private bool isSelected = false;
 
     public Upgrade Upgrade => upgrade;
     
-    public bool debug = false;
+    [SerializeField] private bool debug = false;
 
     private void Awake()
     {
@@ -38,10 +39,10 @@ public class UpgradeButtonUI : MonoBehaviour
             button.onClick.AddListener(OnButtonClicked);
     }
 
-    public void Initialize(Upgrade upgradeData, UpgradeShopUI shop)
+    public void Initialize(Upgrade upgradeData, UpgradeShopController shopController)
     {
         upgrade = upgradeData;
-        shopUI = shop;
+        controller = shopController;
         
         UpdateDisplay();
 
@@ -108,10 +109,10 @@ public class UpgradeButtonUI : MonoBehaviour
 
     private void OnButtonClicked()
     {
-        if (upgrade == null || shopUI == null) return;
+        if (upgrade == null || controller == null) return;
         
-        // notify shop UI that this was selected
-        shopUI.SelectUpgrade(upgrade);
+        // notify controller that this was selected
+        controller.SelectUpgrade(upgrade);
     }
 
     private void OnDestroy()
@@ -154,7 +155,7 @@ public class UpgradeButtonUI : MonoBehaviour
         bool isMaxedOut = upgrade.CurrentLevel >= upgrade.MaxLevel;
         
         // Check if player can afford the upgrade
-        bool canAfford = shopUI != null && shopUI.CanAffordUpgrade(upgrade);
+        bool canAfford = controller != null && controller.CanAffordUpgrade(upgrade);
         
         // Disable button if maxed out or can't afford, enable otherwise
         bool shouldBeEnabled = !isMaxedOut && canAfford;

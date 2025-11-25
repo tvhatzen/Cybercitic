@@ -1,181 +1,261 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class SceneLoader : SingletonBase<SceneLoader>
+namespace Cybercitic.SceneManagement
 {
-    [Header("Transition Animation")]
-    [SerializeField] private Image transitionImage;
-    [SerializeField] private float transitionDuration = 1.0f;
-    [SerializeField] private AnimationCurve transitionCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
-    
-    [Header("Debug")]
-    public bool debug = false;
-    
-    private bool isTransitioning = false;
-    private RectTransform transitionRectTransform;
-    private static SceneLoader instance;
-    private Vector2 originalImageSize;
-    
-    protected override void Awake()
+    public class SceneLoader : SingletonBase<SceneLoader>
     {
-        base.Awake();
-
-        // make this a singleton to persist across scene loads
-        if (instance == null)
+        private enum TransitionState
         {
-            transitionRectTransform = transitionImage.GetComponent<RectTransform>();
+            Idle,
+            SlidingIn,
+            LoadingScene,
+            SlidingOut
+        }
 
-            // Preserve the original sprite/texture resolution
-            if (transitionImage != null && transitionRectTransform != null)
+        [Header("Transition Animation")]
+        [SerializeField] private Image transitionImage;
+        [SerializeField] private float transitionDuration = 1.0f;
+        [SerializeField] private AnimationCurve transitionCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+
+        [Header("Debug")]
+        [SerializeField] private bool debug;
+
+        public event Action<string> PlaySoundRequested;
+
+        private TransitionState currentState = TransitionState.Idle;
+        private SceneTransitionAnimator transitionAnimator;
+        private readonly WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
+
+        protected override void Awake()
+        {
+            base.Awake();
+            InitializeAnimator();
+        }
+
+        public void LoadSceneWithTransition(string sceneName)
+        {
+            if (!IsSceneLoadRequestValid(sceneName))
             {
-                if (transitionImage.sprite != null)
-                {
-                    // Use the sprite's native size
-                    originalImageSize = transitionImage.sprite.rect.size;
-                    transitionRectTransform.sizeDelta = originalImageSize;
-                    if (debug) Debug.Log($"[SceneLoader] Preserved transition image resolution: {originalImageSize}");
-                }
-                else if (transitionImage.mainTexture != null)
-                {
-                    // Fallback to texture size if no sprite
-                    originalImageSize = new Vector2(transitionImage.mainTexture.width, transitionImage.mainTexture.height);
-                    transitionRectTransform.sizeDelta = originalImageSize;
-                    if (debug) Debug.Log($"[SceneLoader] Preserved transition image resolution from texture: {originalImageSize}");
-                }
-
-                // start with transition image off-screen to the left
-                // Account for image width (anchoredPosition is center, so subtract half width)
-                float offScreenLeft = -Screen.width - (originalImageSize.x / 2f);
-                transitionRectTransform.anchoredPosition = new Vector2(offScreenLeft, 0);
+                return;
             }
-            
-            if (debug) Debug.Log("[SceneLoader] Singleton instance created and initialized");
-        }
-        else
-        {
-            if (debug) Debug.Log("[SceneLoader] Duplicate instance found, destroying");
-            Destroy(gameObject);
-            return;
-        }
-    }
-    
-    public void LoadSceneWithTransition(string sceneName)
-    {
-        if (isTransitioning)
-        {
-            if (debug) Debug.LogWarning("[SceneLoader] Already transitioning, ignoring request");
-            return;
-        }
-        
-        // ensure transition image exists
-        if (transitionImage == null || transitionRectTransform == null)
-        {
-            if (debug) Debug.LogWarning("[SceneLoader] Transition image missing, recreating...");
-        }
-        
-        StartCoroutine(TransitionAndLoadScene(sceneName));
-    }
-    
-    public static void LoadScene(string sceneName)
-    {
-        // ensure the SceneLoader instance is properly initialized
-        var loader = Instance;
-        loader.LoadSceneWithTransition(sceneName);
-    }
-    
-    private IEnumerator TransitionAndLoadScene(string sceneName)
-    {
-        isTransitioning = true;
-        
-        if (debug) Debug.Log($"[SceneLoader] Starting transition to scene: {sceneName}");
-        
-        // Phase 1: Slide in from left
-        yield return StartCoroutine(SlideTransition(true));
 
-        // play scene transition sound
-        AudioManager.Instance.PlaySound("levelTransition");
-        
-        // Phase 2: Load the scene
-        if (debug) Debug.Log($"[SceneLoader] Loading scene: {sceneName}");
-        SceneManager.LoadScene(sceneName);
-        
-        // Wait for the scene to fully load and initialize
-        yield return new WaitForEndOfFrame();
-        yield return new WaitForEndOfFrame();
-        
-        // Verify the scene actually loaded
-        if (debug) Debug.Log($"[SceneLoader] Scene loaded. Current scene: {SceneManager.GetActiveScene().name}");
-        
-        // Phase 3: Slide out to right
-        if (debug) Debug.Log("[SceneLoader] Starting slide-out animation");
-        yield return StartCoroutine(SlideTransition(false));
-        
-        isTransitioning = false;
-        
-        if (debug) Debug.Log("[SceneLoader] Transition completed");
-    }
-    
-    private IEnumerator SlideTransition(bool slideIn)
-    {
-        if (transitionImage == null || transitionRectTransform == null)
-        {
-            if (debug) Debug.LogError("[SceneLoader] Transition image or RectTransform is null!");
-            yield break;
-        }
-        
-        // Ensure the image is visible and active
-        transitionImage.gameObject.SetActive(true);
-        transitionImage.enabled = true;
-        
-        float elapsedTime = 0f;
-        Vector2 startPosition;
-        Vector2 endPosition;
-        
-        if (slideIn)
-        {
-            // Start off-screen left, slide to center *** (change to up/down)
-            // Account for image width (anchoredPosition is center, so subtract half width)
-            float offScreenLeft = -Screen.width - (originalImageSize.x / 2f);
-            startPosition = new Vector2(offScreenLeft, 0);
-            endPosition = Vector2.zero;
-            if (debug) Debug.Log("[SceneLoader] Starting slide-in animation");
-        }
-        else
-        {
-            // Start at center, slide off-screen right
-            // Move far enough right to account for image width (anchoredPosition is center, so add half width)
-            startPosition = Vector2.zero;
-            float offScreenRight = Screen.width + (originalImageSize.x / 2f);
-            endPosition = new Vector2(offScreenRight, 0);
-            if (debug) Debug.Log("[SceneLoader] Starting slide-out animation");
-        }
-        
-        // Set initial position
-        transitionRectTransform.anchoredPosition = startPosition;
-        
-        while (elapsedTime < transitionDuration)
-        {
-            elapsedTime += Time.deltaTime;
-            float progress = elapsedTime / transitionDuration;
-            float curveValue = transitionCurve.Evaluate(progress);
-            
-            Vector2 currentPosition = Vector2.Lerp(startPosition, endPosition, curveValue);
-            transitionRectTransform.anchoredPosition = currentPosition;
-            
-            if (debug && elapsedTime % 0.1f < Time.deltaTime) // Log every 0.1 seconds
+            if (currentState != TransitionState.Idle)
             {
-                Debug.Log($"[SceneLoader] Transition progress: {progress:F2}, Position: {currentPosition}");
+                if (debug) Debug.LogWarning("[SceneLoader] Transition already in progress.");
+                return;
             }
-            
-            yield return null;
+
+            StartCoroutine(TransitionAndLoadScene(sceneName));
         }
-        
-        // Ensure final position
-        transitionRectTransform.anchoredPosition = endPosition;
-        
-        if (debug) Debug.Log($"[SceneLoader] Transition completed. Final position: {endPosition}");
+
+        public static void LoadScene(string sceneName) => Instance.LoadSceneWithTransition(sceneName);
+
+        private void InitializeAnimator()
+        {
+            if (transitionImage == null)
+            {
+                Debug.LogError("[SceneLoader] Transition image reference is missing.");
+                return;
+            }
+
+            transitionAnimator = new SceneTransitionAnimator(transitionImage, transitionDuration, transitionCurve);
+            if (!transitionAnimator.TryInitialize(debug, out var error))
+            {
+                Debug.LogError(error);
+            }
+        }
+
+        private IEnumerator TransitionAndLoadScene(string sceneName)
+        {
+            SetState(TransitionState.SlidingIn);
+            yield return transitionAnimator.Slide(true, debug);
+
+            SetState(TransitionState.LoadingScene);
+            PlaySoundRequested?.Invoke("levelTransition");
+            yield return LoadSceneRoutine(sceneName);
+
+            SetState(TransitionState.SlidingOut);
+            yield return transitionAnimator.Slide(false, debug);
+
+            SetState(TransitionState.Idle);
+        }
+
+        private IEnumerator LoadSceneRoutine(string sceneName)
+        {
+            AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName);
+            if (asyncOperation == null)
+            {
+                Debug.LogError($"[SceneLoader] Failed to start loading scene '{sceneName}'.");
+                yield break;
+            }
+
+            while (!asyncOperation.isDone)
+            {
+                yield return null;
+            }
+
+            yield return waitForEndOfFrame;
+            yield return waitForEndOfFrame;
+
+            if (debug)
+            {
+                Debug.Log($"[SceneLoader] Scene loaded. Current scene: {SceneManager.GetActiveScene().name}");
+            }
+        }
+
+        private bool IsSceneLoadRequestValid(string sceneName)
+        {
+            if (string.IsNullOrWhiteSpace(sceneName))
+            {
+                Debug.LogError("[SceneLoader] Scene name cannot be null or empty.");
+                return false;
+            }
+
+            if (!SceneExists(sceneName))
+            {
+                Debug.LogError($"[SceneLoader] Scene '{sceneName}' is not listed in build settings.");
+                return false;
+            }
+
+            if (transitionAnimator == null || !transitionAnimator.IsInitialized)
+            {
+                Debug.LogError("[SceneLoader] Transition animator is not initialized.");
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool SceneExists(string sceneName)
+        {
+            int sceneCount = SceneManager.sceneCountInBuildSettings;
+            for (int i = 0; i < sceneCount; i++)
+            {
+                string path = SceneUtility.GetScenePathByBuildIndex(i);
+                string name = Path.GetFileNameWithoutExtension(path);
+                if (string.Equals(name, sceneName, StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void SetState(TransitionState newState)
+        {
+            currentState = newState;
+            if (debug)
+            {
+                Debug.Log($"[SceneLoader] Transition state changed to {currentState}");
+            }
+        }
+    }
+
+    internal sealed class SceneTransitionAnimator
+    {
+        private readonly Image transitionImage;
+        private readonly RectTransform transitionRectTransform;
+        private readonly AnimationCurve transitionCurve;
+        private readonly float transitionDuration;
+
+        private Vector2 originalImageSize;
+        private bool isInitialized;
+
+        public bool IsInitialized => isInitialized;
+
+        internal SceneTransitionAnimator(Image image, float duration, AnimationCurve curve)
+        {
+            transitionImage = image;
+            transitionRectTransform = image != null ? image.GetComponent<RectTransform>() : null;
+            transitionCurve = curve ?? AnimationCurve.Linear(0, 0, 1, 1);
+            transitionDuration = Mathf.Max(0.01f, duration);
+        }
+
+        internal bool TryInitialize(bool debug, out string error)
+        {
+            if (transitionImage == null || transitionRectTransform == null)
+            {
+                error = "[SceneTransitionAnimator] Transition image or RectTransform is missing.";
+                return false;
+            }
+
+            originalImageSize = DetermineOriginalImageSize();
+            transitionRectTransform.sizeDelta = originalImageSize;
+
+            transitionImage.gameObject.SetActive(true);
+            transitionImage.enabled = true;
+
+            transitionRectTransform.anchoredPosition = new Vector2(GetOffScreenLeft(), 0f);
+
+            if (debug)
+            {
+                Debug.Log($"[SceneTransitionAnimator] Initialized at size {originalImageSize}");
+            }
+
+            isInitialized = true;
+            error = string.Empty;
+            return true;
+        }
+
+        internal IEnumerator Slide(bool slideIn, bool debug)
+        {
+            if (!isInitialized)
+            {
+                yield break;
+            }
+
+            float elapsedTime = 0f;
+            Vector2 startPosition = slideIn ? new Vector2(GetOffScreenLeft(), 0f) : Vector2.zero;
+            Vector2 endPosition = slideIn ? Vector2.zero : new Vector2(GetOffScreenRight(), 0f);
+
+            transitionRectTransform.anchoredPosition = startPosition;
+
+            while (elapsedTime < transitionDuration)
+            {
+                elapsedTime += Time.deltaTime;
+                float progress = Mathf.Clamp01(elapsedTime / transitionDuration);
+                float curveValue = transitionCurve.Evaluate(progress);
+                transitionRectTransform.anchoredPosition = Vector2.Lerp(startPosition, endPosition, curveValue);
+
+                if (debug && Mathf.Abs((elapsedTime % 0.1f) - 0f) < Time.deltaTime)
+                {
+                    Debug.Log($"[SceneTransitionAnimator] Progress: {progress:F2}, Position: {transitionRectTransform.anchoredPosition}");
+                }
+
+                yield return null;
+            }
+
+            transitionRectTransform.anchoredPosition = endPosition;
+
+            if (debug)
+            {
+                Debug.Log($"[SceneTransitionAnimator] Slide {(slideIn ? "in" : "out")} completed.");
+            }
+        }
+
+        private Vector2 DetermineOriginalImageSize()
+        {
+            if (transitionImage.sprite != null)
+            {
+                return transitionImage.sprite.rect.size;
+            }
+
+            if (transitionImage.mainTexture != null)
+            {
+                return new Vector2(transitionImage.mainTexture.width, transitionImage.mainTexture.height);
+            }
+
+            return transitionRectTransform.sizeDelta;
+        }
+
+        private float GetOffScreenLeft() => -Screen.width - (originalImageSize.x * 0.5f);
+
+        private float GetOffScreenRight() => Screen.width + (originalImageSize.x * 0.5f);
     }
 }
