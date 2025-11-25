@@ -11,6 +11,8 @@ public class TutorialStepManager : MonoBehaviour
     // UI text compoennt to show current step text
     public TextMeshProUGUI stepText;
 
+    // position to display UI
+
     // list of ITutorialStep interfaces
 
     #endregion

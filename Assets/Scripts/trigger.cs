@@ -176,7 +176,7 @@ public class trigger : MonoBehaviour
                 if(debug) Debug.Log($"[Trigger] Floor incremented from {currentFloorBefore} to {FloorManager.Instance.CurrentFloor}");
 
                 // load the scene with transition animation
-                //SceneLoader.Instance.LoadScene(nextFloorSceneName);
+                SceneLoader.LoadScene(nextFloorSceneName);
             }
             else
             {

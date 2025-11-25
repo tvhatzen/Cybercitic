@@ -12,6 +12,8 @@ public class SpawnManager : SingletonBase<SpawnManager>
 
     [Header("Enemies")]
     public Dictionary<int, List<string>> enemiesForThisFloor = new Dictionary<int, List<string>>();
+    public Dictionary<int, List<string>> enemiesForTutorialFloor = new Dictionary<int, List<string>>();
+
     [SerializeField] private List<Transform> enemySpawnPoints;
     
     // Cache for loaded prefabs to avoid repeated Resources.Load calls
@@ -26,8 +28,6 @@ public class SpawnManager : SingletonBase<SpawnManager>
 
     // CurrentFloor is now managed by FloorManager - access via FloorManager.Instance.CurrentFloor
     private int CurrentFloor => FloorManager.Instance != null ? FloorManager.Instance.CurrentFloor : 1;
-
-    private bool hasSpawnedOnLoad = false;
 
     public bool debug = false;
 
@@ -86,9 +86,9 @@ public class SpawnManager : SingletonBase<SpawnManager>
     {
         // tutorial floors
         // * would need a time stop system for prompting tutorial UI
-        //enemiesForThisFloor.Add(1, new List<string> { "Enemy_Basic" }); // first enemy
-        //enemiesForThisFloor.Add(1, new List<string> { "Enemy_Elite" }); // harder enemy
-        //enemiesForThisFloor.Add(1, new List<string> { "Enemy_Boss" }); // test first easy boss
+        enemiesForTutorialFloor.Add(1, new List<string> { "TurorialEnemy_Basic" }); // first enemy
+        enemiesForTutorialFloor.Add(2, new List<string> { "TutorialEnemy_Elite" }); // harder enemy
+        enemiesForTutorialFloor.Add(3, new List<string> { "TutorialEnemy_Boss" }); // test first easy boss
 
         // gameplay floors
         enemiesForThisFloor.Add(1, new List<string> { "Enemy_Basic", "Enemy_Basic", "Enemy_Basic" });
@@ -273,10 +273,7 @@ public class SpawnManager : SingletonBase<SpawnManager>
             spawnedCount++;
         }
 
-        if (debug)
-        {
-            Debug.Log($"[SpawnManager] Spawned {spawnedCount} enemies for floor {CurrentFloor}");
-        }
+        if (debug) Debug.Log($"[SpawnManager] Spawned {spawnedCount} enemies for floor {CurrentFloor}");
     }
 
     public void SpawnBoss()
@@ -331,6 +328,42 @@ public class SpawnManager : SingletonBase<SpawnManager>
         if (debug)
         {
             Debug.Log($"[SpawnManager] Spawned boss for floor {CurrentFloor}");
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public void SpawnTutorialEnemy()
+    {
+        List<string> enemyNameForFloor = enemiesForTutorialFloor[CurrentFloor];
+        int spawnedCount = 0;
+
+        for (int i = 0; i < enemyNameForFloor.Count && i < EnemySpawnPoints.Count; i++)
+        {
+            string enemyName = enemyNameForFloor[i];
+            Transform point = EnemySpawnPoints[i];
+
+            if (point == null)
+            {
+                continue;
+            }
+
+            GameObject prefab = GetPrefabFromName(enemyName);
+            if (prefab == null)
+            {
+                continue;
+            }
+
+            GameObject enemy = Object.Instantiate(prefab, point.position, point.rotation);
+
+            if (!enemy.activeInHierarchy)
+            {
+                enemy.SetActive(true);
+            }
+
+            GameEvents.EnemySpawned(enemy);
+            spawnedCount++;
         }
     }
 }

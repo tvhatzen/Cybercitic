@@ -151,7 +151,7 @@ MonoBehaviour:
   playerPrefab: {fileID: 1431616184263147312, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
   playerSpawnPoint: {fileID: 2086276120}
   enemyPrefabsForThisFloor:
-  - {fileID: 150106152159008451, guid: d7120f27bc6ce4148b12f617ca3d83a1, type: 3}
+  - {fileID: 681499253584660195, guid: 338ac0ae3a0e432408f4ea76a16eb635, type: 3}
   enemySpawnPoints:
   - {fileID: 1023745793}
   - {fileID: 1074077602}
