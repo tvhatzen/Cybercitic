@@ -1621,7 +1621,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loadNewScene: 1
   nextFloorSceneName: level2
-  debug: 0
+  debug: 1
 --- !u!222 &769566868
 CanvasRenderer:
   m_ObjectHideFlags: 0

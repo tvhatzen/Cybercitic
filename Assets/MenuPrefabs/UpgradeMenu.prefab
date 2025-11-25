@@ -965,6 +965,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8793843566115363895}
+  - component: {fileID: 924436725882412707}
   m_Layer: 5
   m_Name: CenterPanel (Upgrade Buttons)
   m_TagString: Untagged
@@ -996,6 +997,25 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &924436725882412707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2452732615140829208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ee063bce43678c4daa061826a2f87f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  upgradeButtons:
+  - {fileID: 2266665731097397970}
+  - {fileID: 7101606979906785885}
+  - {fileID: 4552641440010361308}
+  - {fileID: 1662524787322287176}
+  - {fileID: 8053224164009408090}
+  debug: 1
 --- !u!1 &2629371304990745828
 GameObject:
   m_ObjectHideFlags: 0
@@ -1652,6 +1672,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7119220789113169119}
+  - component: {fileID: 3132008674653855924}
   m_Layer: 5
   m_Name: EquippedDisplay
   m_TagString: Untagged
@@ -1683,6 +1704,25 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3132008674653855924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4613752415515545302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52e64c596c42acd4da3b38d09a6de633, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  equippedDisplays:
+  - {fileID: 478137092120560799}
+  - {fileID: 2413206455130154713}
+  - {fileID: 8196461449524955778}
+  - {fileID: 3769149635074146673}
+  - {fileID: 6761219527021391839}
+  debug: 1
 --- !u!1 &4853650430040517506
 GameObject:
   m_ObjectHideFlags: 0
@@ -2412,6 +2452,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1899730223619595095}
+  - component: {fileID: 5361700416725473830}
   m_Layer: 5
   m_Name: RightPanel (Description/Info)
   m_TagString: Untagged
@@ -2441,6 +2482,28 @@ RectTransform:
   m_AnchoredPosition: {x: 83, y: -187}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5361700416725473830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6029014109889642811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d327dabba51e5641b5895dcdbe0247b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  detailsPanel: {fileID: 6029014109889642811}
+  upgradeName: {fileID: 5600009440590185855}
+  upgradeDescription: {fileID: 4591183419525204130}
+  statInfo: {fileID: 49187520309170072}
+  purchaseButton: {fileID: 4985532758416373188}
+  purchaseButtonText: {fileID: 3208495456754636252}
+  canPurchaseColor: {r: 0, g: 1, b: 0, a: 1}
+  cannotAffordColor: {r: 1, g: 0, b: 0, a: 1}
+  maxLevelColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  debug: 1
 --- !u!1 &6037972455042014278
 GameObject:
   m_ObjectHideFlags: 0
@@ -3257,26 +3320,12 @@ MonoBehaviour:
   doneButton: {fileID: 6699416546376857337}
   scrapText: {fileID: 7816756268599528013}
   scrapSprite: {fileID: 1690595520, guid: d80734b5c94cd87489e3f61882311292, type: 3}
-  coreButton: {fileID: 2266665731097397970}
-  leftArmButton: {fileID: 7101606979906785885}
-  rightArmButton: {fileID: 4552641440010361308}
-  leftLegButton: {fileID: 1662524787322287176}
-  rightLegButton: {fileID: 8053224164009408090}
-  coreDisplay: {fileID: 478137092120560799}
-  leftArmDisplay: {fileID: 2413206455130154713}
-  rightArmDisplay: {fileID: 8196461449524955778}
-  leftLegDisplay: {fileID: 6761219527021391839}
-  rightLegDisplay: {fileID: 3769149635074146673}
-  detailsPanel: {fileID: 6029014109889642811}
-  upgradeName: {fileID: 5600009440590185855}
-  upgradeDescription: {fileID: 0}
-  statInfo: {fileID: 49187520309170072}
-  purchaseButton: {fileID: 4985532758416373188}
-  purchaseButtonText: {fileID: 3208495456754636252}
-  canPurchaseColor: {r: 0.4968552, g: 0.99371064, b: 0.4968552, a: 1}
-  cannotAffordColor: {r: 1, g: 0.42452818, b: 0.42452818, a: 1}
-  maxLevelColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  debug: 0
+  selectionPanel: {fileID: 924436725882412707}
+  equippedPanel: {fileID: 3132008674653855924}
+  detailsPanel: {fileID: 5361700416725473830}
+  upgradeButtons: []
+  equippedDisplays: []
+  debug: 1
 --- !u!1 &8080904249325530013
 GameObject:
   m_ObjectHideFlags: 0

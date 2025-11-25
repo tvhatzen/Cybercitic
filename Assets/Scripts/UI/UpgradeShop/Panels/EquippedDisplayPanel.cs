@@ -4,8 +4,8 @@ using UnityEngine;
 namespace Cybercitic.UI
 {
     /// <summary>
-    /// Handles the equipped upgrade display panel UI.
-    /// Shows currently equipped upgrades for each body part.
+    /// Handles the equipped upgrade display panel UI
+    /// Shows currently equipped upgrades for each body part
     /// </summary>
     public class EquippedDisplayPanel : MonoBehaviour
     {

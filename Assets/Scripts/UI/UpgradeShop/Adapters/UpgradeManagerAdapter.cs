@@ -3,8 +3,7 @@ using System.Collections.Generic;
 namespace Cybercitic.UI
 {
     /// <summary>
-    /// Adapter to make UpgradeManager implement IUpgradeService.
-    /// Enables dependency inversion while maintaining compatibility.
+    /// Adapter to make UpgradeManager implement IUpgradeService
     /// </summary>
     public class UpgradeManagerAdapter : IUpgradeService
     {

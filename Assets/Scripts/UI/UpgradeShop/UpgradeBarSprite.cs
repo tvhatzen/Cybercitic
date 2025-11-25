@@ -55,7 +55,7 @@ public class UpgradeBarSprite : MonoBehaviour
         Refresh();
     }
 
-    // Public for manual refreshes from other UI scripts if needed
+    // public for manual refreshes from other UI scripts
     public void Refresh()
     {
         if (targetImage == null) return;
@@ -65,7 +65,7 @@ public class UpgradeBarSprite : MonoBehaviour
 
         if (sourceButton != null && sourceButton.Upgrade != null)
         {
-            // Clamp into available sprite range; assumes index 0 is level 0 graphic
+            // clamp into available sprite range 
             level = Mathf.Clamp(sourceButton.Upgrade.CurrentLevel, 0, max);
         }
 
@@ -75,8 +75,7 @@ public class UpgradeBarSprite : MonoBehaviour
 
         targetImage.sprite = sprite;
 
-        if (debug)
-            Debug.Log($"[UpgradeBarSprite] Applied level {level} sprite on {name}");
+        if (debug) Debug.Log($"[UpgradeBarSprite] Applied level {level} sprite on {name}");
     }
 }
 

@@ -46,7 +46,6 @@ public class UpgradeButtonUI : MonoBehaviour
         
         UpdateDisplay();
 
-        // Also refresh any UpgradeBarSprite components beneath this button
         RefreshAttachedUpgradeBars();
     }
 
@@ -72,34 +71,8 @@ public class UpgradeButtonUI : MonoBehaviour
     {
         if (upgrade == null) return;
 
-        //UpdateLevelIndicators();
         RefreshAttachedUpgradeBars();
         UpdateButtonState();
-    }
-
-    private void UpdateLevelIndicators()
-    {
-        // clear existing squares
-        foreach (var square in levelSquares)
-        {
-            if (square != null)
-                Destroy(square);
-        }
-        levelSquares.Clear();
-
-        if (levelIndicatorParent == null || purchasedSquarePrefab == null || nonPurchasedSquarePrefab == null)
-            return;
-
-        // create squares for max level
-        int maxLevel = upgrade.MaxLevel;
-        int currentLevel = upgrade.CurrentLevel;
-
-        for (int i = 0; i < maxLevel; i++)
-        {
-            GameObject prefab = (i < currentLevel) ? purchasedSquarePrefab : nonPurchasedSquarePrefab;
-            GameObject square = Instantiate(prefab, levelIndicatorParent);
-            levelSquares.Add(square);
-        }
     }
 
     public void SetSelected(bool selected)
@@ -134,14 +107,14 @@ public class UpgradeButtonUI : MonoBehaviour
         var bars = GetComponentsInChildren<UpgradeBarSprite>(true);
         foreach (var bar in bars)
         {
-            // If not bound, try to bind to this button automatically
+            // if not bound, try to bind to this button automatically
             var field = bar;
             if (bar != null) bar.Refresh();
         }
     }
 
 
-    // Updates the button state based on whether the upgrade is maxed out and if the player can afford it.
+    // updates the button state based on whether the upgrade is maxed out and if the player can afford it.
     public void RefreshButtonState()
     {
         UpdateButtonState();
@@ -151,13 +124,13 @@ public class UpgradeButtonUI : MonoBehaviour
     {
         if (upgrade == null || button == null) return;
 
-        // Check if upgrade is maxed out
+        // check if upgrade is maxed out
         bool isMaxedOut = upgrade.CurrentLevel >= upgrade.MaxLevel;
         
-        // Check if player can afford the upgrade
+        // check if player can afford the upgrade
         bool canAfford = controller != null && controller.CanAffordUpgrade(upgrade);
         
-        // Disable button if maxed out or can't afford, enable otherwise
+        // disable button if maxed out or can't afford, enable otherwise
         bool shouldBeEnabled = !isMaxedOut && canAfford;
         SetButtonState(shouldBeEnabled);
     }
@@ -168,7 +141,6 @@ public class UpgradeButtonUI : MonoBehaviour
 
         var buttonVisual = button.GetComponent<Image>();
 
-        //button.interactable = state;
         if (state == false)
         {
             buttonVisual.sprite = cannotPurchase;
@@ -178,10 +150,6 @@ public class UpgradeButtonUI : MonoBehaviour
             buttonVisual.sprite = canPurchase;
         }
 
-
-        if (debug)
-        {
-            Debug.Log($"Button state set to {(state ? "enabled" : "disabled")} for upgrade: {upgrade?.name ?? "null"}");
-        }
+        if (debug) Debug.Log($"Button state set to {(state ? "enabled" : "disabled")} for upgrade: {upgrade?.name ?? "null"}");
     }
 }

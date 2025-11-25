@@ -4,8 +4,8 @@ using UnityEngine;
 namespace Cybercitic.UI
 {
     /// <summary>
-    /// Handles the upgrade selection panel UI.
-    /// Manages upgrade buttons and their display.
+    /// Handles the upgrade selection panel UI
+    /// Manages upgrade buttons and their display
     /// </summary>
     public class UpgradeSelectionPanel : MonoBehaviour
     {
@@ -37,12 +37,14 @@ namespace Cybercitic.UI
                 }
             }
 
-            if (debug)
-            {
-                Debug.Log($"[UpgradeSelectionPanel] Initialized with {buttonMap.Count} buttons");
-            }
+            if (debug) Debug.Log($"[UpgradeSelectionPanel] Initialized with {buttonMap.Count} buttons");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="upgradeService"></param>
+        /// <param name="controller"></param>
         public void LoadUpgrades(IUpgradeService upgradeService, UpgradeShopController controller)
         {
             if (upgradeService == null || controller == null) return;
@@ -148,8 +150,6 @@ namespace Cybercitic.UI
         }
 
         public UpgradeButtonUI GetSelectedButton() => selectedButton;
-
         public Dictionary<Upgrade.BodyPart, UpgradeButtonUI> GetAllButtons() => new Dictionary<Upgrade.BodyPart, UpgradeButtonUI>(buttonMap);
     }
 }
-

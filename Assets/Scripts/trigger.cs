@@ -1,7 +1,8 @@
-using UnityEngine;
+using Cybercitic.SceneManagement;
 using System.Collections;
-using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 // Static class to recreate triggers when they get destroyed
 public static class TriggerRecreator
@@ -40,7 +41,7 @@ public static class TriggerRecreator
             // configure the trigger settings
             triggerComponent.loadNewScene = loadNewScene;
             triggerComponent.nextFloorSceneName = nextFloorSceneName;
-            triggerComponent.debug = true; // enable debug for the created trigger
+            triggerComponent.debug = true; // enable debug 
             
             // position it at the same location as the original
             newTrigger.transform.position = position;
@@ -175,7 +176,7 @@ public class trigger : MonoBehaviour
                 if(debug) Debug.Log($"[Trigger] Floor incremented from {currentFloorBefore} to {FloorManager.Instance.CurrentFloor}");
 
                 // load the scene with transition animation
-                SceneLoader.LoadScene(nextFloorSceneName);
+                //SceneLoader.Instance.LoadScene(nextFloorSceneName);
             }
             else
             {

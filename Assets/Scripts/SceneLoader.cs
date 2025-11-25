@@ -9,6 +9,7 @@ namespace Cybercitic.SceneManagement
 {
     public class SceneLoader : SingletonBase<SceneLoader>
     {
+        #region Enum, Variables
         private enum TransitionState
         {
             Idle,
@@ -30,6 +31,8 @@ namespace Cybercitic.SceneManagement
         private TransitionState currentState = TransitionState.Idle;
         private SceneTransitionAnimator transitionAnimator;
         private readonly WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
+
+        #endregion
 
         protected override void Awake()
         {
@@ -59,17 +62,22 @@ namespace Cybercitic.SceneManagement
         {
             if (transitionImage == null)
             {
-                Debug.LogError("[SceneLoader] Transition image reference is missing.");
+                if (debug) Debug.LogError("[SceneLoader] Transition image reference is missing.");
                 return;
             }
 
             transitionAnimator = new SceneTransitionAnimator(transitionImage, transitionDuration, transitionCurve);
             if (!transitionAnimator.TryInitialize(debug, out var error))
             {
-                Debug.LogError(error);
+                if (debug) Debug.LogError(error);
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sceneName"></param>
+        /// <returns></returns>
         private IEnumerator TransitionAndLoadScene(string sceneName)
         {
             SetState(TransitionState.SlidingIn);
@@ -90,7 +98,7 @@ namespace Cybercitic.SceneManagement
             AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName);
             if (asyncOperation == null)
             {
-                Debug.LogError($"[SceneLoader] Failed to start loading scene '{sceneName}'.");
+                if (debug) Debug.LogError($"[SceneLoader] Failed to start loading scene '{sceneName}'.");
                 yield break;
             }
 
@@ -102,35 +110,38 @@ namespace Cybercitic.SceneManagement
             yield return waitForEndOfFrame;
             yield return waitForEndOfFrame;
 
-            if (debug)
-            {
-                Debug.Log($"[SceneLoader] Scene loaded. Current scene: {SceneManager.GetActiveScene().name}");
-            }
+            if (debug) Debug.Log($"[SceneLoader] Scene loaded. Current scene: {SceneManager.GetActiveScene().name}");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sceneName"></param>
+        /// <returns></returns>
         private bool IsSceneLoadRequestValid(string sceneName)
         {
             if (string.IsNullOrWhiteSpace(sceneName))
             {
-                Debug.LogError("[SceneLoader] Scene name cannot be null or empty.");
+                if (debug) Debug.LogError("[SceneLoader] Scene name cannot be null or empty.");
                 return false;
             }
 
             if (!SceneExists(sceneName))
             {
-                Debug.LogError($"[SceneLoader] Scene '{sceneName}' is not listed in build settings.");
+                if (debug) Debug.LogError($"[SceneLoader] Scene '{sceneName}' is not listed in build settings.");
                 return false;
             }
 
             if (transitionAnimator == null || !transitionAnimator.IsInitialized)
             {
-                Debug.LogError("[SceneLoader] Transition animator is not initialized.");
+                if (debug) Debug.LogError("[SceneLoader] Transition animator is not initialized.");
                 return false;
             }
 
             return true;
         }
 
+        // 
         private static bool SceneExists(string sceneName)
         {
             int sceneCount = SceneManager.sceneCountInBuildSettings;
@@ -150,10 +161,7 @@ namespace Cybercitic.SceneManagement
         private void SetState(TransitionState newState)
         {
             currentState = newState;
-            if (debug)
-            {
-                Debug.Log($"[SceneLoader] Transition state changed to {currentState}");
-            }
+            if (debug) Debug.Log($"[SceneLoader] Transition state changed to {currentState}");
         }
     }
 
@@ -177,6 +185,12 @@ namespace Cybercitic.SceneManagement
             transitionDuration = Mathf.Max(0.01f, duration);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="debug"></param>
+        /// <param name="error"></param>
+        /// <returns></returns>
         internal bool TryInitialize(bool debug, out string error)
         {
             if (transitionImage == null || transitionRectTransform == null)
@@ -193,16 +207,19 @@ namespace Cybercitic.SceneManagement
 
             transitionRectTransform.anchoredPosition = new Vector2(GetOffScreenLeft(), 0f);
 
-            if (debug)
-            {
-                Debug.Log($"[SceneTransitionAnimator] Initialized at size {originalImageSize}");
-            }
+            if (debug) Debug.Log($"[SceneTransitionAnimator] Initialized at size {originalImageSize}");           
 
             isInitialized = true;
             error = string.Empty;
             return true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="slideIn"></param>
+        /// <param name="debug"></param>
+        /// <returns></returns>
         internal IEnumerator Slide(bool slideIn, bool debug)
         {
             if (!isInitialized)
@@ -223,22 +240,19 @@ namespace Cybercitic.SceneManagement
                 float curveValue = transitionCurve.Evaluate(progress);
                 transitionRectTransform.anchoredPosition = Vector2.Lerp(startPosition, endPosition, curveValue);
 
-                if (debug && Mathf.Abs((elapsedTime % 0.1f) - 0f) < Time.deltaTime)
-                {
-                    Debug.Log($"[SceneTransitionAnimator] Progress: {progress:F2}, Position: {transitionRectTransform.anchoredPosition}");
-                }
+                if (debug && Mathf.Abs((elapsedTime % 0.1f) - 0f) < Time.deltaTime)                
+                    Debug.Log($"[SceneTransitionAnimator] Progress: {progress:F2}, Position: {transitionRectTransform.anchoredPosition}");                
 
                 yield return null;
             }
 
             transitionRectTransform.anchoredPosition = endPosition;
 
-            if (debug)
-            {
-                Debug.Log($"[SceneTransitionAnimator] Slide {(slideIn ? "in" : "out")} completed.");
-            }
+            if (debug) Debug.Log($"[SceneTransitionAnimator] Slide {(slideIn ? "in" : "out")} completed.");
+            
         }
 
+        // 
         private Vector2 DetermineOriginalImageSize()
         {
             if (transitionImage.sprite != null)
@@ -255,7 +269,6 @@ namespace Cybercitic.SceneManagement
         }
 
         private float GetOffScreenLeft() => -Screen.width - (originalImageSize.x * 0.5f);
-
         private float GetOffScreenRight() => Screen.width + (originalImageSize.x * 0.5f);
     }
 }

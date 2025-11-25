@@ -1,8 +1,7 @@
 namespace Cybercitic.UI
 {
     /// <summary>
-    /// Adapter to make CurrencyManager implement ICurrencyService.
-    /// Enables dependency inversion while maintaining compatibility.
+    /// Adapter to make CurrencyManager implement ICurrencyService
     /// </summary>
     public class CurrencyManagerAdapter : ICurrencyService
     {

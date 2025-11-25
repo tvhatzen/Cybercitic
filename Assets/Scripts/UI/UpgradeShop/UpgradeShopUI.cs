@@ -7,9 +7,9 @@ using static GameState;
 namespace Cybercitic.UI
 {
     /// <summary>
-    /// Main upgrade shop UI coordinator.
-    /// Coordinates between panels and handles UI lifecycle.
-    /// Business logic is delegated to UpgradeShopController.
+    /// Main upgrade shop UI coordinator
+    /// Coordinates between panels and handles UI lifecycle
+    /// Business logic is delegated to UpgradeShopController
     /// </summary>
     public class UpgradeShopUI : MonoBehaviour
     {
@@ -99,7 +99,7 @@ namespace Cybercitic.UI
             {
                 if (display != null)
                 {
-                    // Convert from old BodyPart enum to new one
+                    // convert from old BodyPart enum to new one
                     Upgrade.BodyPart bodyPart = ConvertBodyPart(display.BodyPart);
                     equippedPanel.RegisterDisplay(bodyPart, display);
                 }
@@ -149,7 +149,7 @@ namespace Cybercitic.UI
             }
             else
             {
-                // Fallback to legacy initialization
+                // Fallback to old initialization
                 LoadUpgradesLegacy();
             }
 

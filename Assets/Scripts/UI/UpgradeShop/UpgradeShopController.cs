@@ -4,9 +4,9 @@ using UnityEngine;
 namespace Cybercitic.UI
 {
     /// <summary>
-    /// Controller for upgrade shop business logic.
-    /// Handles purchase validation, state management, and coordinates between panels.
-    /// Separates business logic from UI presentation.
+    /// Controller for upgrade shop business logic
+    /// Handles purchase validation, state management, and coordinates between panels
+    /// Separates business logic from UI presentation
     /// </summary>
     public class UpgradeShopController
     {
@@ -33,10 +33,7 @@ namespace Cybercitic.UI
             selectedUpgrade = upgrade;
             OnUpgradeSelected?.Invoke(upgrade);
 
-            if (debug)
-            {
-                Debug.Log($"[UpgradeShopController] Selected upgrade: {upgrade?.UpgradeName ?? "null"}");
-            }
+            if (debug) Debug.Log($"[UpgradeShopController] Selected upgrade: {upgrade?.UpgradeName ?? "null"}");
         }
 
         public PurchaseButtonState GetPurchaseButtonState(Upgrade upgrade)
@@ -67,6 +64,11 @@ namespace Cybercitic.UI
             return currencyService.CanAfford(cost);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="upgrade"></param>
+        /// <returns></returns>
         public bool PurchaseUpgrade(Upgrade upgrade)
         {
             if (upgrade == null)
@@ -87,14 +89,10 @@ namespace Cybercitic.UI
             if (success)
             {
                 OnUpgradePurchased?.Invoke(upgrade);
-                if (debug)
-                {
-                    Debug.Log($"[UpgradeShopController] Successfully purchased {upgrade.UpgradeName}");
-                }
+                if (debug) Debug.Log($"[UpgradeShopController] Successfully purchased {upgrade.UpgradeName}");
             }
 
             return success;
         }
     }
 }
-

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 namespace Cybercitic.UI
 {
     /// <summary>
-    /// Interface for upgrade management services.
-    /// Enables dependency inversion and testability.
+    /// Interface for upgrade management services
     /// </summary>
     public interface IUpgradeService
     {

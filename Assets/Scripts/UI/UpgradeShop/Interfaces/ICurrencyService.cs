@@ -1,8 +1,7 @@
 namespace Cybercitic.UI
 {
     /// <summary>
-    /// Interface for currency management services.
-    /// Enables dependency inversion and testability.
+    /// Interface for currency management services
     /// </summary>
     public interface ICurrencyService
     {

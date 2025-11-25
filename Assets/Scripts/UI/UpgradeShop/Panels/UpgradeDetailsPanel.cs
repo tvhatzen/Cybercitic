@@ -5,8 +5,8 @@ using TMPro;
 namespace Cybercitic.UI
 {
     /// <summary>
-    /// Handles the upgrade details panel UI.
-    /// Displays upgrade information and purchase button.
+    /// Handles the upgrade details panel UI
+    /// Displays upgrade information and purchase button
     /// </summary>
     public class UpgradeDetailsPanel : MonoBehaviour
     {
@@ -145,4 +145,3 @@ namespace Cybercitic.UI
         CannotAfford
     }
 }
-

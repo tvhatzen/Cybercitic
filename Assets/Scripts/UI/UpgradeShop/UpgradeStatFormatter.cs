@@ -3,8 +3,8 @@ using UnityEngine;
 namespace Cybercitic.UI
 {
     /// <summary>
-    /// Encapsulates stat formatting logic for upgrades.
-    /// Separates formatting concerns from UI display logic.
+    /// Encapsulates stat formatting logic for upgrades
+    /// Separates formatting concerns from UI display logic
     /// </summary>
     public static class UpgradeStatFormatter
     {
@@ -19,6 +19,11 @@ namespace Cybercitic.UI
             return $"<b>{statName} {displayValue} \n<b>Level:</b> {upgrade.CurrentLevel}/{upgrade.MaxLevel}";
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="upgradeType"></param>
+        /// <returns></returns>
         private static string GetStatName(Upgrade.UpgradeType upgradeType)
         {
             return upgradeType switch
@@ -32,6 +37,12 @@ namespace Cybercitic.UI
             };
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="upgradeType"></param>
+        /// <param name="increaseAmount"></param>
+        /// <returns></returns>
         private static string GetDisplayValue(Upgrade.UpgradeType upgradeType, float increaseAmount)
         {
             return upgradeType switch
@@ -46,4 +57,3 @@ namespace Cybercitic.UI
         }
     }
 }
-
