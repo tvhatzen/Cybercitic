@@ -84,6 +84,13 @@ public class SpawnManager : SingletonBase<SpawnManager>
 
     public void LoadEnemySpawnData()
     {
+        // tutorial floors
+        // * would need a time stop system for prompting tutorial UI
+        //enemiesForThisFloor.Add(1, new List<string> { "Enemy_Basic" }); // first enemy
+        //enemiesForThisFloor.Add(1, new List<string> { "Enemy_Elite" }); // harder enemy
+        //enemiesForThisFloor.Add(1, new List<string> { "Enemy_Boss" }); // test first easy boss
+
+        // gameplay floors
         enemiesForThisFloor.Add(1, new List<string> { "Enemy_Basic", "Enemy_Basic", "Enemy_Basic" });
         enemiesForThisFloor.Add(2, new List<string> { "Enemy_Basic", "Enemy_Basic", "Enemy_Elite" });
         enemiesForThisFloor.Add(3, new List<string> { "Enemy_Basic", "Enemy_Elite", "Enemy_Elite" });

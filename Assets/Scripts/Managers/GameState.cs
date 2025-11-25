@@ -9,6 +9,7 @@ public class GameState : SingletonBase<GameState>
     {
         MainMenu,
         Tutorial,
+        TutorialLevel,
         Playing,
         Paused,
         Upgrade,
@@ -26,6 +27,7 @@ public class GameState : SingletonBase<GameState>
     public bool debug = false;
 
     private bool tutorialShown = false;
+    private bool inTutorialLevel = false;
 
     [Header("References")]
     [SerializeField] private FloorManager floorManager;
