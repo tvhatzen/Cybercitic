@@ -60,7 +60,7 @@ public class SpawnManager : SingletonBase<SpawnManager>
         }
 
         // Try to load from Resources folder
-        GameObject prefab = Resources.Load<GameObject>($"Prefabs/{name}");
+        GameObject prefab = Resources.Load<GameObject>($"Prefabs/Enemies/{name}");
         
         if (prefab == null)
         {
@@ -86,9 +86,9 @@ public class SpawnManager : SingletonBase<SpawnManager>
     {
         // tutorial floors
         // * would need a time stop system for prompting tutorial UI
-        enemiesForTutorialFloor.Add(1, new List<string> { "TurorialEnemy_Basic" }); // first enemy
-        enemiesForTutorialFloor.Add(2, new List<string> { "TutorialEnemy_Elite" }); // harder enemy
-        enemiesForTutorialFloor.Add(3, new List<string> { "TutorialEnemy_Boss" }); // test first easy boss
+        //enemiesForTutorialFloor.Add(1, new List<string> { "TurorialEnemy_Basic" }); // first enemy
+        //enemiesForTutorialFloor.Add(2, new List<string> { "TutorialEnemy_Elite" }); // harder enemy
+        //enemiesForTutorialFloor.Add(3, new List<string> { "TutorialEnemy_Boss" }); // test first easy boss
 
         // gameplay floors
         enemiesForThisFloor.Add(1, new List<string> { "Enemy_Basic", "Enemy_Basic", "Enemy_Basic" });
@@ -331,39 +331,39 @@ public class SpawnManager : SingletonBase<SpawnManager>
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public void SpawnTutorialEnemy()
-    {
-        List<string> enemyNameForFloor = enemiesForTutorialFloor[CurrentFloor];
-        int spawnedCount = 0;
+    ///// <summary>
+    ///// 
+    ///// </summary>
+    //public void SpawnTutorialEnemy()
+    //{
+    //    List<string> enemyNameForFloor = enemiesForTutorialFloor[CurrentFloor];
+    //    int spawnedCount = 0;
 
-        for (int i = 0; i < enemyNameForFloor.Count && i < EnemySpawnPoints.Count; i++)
-        {
-            string enemyName = enemyNameForFloor[i];
-            Transform point = EnemySpawnPoints[i];
+    //    for (int i = 0; i < enemyNameForFloor.Count && i < EnemySpawnPoints.Count; i++)
+    //    {
+    //        string enemyName = enemyNameForFloor[i];
+    //        Transform point = EnemySpawnPoints[i];
 
-            if (point == null)
-            {
-                continue;
-            }
+    //        if (point == null)
+    //        {
+    //            continue;
+    //        }
 
-            GameObject prefab = GetPrefabFromName(enemyName);
-            if (prefab == null)
-            {
-                continue;
-            }
+    //        GameObject prefab = GetPrefabFromName(enemyName);
+    //        if (prefab == null)
+    //        {
+    //            continue;
+    //        }
 
-            GameObject enemy = Object.Instantiate(prefab, point.position, point.rotation);
+    //        GameObject enemy = Object.Instantiate(prefab, point.position, point.rotation);
 
-            if (!enemy.activeInHierarchy)
-            {
-                enemy.SetActive(true);
-            }
+    //        if (!enemy.activeInHierarchy)
+    //        {
+    //            enemy.SetActive(true);
+    //        }
 
-            GameEvents.EnemySpawned(enemy);
-            spawnedCount++;
-        }
-    }
+    //        GameEvents.EnemySpawned(enemy);
+    //        spawnedCount++;
+    //    }
+    //}
 }
