@@ -1815,8 +1815,7 @@ MonoBehaviour:
   m_text: "Music Credits\n\n\"Airship Serenity\", \"Equatorial Complex\", \n\"Exit
     the Premises\", \"Rhinoceros\", \"Unwritten Return\"\nKevin MacLeod (incompetech.com)\nLicensed
     under Creative Commons: By Attribution 3.0\nhttp://creativecommons.org/licenses/by/3.0/\n\nMusic
-    from JohnnyDog \nSong title: The Lab\nLink - \"https://youtu.be/yMpNPtta0us?si=uoFeQ6OnD6dnlsfR\"\n\nShield
-    from Luminary Labs - Unity Asset Store\n\n"
+    from JohnnyDog \nSong title: The Lab\nLink - \"https://youtu.be/yMpNPtta0us?si=uoFeQ6OnD6dnlsfR\"\n\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6676,6 +6675,22 @@ PrefabInstance:
     - target: {fileID: 3607871983656539195, guid: 2c8fd6b88646b0245b48b6c62b17a003, type: 3}
       propertyPath: m_Color.r
       value: 0.10196079
+      objectReference: {fileID: 0}
+    - target: {fileID: 6870758952821322950, guid: 2c8fd6b88646b0245b48b6c62b17a003, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6870758952821322950, guid: 2c8fd6b88646b0245b48b6c62b17a003, type: 3}
+      propertyPath: m_Color.b
+      value: 0.1254902
+      objectReference: {fileID: 0}
+    - target: {fileID: 6870758952821322950, guid: 2c8fd6b88646b0245b48b6c62b17a003, type: 3}
+      propertyPath: m_Color.g
+      value: 0.1254902
+      objectReference: {fileID: 0}
+    - target: {fileID: 6870758952821322950, guid: 2c8fd6b88646b0245b48b6c62b17a003, type: 3}
+      propertyPath: m_Color.r
+      value: 0.1254902
       objectReference: {fileID: 0}
     - target: {fileID: 7020756677422726156, guid: 2c8fd6b88646b0245b48b6c62b17a003, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
