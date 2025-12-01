@@ -163,6 +163,17 @@ public class trigger : MonoBehaviour
 
     private void LoadNextFloor()
     {
+        // Play level transition sound
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySound("levelTransition");
+            if(debug) Debug.Log("[Trigger] Playing level transition sound");
+        }
+        else
+        {
+            if(debug) Debug.LogWarning("[Trigger] AudioManager.Instance is null, cannot play level transition sound");
+        }
+
         if (loadNewScene)
         {
             // load a new scene
