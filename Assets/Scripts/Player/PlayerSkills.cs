@@ -223,7 +223,8 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
     {
         if (debug) Debug.Log("[PlayerSkills] Resetting all equipped skills");
         
-        // clear all equipped skills
+        // Lock all skills but keep the equipped skills list intact
+        // This way we can re-unlock them when starting a new game
         for (int i = 0; i < equippedSkills.Count; i++)
         {
             if (equippedSkills[i] != null)
@@ -232,13 +233,42 @@ public class PlayerSkills : SingletonBase<PlayerSkills>
                 {
                     skillManager.LockSkill(equippedSkills[i]);
                 }
-                equippedSkills[i] = null;
+                // Don't clear the equipped skills - keep them for re-unlocking
             }
         }
         
-        // clear the list
-        equippedSkills.Clear();
+        if (debug) Debug.Log($"[PlayerSkills] All skills locked for fresh start (kept {equippedSkills.Count} skills in equipped list)");
+    }
+    
+    // Re-unlock all equipped skills (called when starting a new game)
+    public void ReunlockEquippedSkills()
+    {
+        if (equippedSkills == null || equippedSkills.Count == 0)
+        {
+            if (debug) Debug.Log("[PlayerSkills] No equipped skills to re-unlock");
+            return;
+        }
         
-        if (debug) Debug.Log("[PlayerSkills] All skills cleared for fresh start");
+        if (debug) Debug.Log($"[PlayerSkills] Re-unlocking {equippedSkills.Count} equipped skills");
+        
+        int unlockedCount = 0;
+        for (int i = 0; i < equippedSkills.Count; i++)
+        {
+            if (equippedSkills[i] != null)
+            {
+                if (skillManager != null)
+                {
+                    skillManager.UnlockSkill(equippedSkills[i]);
+                    unlockedCount++;
+                    if (debug) Debug.Log($"[PlayerSkills] Re-unlocked skill: {equippedSkills[i].SkillName}");
+                }
+                else
+                {
+                    if (debug) Debug.LogWarning($"[PlayerSkills] SkillManager is null, cannot unlock {equippedSkills[i].SkillName}");
+                }
+            }
+        }
+        
+        if (debug) Debug.Log($"[PlayerSkills] Re-unlocked {unlockedCount} out of {equippedSkills.Count} equipped skills");
     }
 }

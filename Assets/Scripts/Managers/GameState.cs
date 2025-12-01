@@ -97,6 +97,14 @@ public class GameState : SingletonBase<GameState>
             if(debug) Debug.Log("Floor reset to 1 for fresh start from main menu");
         }
 
+        // Re-unlock any equipped skills when starting gameplay
+        // This ensures skills are available even after reset
+        if (PlayerSkills.Instance != null)
+        {
+            PlayerSkills.Instance.ReunlockEquippedSkills();
+            if(debug) Debug.Log("Re-unlocked equipped skills for new gameplay");
+        }
+
         // change state to playing
         ChangeState(GameStates.Playing);
     }
