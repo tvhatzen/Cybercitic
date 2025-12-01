@@ -35,6 +35,12 @@ public class PlayerDeathCamera : MonoBehaviour
     private GameObject playerObject;
     private PlayerMovement playerMovement;
     private FrameBasedPlayerAnimator playerAnimator;
+    private PlayerAttack playerAttack;
+    private PlayerCombat playerCombat;
+    
+    // Store original enabled states to restore later
+    private bool originalPlayerAttackEnabled = true;
+    private bool originalPlayerCombatEnabled = true;
 
     // camera elements
     private float originalCameraSize;
@@ -62,6 +68,8 @@ public class PlayerDeathCamera : MonoBehaviour
             playerHealthSystem = playerObject.GetComponent<HealthSystem>();
             playerMovement = playerObject.GetComponent<PlayerMovement>();
             playerAnimator = playerObject.GetComponent<FrameBasedPlayerAnimator>();
+            playerAttack = playerObject.GetComponent<PlayerAttack>();
+            playerCombat = playerObject.GetComponent<PlayerCombat>();
             
             // Check if camera is a child of the player
             if (targetCamera == null)
@@ -336,6 +344,22 @@ public class PlayerDeathCamera : MonoBehaviour
             playerMovement.CanMove = false;
         }
 
+        // Disable player attacks - this prevents PlayerAttack.Update() from running
+        if (playerAttack != null)
+        {
+            originalPlayerAttackEnabled = playerAttack.enabled;
+            playerAttack.enabled = false;
+            if (debug) Debug.Log($"[PlayerDeathCamera] Disabled player attacks (was {originalPlayerAttackEnabled})");
+        }
+        
+        // Also disable PlayerCombat to prevent entering combat state
+        if (playerCombat != null)
+        {
+            originalPlayerCombatEnabled = playerCombat.enabled;
+            playerCombat.enabled = false;
+            if (debug) Debug.Log($"[PlayerDeathCamera] Disabled player combat (was {originalPlayerCombatEnabled})");
+        }
+
         // Freeze animation at current frame
         if (freezeAnimationOnDeath && playerAnimator != null)
         {
@@ -354,6 +378,20 @@ public class PlayerDeathCamera : MonoBehaviour
         if (sustainHitEffect && playerHealthSystem != null)
         {
             playerHealthSystem.EndDeathHitEffect();
+        }
+        
+        // Re-enable player attacks and combat before disabling the GameObject
+        // This ensures they're enabled when the player respawns
+        if (playerAttack != null)
+        {
+            playerAttack.enabled = originalPlayerAttackEnabled;
+            if (debug) Debug.Log($"[PlayerDeathCamera] Re-enabled player attacks (restored to {originalPlayerAttackEnabled})");
+        }
+        
+        if (playerCombat != null)
+        {
+            playerCombat.enabled = originalPlayerCombatEnabled;
+            if (debug) Debug.Log($"[PlayerDeathCamera] Re-enabled player combat (restored to {originalPlayerCombatEnabled})");
         }
     }
     

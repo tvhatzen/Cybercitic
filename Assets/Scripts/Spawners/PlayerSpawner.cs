@@ -111,7 +111,21 @@ public class PlayerSpawner : SpawnerBase
         if (combat != null)
         {
             combat.ForceResetCombatState();
+            // Ensure combat component is enabled (may have been disabled during death effect)
+            if (!combat.enabled)
+            {
+                combat.enabled = true;
+                DebugLog("[PlayerSpawner] Re-enabled PlayerCombat component");
+            }
             DebugLog("[PlayerSpawner] Reset player combat state");
+        }
+        
+        // Ensure PlayerAttack is enabled (may have been disabled during death effect)
+        var attack = playerGO.GetComponent<PlayerAttack>();
+        if (attack != null && !attack.enabled)
+        {
+            attack.enabled = true;
+            DebugLog("[PlayerSpawner] Re-enabled PlayerAttack component");
         }
 
         var healthBar = playerGO.GetComponent<HealthBar>();
