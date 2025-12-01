@@ -70,6 +70,10 @@ public class AudioManager : SingletonBase<AudioManager>
         if (musicSource != null) musicSource.spatialBlend = 0f;
         if (sfxSource != null) sfxSource.spatialBlend = 0f;
         if (debug) Debug.Log("[AudioManager] Initialized audio sources as 2D (spatialBlend=0)");
+        
+        // Play main menu music by default when game starts
+        PlayMusicTrack("mainmenu");
+        if (debug) Debug.Log("[AudioManager] Started playing main menu music by default");
     }
 
     private void OnDestroy()
