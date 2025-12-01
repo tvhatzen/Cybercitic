@@ -438,14 +438,67 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         if (UpgradeManager.Instance == null) return null;
 
         var allUpgrades = UpgradeManager.Instance.GetAllUpgrades();
+        
+        // First, try to match by BodyPart (preferred method)
         foreach (var upgrade in allUpgrades)
         {
             if (upgrade == null) continue;
             if (GetBodyPartFromUpgrade(upgrade) == bodyPart)
             {
+                if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Found upgrade '{upgrade.UpgradeName}' for {bodyPart} by BodyPart match");
                 return upgrade;
             }
         }
+        
+        // Fallback: try to match by upgrade name (in case BodyPart is incorrectly set in Inspector)
+        string bodyPartName = bodyPart.ToString();
+        string bodyPartNameNoSpaces = bodyPartName.Replace(" ", "").Replace("_", "");
+        
+        foreach (var upgrade in allUpgrades)
+        {
+            if (upgrade == null || string.IsNullOrEmpty(upgrade.UpgradeName)) continue;
+            
+            string upgradeName = upgrade.UpgradeName;
+            string upgradeNameLower = upgradeName.ToLower();
+            string upgradeNameNoSpaces = upgradeNameLower.Replace(" ", "").Replace("_", "");
+            string bodyPartNameLower = bodyPartName.ToLower();
+            
+            // Try various matching strategies
+            bool matches = false;
+            
+            // Exact match (case insensitive, no spaces)
+            if (upgradeNameNoSpaces == bodyPartNameNoSpaces)
+            {
+                matches = true;
+            }
+            // Contains match (e.g., "Left Arm" contains "LeftArm")
+            else if (upgradeNameNoSpaces.Contains(bodyPartNameNoSpaces) || bodyPartNameNoSpaces.Contains(upgradeNameNoSpaces))
+            {
+                matches = true;
+            }
+            // Word match (e.g., "Left Arm" matches "LeftArm" or "Left Arm" matches "LeftArm")
+            else if ((upgradeNameLower.Contains("left") && bodyPartNameLower.Contains("left")) ||
+                     (upgradeNameLower.Contains("right") && bodyPartNameLower.Contains("right")))
+            {
+                // Check if both contain the same part type (arm/leg/core)
+                bool bothHaveArm = upgradeNameLower.Contains("arm") && bodyPartNameLower.Contains("arm");
+                bool bothHaveLeg = upgradeNameLower.Contains("leg") && bodyPartNameLower.Contains("leg");
+                bool bothHaveCore = upgradeNameLower.Contains("core") && bodyPartNameLower.Contains("core");
+                
+                if (bothHaveArm || bothHaveLeg || bothHaveCore)
+                {
+                    matches = true;
+                }
+            }
+            
+            if (matches)
+            {
+                if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Found upgrade '{upgrade.UpgradeName}' for {bodyPart} by name match (BodyPart was: {GetBodyPartFromUpgrade(upgrade)})");
+                return upgrade;
+            }
+        }
+        
+        if (debug) Debug.LogWarning($"[FrameBasedPlayerAnimator] No upgrade found for {bodyPart}");
         return null;
     }
 
@@ -456,6 +509,15 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         var upgrade = GetUpgradeForBodyPart(bodyPartFrame.bodyPart);
         int upgradeLevel = upgrade != null ? upgrade.CurrentLevel : 0;
 
+        if (debug && upgrade != null)
+        {
+            Debug.Log($"[FrameBasedPlayerAnimator] Getting sprite for {bodyPartFrame.bodyPart} - Upgrade: {upgrade.UpgradeName}, Level: {upgradeLevel}, Available sprites: {bodyPartFrame.upgradedSprites.Count}");
+        }
+        else if (debug && upgrade == null)
+        {
+            Debug.LogWarning($"[FrameBasedPlayerAnimator] No upgrade found for {bodyPartFrame.bodyPart}, using base sprite");
+        }
+
         // get the sprite based on upgrade level
         if (upgradeLevel == 0)
         {
@@ -463,14 +525,19 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
         }
         else if (upgradeLevel > 0 && upgradeLevel <= bodyPartFrame.upgradedSprites.Count)
         {
-            return bodyPartFrame.upgradedSprites[upgradeLevel - 1];
+            Sprite selectedSprite = bodyPartFrame.upgradedSprites[upgradeLevel - 1];
+            if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Selected upgraded sprite index {upgradeLevel - 1} for {bodyPartFrame.bodyPart} (level {upgradeLevel})");
+            return selectedSprite;
         }
         else if (bodyPartFrame.upgradedSprites.Count > 0)
         {
-            return bodyPartFrame.upgradedSprites[bodyPartFrame.upgradedSprites.Count - 1];
+            Sprite selectedSprite = bodyPartFrame.upgradedSprites[bodyPartFrame.upgradedSprites.Count - 1];
+            if (debug) Debug.LogWarning($"[FrameBasedPlayerAnimator] Upgrade level {upgradeLevel} exceeds available sprites ({bodyPartFrame.upgradedSprites.Count}), using last sprite for {bodyPartFrame.bodyPart}");
+            return selectedSprite;
         }
 
         // fallback to base sprite
+        if (debug) Debug.LogWarning($"[FrameBasedPlayerAnimator] No upgraded sprites available for {bodyPartFrame.bodyPart}, using base sprite");
         return bodyPartFrame.baseSprite;
     }
 
@@ -492,8 +559,78 @@ public class FrameBasedPlayerAnimator : MonoBehaviour
 
     private void OnUpgradePurchased(Upgrade upgrade)
     {
+        if (upgrade == null) return;
+        
+        if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Upgrade purchased: {upgrade.UpgradeName} (BodyPart: {upgrade.GetBodyPart()}, Level: {upgrade.CurrentLevel})");
+        
+        // Force update sprites immediately, even if animation is playing
+        // This ensures the visual representation updates right away
+        UpdateBodyPartSpritesImmediate(upgrade);
+        
+        // Also update the general body part sprites
         UpdateBodyPartSprites();
-        if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Upgrade purchased: {upgrade.UpgradeName}");
+    }
+    
+    // Immediately update sprites for a specific upgrade's body part
+    private void UpdateBodyPartSpritesImmediate(Upgrade upgrade)
+    {
+        if (upgrade == null) return;
+        
+        Upgrade.BodyPart bodyPart = upgrade.GetBodyPart();
+        
+        // Find the body part frame for this upgrade
+        if (bodyPartLookup.TryGetValue(bodyPart, out var bodyPartFrame))
+        {
+            if (bodyPartFrame.spriteRenderer != null)
+            {
+                // Get the current animation frame index
+                int frameIndex = isPlaying ? currentFrameIndex : 0;
+                
+                // Get the appropriate sprite for the current upgrade level
+                Sprite newSprite = GetSpriteForAnimationFrame(bodyPartFrame, frameIndex);
+                
+                if (newSprite != null)
+                {
+                    bodyPartFrame.spriteRenderer.sprite = newSprite;
+                    bodyPartFrame.spriteRenderer.enabled = true;
+                    
+                    if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Updated {bodyPart} sprite to level {upgrade.CurrentLevel} sprite immediately");
+                }
+            }
+        }
+        else
+        {
+            // Try to find by name matching as fallback
+            foreach (var sequence in animationSequences)
+            {
+                foreach (var frame in sequence.frames)
+                {
+                    foreach (var bpf in frame.bodyPartFrames)
+                    {
+                        var matchingUpgrade = GetUpgradeForBodyPart(bpf.bodyPart);
+                        if (matchingUpgrade != null && matchingUpgrade.UpgradeName == upgrade.UpgradeName)
+                        {
+                            if (bpf.spriteRenderer != null)
+                            {
+                                int frameIndex = isPlaying ? currentFrameIndex : 0;
+                                Sprite newSprite = GetSpriteForAnimationFrame(bpf, frameIndex);
+                                
+                                if (newSprite != null)
+                                {
+                                    bpf.spriteRenderer.sprite = newSprite;
+                                    bpf.spriteRenderer.enabled = true;
+                                    
+                                    if (debug) Debug.Log($"[FrameBasedPlayerAnimator] Updated {bpf.bodyPart} sprite (matched by name) to level {upgrade.CurrentLevel} sprite immediately");
+                                }
+                            }
+                            return;
+                        }
+                    }
+                }
+            }
+            
+            if (debug) Debug.LogWarning($"[FrameBasedPlayerAnimator] Could not find body part frame for upgrade {upgrade.UpgradeName} (BodyPart: {bodyPart})");
+        }
     }
 
     public void PlayAttackAnimation() => PlayAnimationOnce("Attack");
