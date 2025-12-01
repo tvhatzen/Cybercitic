@@ -24,6 +24,7 @@ public class EnemyCombat : MonoBehaviour
 
     // only attack if player is in combat
     private bool canAttack = false;
+    private bool forceEnabled = false; // Track if combat was force-enabled (should not be disabled by events)
 
     [Header("DEBUG")]
     public bool debug = false;
@@ -37,7 +38,7 @@ public class EnemyCombat : MonoBehaviour
         entityData = GetComponent<EntityData>();
 
         // try to find player
-        player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        FindPlayer();
 
         // set damage from EntityData
         if (entityData != null)
@@ -49,6 +50,38 @@ public class EnemyCombat : MonoBehaviour
         GameEvents.OnPlayerExitCombat += DisableCombat;
     }
 
+    private void Start()
+    {
+        // Ensure player is found after all objects are initialized
+        if (player == null)
+        {
+            FindPlayer();
+        }
+    }
+
+    private void FindPlayer()
+    {
+        // Try multiple methods to find the player
+        if (PlayerInstance.Instance != null)
+        {
+            player = PlayerInstance.Instance.transform;
+            if (debug) Debug.Log($"[EnemyCombat] {name} found player via PlayerInstance");
+        }
+        else
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+            {
+                player = playerObj.transform;
+                if (debug) Debug.Log($"[EnemyCombat] {name} found player via FindGameObjectWithTag");
+            }
+            else if (debug)
+            {
+                Debug.LogWarning($"[EnemyCombat] {name} could not find player!");
+            }
+        }
+    }
+
     protected virtual void OnDestroy()
     {
         // Unsubscribe to combat event
@@ -58,9 +91,23 @@ public class EnemyCombat : MonoBehaviour
 
     public virtual void Update()
     {
-        if (!canAttack) return; // only attack if combat is active
+        if (!canAttack)
+        {
+            if (debug) Debug.LogWarning($"[EnemyCombat] {name} cannot attack - canAttack is false");
+            return; // only attack if combat is active
+        }
         if (health == null || health.CurrentHealth <= 0) return;
-        if (player == null) return;
+        
+        // Try to find player if null
+        if (player == null)
+        {
+            FindPlayer();
+            if (player == null)
+            {
+                if (debug) Debug.LogWarning($"[EnemyCombat] {name} cannot attack - player is null");
+                return; // still can't find player, skip this frame
+            }
+        }
 
         var playerHealth = player.GetComponent<HealthSystem>();
         if (playerHealth != null && playerHealth.CurrentHealth > 0)
@@ -70,6 +117,10 @@ public class EnemyCombat : MonoBehaviour
             if (distanceToPlayer <= attackRange)
             {
                 TryAttack(playerHealth);
+            }
+            else if (debug)
+            {
+                Debug.Log($"[EnemyCombat] {name} player out of range: {distanceToPlayer:F2} > {attackRange}");
             }
         }
     }
@@ -132,6 +183,8 @@ public class EnemyCombat : MonoBehaviour
             if (t == transform)
             {
                 canAttack = true;
+                // If combat was force-enabled, keep that flag (don't reset it)
+                // This allows normal combat flow while preserving force-enabled state
                 // Set next attack time to current time + cooldown to prevent immediate attack
                 nextAttackTime = Time.time + attackCooldown;
                 if (debug) Debug.Log($"[EnemyCombat] {name} combat enabled, next attack in {attackCooldown}s");
@@ -142,16 +195,30 @@ public class EnemyCombat : MonoBehaviour
     
     private void DisableCombat()
     {
+        // Don't disable if combat was force-enabled (e.g., after respawn)
+        if (forceEnabled)
+        {
+            if (debug) Debug.Log($"[EnemyCombat] {name} combat disable ignored - force enabled");
+            return;
+        }
         canAttack = false;
+        if (debug) Debug.Log($"[EnemyCombat] {name} combat disabled");
     }
 
     // Public method to force enable combat (used after respawn)
     public void ForceEnableCombat()
     {
+        // Ensure player reference is found before enabling combat
+        if (player == null)
+        {
+            FindPlayer();
+        }
+        
+        forceEnabled = true; // Mark as force-enabled so DisableCombat won't turn it off
         canAttack = true;
         // Set next attack time to current time + cooldown to prevent immediate attack
         nextAttackTime = Time.time + attackCooldown;
-        if (debug) Debug.Log($"[EnemyCombat] {name} combat force enabled, next attack in {attackCooldown}s");
+        if (debug) Debug.Log($"[EnemyCombat] {name} combat force enabled, next attack in {attackCooldown}s, player found: {player != null}");
     }
 
     // Draw attack range

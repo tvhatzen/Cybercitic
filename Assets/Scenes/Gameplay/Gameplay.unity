@@ -1227,7 +1227,7 @@ MonoBehaviour:
   bossFloorInterval: 5
   isFinalFloor: 0
   isRunning: 0
-  debug: 0
+  debug: 1
   _floorProgressBar: {fileID: 1581502389}
 --- !u!4 &596789177
 Transform:
@@ -2702,7 +2702,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5912712985965815511, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: debug
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5912712985965815511, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: maxHealth

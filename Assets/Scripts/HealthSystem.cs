@@ -72,6 +72,14 @@ public class HealthSystem : MonoBehaviour
     private void OnEnable()
     {
         isShaking = false;
+        
+        // Safety: Always clear shield immunity when the GameObject is enabled
+        // This ensures it doesn't persist between runs
+        if (CompareTag("Player"))
+        {
+            shieldImmunityActive = false;
+            if (debug) Debug.Log($"[HealthSystem] {name} OnEnable - cleared shield immunity");
+        }
     }
 
     public void TakeDamage(int amount)
@@ -79,13 +87,13 @@ public class HealthSystem : MonoBehaviour
         // Check shield immunity FIRST - before any other damage processing
         if (CompareTag("Player") && shieldImmunityActive)
         {
-            if (debug) Debug.Log($"[HealthSystem] {name} blocked {amount} damage due to active shield (shieldImmunityActive: {shieldImmunityActive})");
+            Debug.LogWarning($"[HealthSystem] {name} blocked {amount} damage due to active shield (shieldImmunityActive: {shieldImmunityActive})");
             return;
         }
         
-        if (debug && CompareTag("Player"))
+        if (CompareTag("Player"))
         {
-            Debug.Log($"[HealthSystem] {name} taking damage - shieldImmunityActive: {shieldImmunityActive}");
+            Debug.Log($"[HealthSystem] {name} taking {amount} damage - shieldImmunityActive: {shieldImmunityActive}, CurrentHealth: {currentHealth}");
         }
 
         // Check for dodge chance first (complete damage avoidance)

@@ -162,7 +162,7 @@ MonoBehaviour:
   flashDuration: 0.1
   shakeDuration: 0.2
   shakeMagnitude: 0.03
-  debug: 0
+  debug: 1
 --- !u!114 &1744117801021150717
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,7 +180,7 @@ MonoBehaviour:
   animDuration: 0.1
   animMagnitude: 5
   isAttacking: 0
-  debug: 0
+  debug: 1
 --- !u!114 &7473089266629081275
 MonoBehaviour:
   m_ObjectHideFlags: 0

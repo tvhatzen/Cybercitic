@@ -72,15 +72,38 @@ public class PlayerSpawner : SpawnerBase
         }
 
         var health = playerGO.GetComponent<HealthSystem>();
-        if (health != null && health.CurrentHealth <= 0)
+        if (health != null)
         {
-            health.ResetHealth();
-            DebugLog("[PlayerSpawner] Reset player health after death");
-
-            if (PlayerSkills.Instance != null)
+            // Always reset health system when spawning on floor 1 (new game) or when health is 0
+            // This ensures shield immunity and other states are cleared
+            // For floor 1, ALWAYS reset to ensure fresh start, regardless of current health
+            if (context.Floor == 1)
             {
-                PlayerSkills.Instance.ResetAllSkillCooldowns();
-                DebugLog("[PlayerSpawner] Reset all player skill cooldowns");
+                // Floor 1 = new game, always reset everything
+                health.ResetHealth();
+                // Explicitly clear shield immunity as a safety measure
+                health.SetShieldImmunity(false);
+                DebugLog($"[PlayerSpawner] Reset player health for new game (Floor: {context.Floor}, Health was: {health.CurrentHealth})");
+
+                if (PlayerSkills.Instance != null)
+                {
+                    PlayerSkills.Instance.ResetAllSkillCooldowns();
+                    DebugLog("[PlayerSpawner] Reset all player skill cooldowns");
+                }
+            }
+            else if (health.CurrentHealth <= 0)
+            {
+                // Player died, reset health
+                health.ResetHealth();
+                health.SetShieldImmunity(false);
+                DebugLog($"[PlayerSpawner] Reset player health after death (Floor: {context.Floor})");
+            }
+            else
+            {
+                // Even if not on floor 1 and health > 0, ensure shield immunity is cleared
+                // This prevents shield immunity from persisting between floors
+                health.SetShieldImmunity(false);
+                DebugLog($"[PlayerSpawner] Cleared shield immunity (Floor: {context.Floor})");
             }
         }
 

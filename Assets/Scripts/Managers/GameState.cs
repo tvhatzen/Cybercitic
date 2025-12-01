@@ -97,6 +97,14 @@ public class GameState : SingletonBase<GameState>
             if(debug) Debug.Log("Floor reset to 1 for fresh start from main menu");
         }
 
+        // Reset player state when starting a new game (not from death)
+        // This ensures shield immunity and other states are cleared
+        if (!fromDeath)
+        {
+            ResetPlayer();
+            if(debug) Debug.Log("Player state reset for new gameplay");
+        }
+
         // Re-unlock any equipped skills when starting gameplay
         // This ensures skills are available even after reset
         if (PlayerSkills.Instance != null)
@@ -162,10 +170,19 @@ public class GameState : SingletonBase<GameState>
 
         // reset health
         var health = playerGO.GetComponent<HealthSystem>();
-        if (health != null && GameStates.Win == CurrentState)
-            health.ResetToOriginalStats();
-
-        if (health != null) health.ResetHealth();
+        if (health != null)
+        {
+            if (GameStates.Win == CurrentState)
+                health.ResetToOriginalStats();
+            
+            // Always reset health to ensure shield immunity and other states are cleared
+            health.ResetHealth();
+            
+            // Explicitly clear shield immunity as a safety measure
+            health.SetShieldImmunity(false);
+            
+            if(debug) Debug.Log("[GameState] Player health system reset, shield immunity cleared");
+        }
 
         // reset position
         var movement = playerGO.GetComponent<PlayerMovement>();
