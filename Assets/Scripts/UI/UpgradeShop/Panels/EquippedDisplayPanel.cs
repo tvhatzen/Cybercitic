@@ -50,15 +50,15 @@ namespace Cybercitic.UI
             }
         }
 
-        public void UpdateAllDisplays(Dictionary<Upgrade.BodyPart, UpgradeButtonUI> upgradeButtons)
+        public void UpdateAllDisplays(Dictionary<string, UpgradeButtonUI> upgradeButtons)
         {
             foreach (var kvp in upgradeButtons)
             {
-                Upgrade.BodyPart bodyPart = kvp.Key;
                 UpgradeButtonUI button = kvp.Value;
 
                 if (button != null && button.Upgrade != null)
                 {
+                    Upgrade.BodyPart bodyPart = button.Upgrade.GetBodyPart();
                     UpdateDisplay(bodyPart, button.Upgrade);
                 }
             }

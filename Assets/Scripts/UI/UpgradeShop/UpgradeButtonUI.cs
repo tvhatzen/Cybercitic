@@ -33,7 +33,16 @@ public class UpgradeButtonUI : MonoBehaviour
         HideSquares();
 
         if (button == null)
+        {
+            // First try to get Button from this GameObject
             button = GetComponent<Button>();
+            
+            // If not found, search in children (Button component is on "Button" child GameObject)
+            if (button == null)
+            {
+                button = GetComponentInChildren<Button>(true);
+            }
+        }
             
         if (button != null)
             button.onClick.AddListener(OnButtonClicked);
@@ -130,8 +139,16 @@ public class UpgradeButtonUI : MonoBehaviour
         // check if player can afford the upgrade
         bool canAfford = controller != null && controller.CanAffordUpgrade(upgrade);
         
-        // disable button if maxed out or can't afford, enable otherwise
+        // Green (canPurchase) when: not maxed out AND can afford
+        // Red (cannotPurchase) when: maxed out OR can't afford
         bool shouldBeEnabled = !isMaxedOut && canAfford;
+        
+        if (debug)
+        {
+            int cost = upgrade.GetCost();
+            Debug.Log($"[UpgradeButtonUI] {upgrade.UpgradeName}: isMaxedOut={isMaxedOut}, canAfford={canAfford}, cost={cost}, shouldBeEnabled={shouldBeEnabled}");
+        }
+        
         SetButtonState(shouldBeEnabled);
     }
 
@@ -139,15 +156,69 @@ public class UpgradeButtonUI : MonoBehaviour
     {
         if (button == null) return;
 
-        var buttonVisual = button.GetComponent<Image>();
+        Image buttonVisual = null;
+        
+        // First, try to get Image from the Button GameObject itself (standard Unity Button setup)
+        if (button.gameObject != null)
+        {
+            buttonVisual = button.gameObject.GetComponent<Image>();
+        }
+        
+        // If not found, search in children of the Button GameObject
+        if (buttonVisual == null && button.gameObject != null)
+        {
+            buttonVisual = button.gameObject.GetComponentInChildren<Image>();
+        }
+        
+        // If still not found, search from this GameObject (parent) for any Image in the Button's hierarchy
+        if (buttonVisual == null)
+        {
+            // Get all Images in children of this GameObject
+            Image[] allImages = GetComponentsInChildren<Image>(true);
+            
+            // Find the Image that's part of the button's GameObject or its children
+            if (button.gameObject != null)
+            {
+                foreach (var img in allImages)
+                {
+                    if (img != null && (img.transform == button.transform || img.transform.IsChildOf(button.transform)))
+                    {
+                        buttonVisual = img;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (buttonVisual == null)
+        {
+            if (debug) Debug.LogWarning($"Button Image component not found for upgrade: {upgrade?.name ?? "null"}. Button GameObject: {button?.gameObject?.name ?? "null"}");
+            return;
+        }
 
         if (state == false)
         {
-            buttonVisual.sprite = cannotPurchase;
+            if (cannotPurchase != null)
+            {
+                buttonVisual.sprite = cannotPurchase;
+                if (debug) Debug.Log($"Set {upgrade?.name ?? "null"} button to cannotPurchase sprite");
+            }
+            else if (debug)
+            {
+                Debug.LogWarning($"CannotPurchase sprite is null for upgrade: {upgrade?.name ?? "null"}");
+            }
         }
         else if(state == true)
         {
-            buttonVisual.sprite = canPurchase;
+            if (canPurchase != null)
+            {
+                buttonVisual.sprite = canPurchase;
+                if (debug) Debug.Log($"Set {upgrade?.name ?? "null"} button to canPurchase sprite");
+            }
+            else if (debug)
+            {
+                Debug.LogWarning($"CanPurchase sprite is null for upgrade: {upgrade?.name ?? "null"}");
+            }
         }
 
         if (debug) Debug.Log($"Button state set to {(state ? "enabled" : "disabled")} for upgrade: {upgrade?.name ?? "null"}");
