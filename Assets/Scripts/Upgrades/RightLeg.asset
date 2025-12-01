@@ -20,5 +20,6 @@ MonoBehaviour:
   maxUpgradeLevel: 3
   costMultiplier: 1.5
   upgradeType: 1
+  bodyPart: 4
   statIncreasePerLevel: 0.15
   debug: 0

@@ -103,26 +103,86 @@ public class Upgrade : ScriptableObject
 
     protected virtual void ApplyUpgrade()
     {
-        if (EntityStats.Instance == null) return;
+        if (EntityStats.Instance == null)
+        {
+            if(debug) Debug.LogWarning($"[Upgrade] EntityStats.Instance is null, cannot apply upgrade for {upgradeName}");
+            return;
+        }
         
         float statIncrease = statIncreasePerLevel;
+        
+        if(debug) Debug.Log($"[Upgrade] Applying upgrade {upgradeName} - Type: {upgradeType}, Increase: {statIncrease}, Level: {currentLevel}");
         
         switch (upgradeType)
         {
             case UpgradeType.Health:
-                EntityStats.Instance.ModifyHealth(Mathf.RoundToInt(statIncrease * 100));
+                int healthIncrease = Mathf.RoundToInt(statIncrease * 100);
+                EntityStats.Instance.ModifyHealth(healthIncrease);
+                if(debug) Debug.Log($"[Upgrade] Applied health increase: {healthIncrease}");
                 break;
             case UpgradeType.Speed:
                 EntityStats.Instance.ModifySpeed(statIncrease);
+                if(debug) Debug.Log($"[Upgrade] Applied speed increase: {statIncrease}");
                 break;
             case UpgradeType.Attack:
-                EntityStats.Instance.ModifyAttack(Mathf.RoundToInt(statIncrease * 100));
+                int attackIncrease = Mathf.RoundToInt(statIncrease * 100);
+                EntityStats.Instance.ModifyAttack(attackIncrease);
+                if(debug) Debug.Log($"[Upgrade] Applied attack increase: {attackIncrease}");
                 break;
             case UpgradeType.Defense:
                 EntityStats.Instance.ModifyDefense(statIncrease);
+                if(debug) Debug.Log($"[Upgrade] Applied defense increase: {statIncrease}");
                 break;
             case UpgradeType.DodgeChance:
                 EntityStats.Instance.ModifyDodgeChance(statIncrease);
+                if(debug) Debug.Log($"[Upgrade] Applied dodge chance increase: {statIncrease}");
+                break;
+        }
+    }
+    
+    // Re-apply all upgrade levels (used when starting a new game or loading saved data)
+    // This applies the stat increase for each level the upgrade has
+    public void ReapplyAllLevels()
+    {
+        if (currentLevel <= 0) return;
+        
+        if(debug) Debug.Log($"[Upgrade] Re-applying {currentLevel} levels for {upgradeName}");
+        
+        if (EntityStats.Instance == null)
+        {
+            if(debug) Debug.LogWarning($"[Upgrade] EntityStats.Instance is null, cannot re-apply levels for {upgradeName}");
+            return;
+        }
+        
+        float statIncrease = statIncreasePerLevel;
+        float totalIncrease = statIncrease * currentLevel;
+        
+        if(debug) Debug.Log($"[Upgrade] Re-applying {upgradeName} - Type: {upgradeType}, Total increase: {totalIncrease} (Level {currentLevel} x {statIncrease})");
+        
+        // Apply the cumulative stat increase for all levels
+        switch (upgradeType)
+        {
+            case UpgradeType.Health:
+                int healthIncrease = Mathf.RoundToInt(totalIncrease * 100);
+                EntityStats.Instance.ModifyHealth(healthIncrease);
+                if(debug) Debug.Log($"[Upgrade] Re-applied health increase: {healthIncrease}");
+                break;
+            case UpgradeType.Speed:
+                EntityStats.Instance.ModifySpeed(totalIncrease);
+                if(debug) Debug.Log($"[Upgrade] Re-applied speed increase: {totalIncrease}");
+                break;
+            case UpgradeType.Attack:
+                int attackIncrease = Mathf.RoundToInt(totalIncrease * 100);
+                EntityStats.Instance.ModifyAttack(attackIncrease);
+                if(debug) Debug.Log($"[Upgrade] Re-applied attack increase: {attackIncrease}");
+                break;
+            case UpgradeType.Defense:
+                EntityStats.Instance.ModifyDefense(totalIncrease);
+                if(debug) Debug.Log($"[Upgrade] Re-applied defense increase: {totalIncrease}");
+                break;
+            case UpgradeType.DodgeChance:
+                EntityStats.Instance.ModifyDodgeChance(totalIncrease);
+                if(debug) Debug.Log($"[Upgrade] Re-applied dodge chance increase: {totalIncrease}");
                 break;
         }
     }

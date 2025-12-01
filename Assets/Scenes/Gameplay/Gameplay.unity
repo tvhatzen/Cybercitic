@@ -2482,7 +2482,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3149356929928338088, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: debug
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3149356929928338088, guid: 0ccab034e2f7b164c88571d1d835c345, type: 3}
       propertyPath: isPlaying
@@ -5947,7 +5947,7 @@ MonoBehaviour:
   currentAttack: 0
   currentDodgeChance: 0
   currentDefense: 0
-  debug: 0
+  debug: 1
 --- !u!1 &2144200188 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2850507931515852213, guid: 37841b7871cc6bd4cad2926e416b5063, type: 3}

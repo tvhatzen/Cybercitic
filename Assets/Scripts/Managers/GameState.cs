@@ -104,6 +104,14 @@ public class GameState : SingletonBase<GameState>
             PlayerSkills.Instance.ReunlockEquippedSkills();
             if(debug) Debug.Log("Re-unlocked equipped skills for new gameplay");
         }
+        
+        // Re-apply all upgrades based on their current levels
+        // This ensures stats are correctly updated when starting gameplay
+        if (UpgradeManager.Instance != null)
+        {
+            UpgradeManager.Instance.ReapplyAllUpgrades();
+            if(debug) Debug.Log("Re-applied all upgrades for new gameplay");
+        }
 
         // change state to playing
         ChangeState(GameStates.Playing);

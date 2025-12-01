@@ -87,4 +87,27 @@ public class UpgradeManager : SingletonBase<UpgradeManager>
         GameEvents.AllUpgradesReset();
         if(debug) Debug.Log("All upgrades reset - UI refresh event fired");
     }
+    
+    // Re-apply all upgrades based on their current levels (useful after loading or when starting gameplay)
+    public void ReapplyAllUpgrades()
+    {
+        if (EntityStats.Instance == null)
+        {
+            if(debug) Debug.LogWarning("[UpgradeManager] EntityStats.Instance is null, cannot re-apply upgrades");
+            return;
+        }
+        
+        if(debug) Debug.Log($"[UpgradeManager] Re-applying all upgrades based on current levels");
+        
+        foreach (var upgrade in allUpgrades)
+        {
+            if (upgrade != null && upgrade.CurrentLevel > 0)
+            {
+                upgrade.ReapplyAllLevels();
+                if(debug) Debug.Log($"[UpgradeManager] Re-applied {upgrade.UpgradeName} (Level {upgrade.CurrentLevel})");
+            }
+        }
+        
+        if(debug) Debug.Log("[UpgradeManager] Finished re-applying all upgrades");
+    }
 }
