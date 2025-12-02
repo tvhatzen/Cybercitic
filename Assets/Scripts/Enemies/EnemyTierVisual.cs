@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-// provides visual feedback for enemy tiers (right now is text only)
+// provides visual feedback for enemy tiers 
 public class EnemyTierVisual : MonoBehaviour
 {
     #region Variables
@@ -70,7 +70,7 @@ public class EnemyTierVisual : MonoBehaviour
         {
             int currentFloor = FloorManager.Instance.CurrentFloor;
             // Tier formula: tier = ceil(floor / 5)
-            // Floors 1-5 = Tier 1, Floors 6-10 = Tier 2, Floors 11-15 = Tier 3, etc.
+            // Floors 1-5 = Tier 1, Floors 6-10 = Tier 2, Floors 11-15 = Tier 3
             currentTier = Mathf.CeilToInt(currentFloor / (float)floorsPerTier);
             
             // Ensure minimum tier of 1
@@ -103,7 +103,7 @@ public class EnemyTierVisual : MonoBehaviour
             tierColor = TierManager.Instance.GetTierColor(tier);
         }
 
-        // Select sprite based on tier (use assigned sprites per enemy type)
+        // Select sprite based on tier 
         Sprite tierSprite = baseSprite; // Default to base sprite
         
         switch (tier)
@@ -145,7 +145,7 @@ public class EnemyTierVisual : MonoBehaviour
     // force update the visual (for after spawning)
     public void RefreshVisual()
     {
-        // Recalculate tier from floor (this is the source of truth)
+        // Recalculate tier from floor 
         CalculateTierFromFloor();
         ApplyTierVisual(currentTier);
     }

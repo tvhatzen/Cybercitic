@@ -122,12 +122,12 @@ public class RunStatsTracker : SingletonBase<RunStatsTracker>
             
             if(debug) Debug.Log($"[RunStatsTracker] Enemy killed! Total: {enemiesKilled}");
 
-            // check for boss
-            if (entity.CompareTag("Boss"))
-            {
-                beatBoss = true;
-                UnlockSkillForBoss();
-            }
+            // check for boss skill unlock
+            //if (entity.CompareTag("Boss"))
+            //{
+            //    beatBoss = true;
+            //    UnlockSkillForBoss();
+            //}
         }
     }
 
@@ -150,36 +150,36 @@ public class RunStatsTracker : SingletonBase<RunStatsTracker>
         if(debug) Debug.Log($"[RunStatsTracker] Floor {floorNumber} cleared! Total floors: {floorsCleared}");
     }
 
-    private void UnlockSkillForBoss()
-    {
-        // determine which skill to unlock based on tier or floor
-        int tier = TierManager.Instance != null ? TierManager.Instance.CurrentTier : 1;
+    //private void UnlockSkillForBoss()
+    //{
+    //    // determine which skill to unlock based on tier or floor
+    //    int tier = TierManager.Instance != null ? TierManager.Instance.CurrentTier : 1;
         
-        switch (tier)
-        {
-            case 1:
-                unlockedSkill = "Double Jump";
-                break;
-            case 2:
-                unlockedSkill = "Dash Attack";
-                break;
-            case 3:
-                unlockedSkill = "Ground Pound";
-                break;
-            case 4:
-                unlockedSkill = "Air Dash";
-                break;
-            case 5:
-                unlockedSkill = "Ultimate Power";
-                break;
-            default:
-                unlockedSkill = $"Tier {tier} Skill";
-                break;
-        }
+    //    switch (tier)
+    //    {
+    //        case 1:
+    //            unlockedSkill = "Double Jump";
+    //            break;
+    //        case 2:
+    //            unlockedSkill = "Dash Attack";
+    //            break;
+    //        case 3:
+    //            unlockedSkill = "Ground Pound";
+    //            break;
+    //        case 4:
+    //            unlockedSkill = "Air Dash";
+    //            break;
+    //        case 5:
+    //            unlockedSkill = "Ultimate Power";
+    //            break;
+    //        default:
+    //            unlockedSkill = $"Tier {tier} Skill";
+    //            break;
+    //    }
         
-        GameEvents.RunSkillUnlocked(unlockedSkill);
-        if(debug) Debug.Log($"[RunStatsTracker] Skill unlocked: {unlockedSkill}");
-    }
+    //    GameEvents.RunSkillUnlocked(unlockedSkill);
+    //    if(debug) Debug.Log($"[RunStatsTracker] Skill unlocked: {unlockedSkill}");
+    //}
 
     public string GetRunSummary()
     {
@@ -190,4 +190,3 @@ public class RunStatsTracker : SingletonBase<RunStatsTracker>
                $"Skill Unlocked: {(string.IsNullOrEmpty(unlockedSkill) ? "None" : unlockedSkill)}";
     }
 }
-

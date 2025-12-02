@@ -6,6 +6,8 @@ using Random = UnityEngine.Random;
 
 public class HealthSystem : MonoBehaviour
 {
+    #region Variables
+
     private int currentHealth;
     public int CurrentHealth => currentHealth;
     public int DamagePerHit => entityData != null ? entityData.currentAttack : 0;
@@ -20,7 +22,7 @@ public class HealthSystem : MonoBehaviour
     [SerializeField] private HealthBar healthBar;
 
     [Header("Damage Flash")]
-    [SerializeField] private SpriteRenderer spriteRenderer;  // make multiple for player sprites
+    [SerializeField] private SpriteRenderer spriteRenderer;  
     [SerializeField] private Color flashColor = Color.red;
     [SerializeField] private float flashDuration = 0.1f;
 
@@ -39,6 +41,8 @@ public class HealthSystem : MonoBehaviour
 
     public bool debug = false;
     public bool IsShieldImmune => shieldImmunityActive;
+
+    #endregion
 
     private void Awake()
     {
@@ -73,8 +77,7 @@ public class HealthSystem : MonoBehaviour
     {
         isShaking = false;
         
-        // Safety: Always clear shield immunity when the GameObject is enabled
-        // This ensures it doesn't persist between runs
+        // Always clear shield immunity when the GameObject is enabled
         if (CompareTag("Player"))
         {
             shieldImmunityActive = false;
@@ -210,7 +213,7 @@ public class HealthSystem : MonoBehaviour
             ResetSpriteColor();
         }
         isDead = false;
-        // Ensure any pending shake is cleared after respawn
+        // Ensure any current shake is cleared after respawn
         isShaking = false;
         StopAllCoroutines();
         shieldImmunityActive = false;
@@ -398,7 +401,6 @@ public class HealthSystem : MonoBehaviour
             else
             {
                 // keep player active during death camera effect
-                // PlayerDeathCamera will disable it after the effect completes
                 if(debug) Debug.Log("[HealthSystem] Death camera effect is active, keeping player active and delaying GameState.OnPlayerDeath()");
             }
         }

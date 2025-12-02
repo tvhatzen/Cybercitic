@@ -24,7 +24,7 @@ public class EnemyCombat : MonoBehaviour
 
     // only attack if player is in combat
     private bool canAttack = false;
-    private bool forceEnabled = false; // Track if combat was force-enabled (should not be disabled by events)
+    private bool forceEnabled = false; // Track if combat was force-enabled 
 
     [Header("DEBUG")]
     public bool debug = false;
@@ -61,7 +61,7 @@ public class EnemyCombat : MonoBehaviour
 
     private void FindPlayer()
     {
-        // Try multiple methods to find the player
+        // Try to find the player
         if (PlayerInstance.Instance != null)
         {
             player = PlayerInstance.Instance.transform;
@@ -146,33 +146,8 @@ public class EnemyCombat : MonoBehaviour
 
         if (target == null) return;
 
-        // make simple attack anim (bounce sprite on y, like dmg shake)
-        //StartCoroutine(AtkAnim());
-
         target.TakeDamage(damage);
         if(debug) Debug.Log($"[EnemyCombat] {name} attacked {target.name} for {damage} damage!");
-    }
-
-    IEnumerator AtkAnim()
-    {
-        isAttacking = true;
-        float elapsed = 0f;
-
-        while (elapsed < animDuration)
-        {
-            // move sprite
-            transform.position = originalPosition + new Vector3(0f, 1f, 0f) * animMagnitude;
-
-            // increment elapsed time
-            elapsed += Time.deltaTime;
-
-            // wait for next frame
-            yield return null;
-        }
-
-        // Return to original position
-        transform.position = originalPosition;
-        isAttacking = false;
     }
 
     private void EnableCombat(Transform[] enemiesInCombat)
@@ -184,8 +159,6 @@ public class EnemyCombat : MonoBehaviour
             {
                 canAttack = true;
                 // If combat was force-enabled, keep that flag (don't reset it)
-                // This allows normal combat flow while preserving force-enabled state
-                // Set next attack time to current time + cooldown to prevent immediate attack
                 nextAttackTime = Time.time + attackCooldown;
                 if (debug) Debug.Log($"[EnemyCombat] {name} combat enabled, next attack in {attackCooldown}s");
                 break;
@@ -195,7 +168,7 @@ public class EnemyCombat : MonoBehaviour
     
     private void DisableCombat()
     {
-        // Don't disable if combat was force-enabled (e.g., after respawn)
+        // Don't disable if combat was force-enabled 
         if (forceEnabled)
         {
             if (debug) Debug.Log($"[EnemyCombat] {name} combat disable ignored - force enabled");

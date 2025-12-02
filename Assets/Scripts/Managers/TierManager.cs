@@ -21,9 +21,9 @@ public class TierManager : SingletonBase<TierManager>
     public int BossesDefeated => bossesDefeated;
 
     [Header("Enemy Tier Sprites")]
-    [SerializeField] private Sprite tier1Sprite; // insert reference
-    [SerializeField] private Sprite tier2Sprite; // insert reference
-    [SerializeField] private Sprite tier3Sprite; // insert reference
+    [SerializeField] private Sprite tier1Sprite; 
+    [SerializeField] private Sprite tier2Sprite; 
+    [SerializeField] private Sprite tier3Sprite; 
 
     public bool debug = false;
 
@@ -40,9 +40,6 @@ public class TierManager : SingletonBase<TierManager>
         // check for boss
         if (entity != null && entity.CompareTag("Boss"))
         {
-            // Removed death camera effect trigger for final boss - was causing game freeze
-            // The win screen will be shown via GameState.OnBossDeath() instead
-            
             IncrementTier();
         }
     }
@@ -106,5 +103,3 @@ public class TierManager : SingletonBase<TierManager>
         };
     }
 }
-// need tiers 1-3 for basic/elite/boss
-// reference sprite by name / path , or each prefab gets assigned tier sprite variables

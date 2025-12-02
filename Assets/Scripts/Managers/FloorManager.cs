@@ -4,8 +4,6 @@ using System;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-// each floor should have its own assigned enemies
-// (when splitting into spawner classes, set enemy spawns per floor)
 public class FloorManager : SingletonBase<FloorManager>
 {
     [Header("Player")]
@@ -13,7 +11,6 @@ public class FloorManager : SingletonBase<FloorManager>
     [SerializeField] private Transform playerSpawnPoint;
 
     [Header("Enemies")]
-    // change this to use the specified enemies per floor
     [SerializeField] private List<GameObject> enemyPrefabsForThisFloor;
     [SerializeField] private List<Transform> enemySpawnPoints;
 

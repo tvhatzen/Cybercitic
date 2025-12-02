@@ -2,6 +2,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+// separate responsibilities - camera zoom
+// - camera vingette effect
 public class PlayerDeathCamera : MonoBehaviour
 {
     #region Variables
@@ -50,7 +53,7 @@ public class PlayerDeathCamera : MonoBehaviour
     private bool effectActive = false;
     private static bool isHandlingDeathTransition = false;
     
-    // vignette elements
+    // vignette 
     private float originalVignetteAlpha = 0f;
     
     public static bool IsHandlingDeathTransition => isHandlingDeathTransition;
@@ -65,6 +68,7 @@ public class PlayerDeathCamera : MonoBehaviour
         playerObject = GameObject.FindGameObjectWithTag("Player");
         if (playerObject != null)
         {
+            // when refactoring, get around using all these
             playerHealthSystem = playerObject.GetComponent<HealthSystem>();
             playerMovement = playerObject.GetComponent<PlayerMovement>();
             playerAnimator = playerObject.GetComponent<FrameBasedPlayerAnimator>();
@@ -181,13 +185,10 @@ public class PlayerDeathCamera : MonoBehaviour
             vignetteColor.a = 0f;
             vignetteSprite.color = vignetteColor;
             
-            // Optionally disable the GameObject to ensure it's hidden
             if (vignetteSprite.gameObject != null)
             {
                 vignetteSprite.gameObject.SetActive(false);
             }
-            
-            if (debug) Debug.Log("[PlayerDeathCamera] Vignette hidden");
         }
     }
     
@@ -196,10 +197,10 @@ public class PlayerDeathCamera : MonoBehaviour
         // Only trigger if it's the player and effect isn't already active
         if (healthSystem.CompareTag("Player") && !effectActive)
         {
-            // Set flag immediately so HealthSystem knows we're handling the transition
+            // Set flag immediately  
             isHandlingDeathTransition = true;
             
-            // Find camera again in case it changed (new level, etc.)
+            // Find camera again in case it changed  
             if (targetCamera == null || !targetCamera.gameObject.activeInHierarchy)
             {
                 FindActiveCamera();
@@ -207,7 +208,7 @@ public class PlayerDeathCamera : MonoBehaviour
             }
             else
             {
-                // Update camera position in case it moved
+                // Update camera position  
                 originalCameraPosition = targetCamera.transform.position;
             }
             
@@ -344,7 +345,7 @@ public class PlayerDeathCamera : MonoBehaviour
             playerMovement.CanMove = false;
         }
 
-        // Disable player attacks - this prevents PlayerAttack.Update() from running
+        // Disable player attacks 
         if (playerAttack != null)
         {
             originalPlayerAttackEnabled = playerAttack.enabled;
@@ -352,7 +353,7 @@ public class PlayerDeathCamera : MonoBehaviour
             if (debug) Debug.Log($"[PlayerDeathCamera] Disabled player attacks (was {originalPlayerAttackEnabled})");
         }
         
-        // Also disable PlayerCombat to prevent entering combat state
+        // disable PlayerCombat to prevent entering combat state
         if (playerCombat != null)
         {
             originalPlayerCombatEnabled = playerCombat.enabled;
@@ -381,7 +382,6 @@ public class PlayerDeathCamera : MonoBehaviour
         }
         
         // Re-enable player attacks and combat before disabling the GameObject
-        // This ensures they're enabled when the player respawns
         if (playerAttack != null)
         {
             playerAttack.enabled = originalPlayerAttackEnabled;
@@ -414,18 +414,15 @@ public class PlayerDeathCamera : MonoBehaviour
         if (centerOnPlayer && playerObject != null)
         {
             // Calculate position to center player on screen
-            // For orthographic: position camera so player is at center
-            // For perspective: position camera so player is at center of view
             Vector3 playerPosition = playerObject.transform.position;
             
-            // Keep the camera's Z position (depth) but center X and Y on player
+            // Keep the camera's Z position but center X and Y on player
             if (isOrthographic)
             {
                 targetPosition = new Vector3(playerPosition.x, playerPosition.y, startPosition.z);
             }
             else
             {
-                // For perspective cameras, we need to account for the camera's forward direction
                 // Calculate offset to center player in view
                 Vector3 cameraForward = targetCamera.transform.forward;
                 float distanceToPlayer = Vector3.Distance(startPosition, playerPosition);
@@ -454,7 +451,7 @@ public class PlayerDeathCamera : MonoBehaviour
             elapsed += Time.unscaledDeltaTime; // Use unscaled time so zoom continues even when time is slowed
             float t = elapsed / zoomDuration;
             
-            // Smooth easing curve (ease-in-out)
+            // Smooth easing curve 
             t = t * t * (3f - 2f * t);
             
             // Apply zoom
@@ -476,7 +473,6 @@ public class PlayerDeathCamera : MonoBehaviour
             yield return null;
         }
         
-        // Ensure we reach the target values
         if (targetCamera != null && targetCamera.gameObject.activeInHierarchy)
         {
             if (isOrthographic)
@@ -507,16 +503,15 @@ public class PlayerDeathCamera : MonoBehaviour
             elapsed += Time.unscaledDeltaTime; // Use unscaled time for the timer itself
             float t = elapsed / timeSlowDuration;
             
-            // Smooth easing curve (ease-in-out)
+            // Smooth easing curve 
             t = t * t * (3f - 2f * t);
             
             Time.timeScale = Mathf.Lerp(originalTimeScale, targetTimeScale, t);
-            Time.fixedDeltaTime = 0.02f * Time.timeScale; // Adjust fixed delta time to match
+            Time.fixedDeltaTime = 0.02f * Time.timeScale; // Adjust fixed delta time 
             
             yield return null;
         }
         
-        // Ensure we reach the target time scale
         Time.timeScale = targetTimeScale;
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
     }
@@ -554,10 +549,10 @@ public class PlayerDeathCamera : MonoBehaviour
                 yield break;
             }
             
-            elapsed += Time.unscaledDeltaTime; // Use unscaled time so fade continues even when time is slowed
+            elapsed += Time.unscaledDeltaTime; // Use unscaled time 
             float t = elapsed / zoomDuration;
             
-            // Smooth easing curve (ease-in-out)
+            // Smooth easing curve 
             t = t * t * (3f - 2f * t);
             
             vignetteColor.a = Mathf.Lerp(startAlpha, targetAlpha, t);
@@ -566,7 +561,7 @@ public class PlayerDeathCamera : MonoBehaviour
             yield return null;
         }
         
-        // Ensure we reach the target alpha
+        // Ensure vingette reaches target alpha
         if (vignetteSprite != null && vignetteSprite.gameObject.activeInHierarchy)
         {
             vignetteColor.a = targetAlpha;
@@ -592,7 +587,7 @@ public class PlayerDeathCamera : MonoBehaviour
             targetCamera.transform.position = originalCameraPosition;
         }
         
-        // Reset vignette - hide it completely
+        // Reset vignette 
         HideVignette();
         
         Time.timeScale = 1f;
@@ -606,9 +601,7 @@ public class PlayerDeathCamera : MonoBehaviour
     
     private void OnDestroy()
     {
-        // Reset time scale when script is destroyed
         Time.timeScale = 1f;
         Time.fixedDeltaTime = 0.02f;
     }
 }
-

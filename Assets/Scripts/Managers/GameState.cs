@@ -98,7 +98,6 @@ public class GameState : SingletonBase<GameState>
         }
 
         // Reset player state when starting a new game (not from death)
-        // This ensures shield immunity and other states are cleared
         if (!fromDeath)
         {
             ResetPlayer();
@@ -106,7 +105,6 @@ public class GameState : SingletonBase<GameState>
         }
 
         // Re-unlock any equipped skills when starting gameplay
-        // This ensures skills are available even after reset
         if (PlayerSkills.Instance != null)
         {
             PlayerSkills.Instance.ReunlockEquippedSkills();
@@ -114,7 +112,6 @@ public class GameState : SingletonBase<GameState>
         }
         
         // Re-apply all upgrades based on their current levels
-        // This ensures stats are correctly updated when starting gameplay
         if (UpgradeManager.Instance != null)
         {
             UpgradeManager.Instance.ReapplyAllUpgrades();
@@ -177,8 +174,6 @@ public class GameState : SingletonBase<GameState>
             
             // Always reset health to ensure shield immunity and other states are cleared
             health.ResetHealth();
-            
-            // Explicitly clear shield immunity as a safety measure
             health.SetShieldImmunity(false);
             
             if(debug) Debug.Log("[GameState] Player health system reset, shield immunity cleared");
