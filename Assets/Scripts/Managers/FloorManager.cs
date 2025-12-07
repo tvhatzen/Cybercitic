@@ -203,10 +203,10 @@ public class FloorManager : SingletonBase<FloorManager>
         Time.timeScale = 1f;
 
         // Set game state to Playing when loading a new gameplay floor
-        if (GameState.Instance != null)
+        if (GameManager.Instance != null)
         {
-            if (debug) Debug.Log($"[FloorManager] Current GameState: {GameState.Instance.CurrentState}, changing to Playing");
-            GameState.Instance.ChangeState(GameState.GameStates.Playing);
+            if (debug) Debug.Log($"[FloorManager] Current GameState: {GameManager.Instance.CurrentState}, changing to Playing");
+            GameManager.Instance.ChangeState(GameManager.GameStates.Playing);
         }        
 
         // play music AFTER game state has been set so the correct track is chosen

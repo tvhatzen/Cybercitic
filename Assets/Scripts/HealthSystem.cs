@@ -396,17 +396,17 @@ public class HealthSystem : MonoBehaviour
             {
                 // disable player prefab and trigger results immediately
                 gameObject.SetActive(false);
-                GameState.Instance.OnPlayerDeath();
+                GameManager.Instance.OnPlayerDeath();
             }
             else
             {
                 // keep player active during death camera effect
-                if(debug) Debug.Log("[HealthSystem] Death camera effect is active, keeping player active and delaying GameState.OnPlayerDeath()");
+                if(debug) Debug.Log("[HealthSystem] Death camera effect is active, keeping player active and delaying GameManager.OnPlayerDeath()");
             }
         }
         else if (CompareTag("Boss") && FloorManager.Instance.IsFinalFloor()) // check if is final boss floor 
         {
-            GameState.Instance.OnBossDeath();
+            GameManager.Instance.OnBossDeath();
         }
         else
         {

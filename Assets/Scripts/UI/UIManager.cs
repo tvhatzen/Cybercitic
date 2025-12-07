@@ -61,20 +61,20 @@ public class UIManager : SingletonBase<UIManager>
         GameEvents.OnGameStateChanged -= HandleGameStateChanged;
     }
 
-    private void HandleGameStateChanged(GameState.GameStates state)
+    private void HandleGameStateChanged(GameManager.GameStates state)
     {
         switch (state)
         {
-            case GameState.GameStates.MainMenu: ShowScreen(MenuScreen.MainMenu, 0f); break;
-            case GameState.GameStates.Tutorial: ShowScreen(MenuScreen.Tutorial, 0f); break;
-            case GameState.GameStates.Playing: ShowScreen(MenuScreen.Gameplay, 1f); break;
-            case GameState.GameStates.Paused: ShowScreen(MenuScreen.Pause, 0f); break;
-            case GameState.GameStates.Upgrade: ShowScreen(MenuScreen.Upgrade, 0f); break;
-            case GameState.GameStates.Results: ShowScreen(MenuScreen.Results, 0f); break;
-            case GameState.GameStates.Options: ShowScreen(MenuScreen.Options, 0f); break;
-            case GameState.GameStates.Credits: ShowScreen(MenuScreen.Credits, 0f); break;
-            case GameState.GameStates.Win: ShowScreen(MenuScreen.WinGame, 0f); break;
-            case GameState.GameStates.Lose: ShowScreen(MenuScreen.LoseGame, 0f); break;
+            case GameManager.GameStates.MainMenu: ShowScreen(MenuScreen.MainMenu, 0f); break;
+            case GameManager.GameStates.Tutorial: ShowScreen(MenuScreen.Tutorial, 0f); break;
+            case GameManager.GameStates.Playing: ShowScreen(MenuScreen.Gameplay, 1f); break;
+            case GameManager.GameStates.Paused: ShowScreen(MenuScreen.Pause, 0f); break;
+            case GameManager.GameStates.Upgrade: ShowScreen(MenuScreen.Upgrade, 0f); break;
+            case GameManager.GameStates.Results: ShowScreen(MenuScreen.Results, 0f); break;
+            case GameManager.GameStates.Options: ShowScreen(MenuScreen.Options, 0f); break;
+            case GameManager.GameStates.Credits: ShowScreen(MenuScreen.Credits, 0f); break;
+            case GameManager.GameStates.Win: ShowScreen(MenuScreen.WinGame, 0f); break;
+            case GameManager.GameStates.Lose: ShowScreen(MenuScreen.LoseGame, 0f); break;
             default: ShowScreen(MenuScreen.None, 1f); break;
         }
     }
@@ -102,30 +102,46 @@ public class UIManager : SingletonBase<UIManager>
 
     public void TogglePause()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && GameState.Instance.CurrentState == GameState.GameStates.Playing)
-            GameState.Instance.ChangeState(GameState.GameStates.Paused);
-        else if (Input.GetKeyDown(KeyCode.Escape) && GameState.Instance.CurrentState == GameState.GameStates.Paused)
-            GameState.Instance.ChangeState(GameState.GameStates.Playing);
+        if (Input.GetKeyDown(KeyCode.Escape) && GameManager.Instance.CurrentState == GameManager.GameStates.Playing)
+            GameManager.Instance.ChangeState(GameManager.GameStates.Paused);
+        else if (Input.GetKeyDown(KeyCode.Escape) && GameManager.Instance.CurrentState == GameManager.GameStates.Paused)
+            GameManager.Instance.ChangeState(GameManager.GameStates.Playing);
     }
 
-    public void StartGameFromMainMenu() => GameState.Instance.StartFromMainMenu();
+    // Note: StartGameFromMainMenu, FinishTutorialAndStartGame, and RestartAfterDeath 
+    // should now handle their logic in UIManager or other appropriate systems,
+    // then call GameManager.Instance.ChangeState() when ready to change state
+    public void StartGameFromMainMenu() 
+    {
+        // TODO: Handle game start logic here (reset upgrades, stats, skills, etc.)
+        // Then change state when ready
+        GameManager.Instance.ChangeState(GameManager.GameStates.Playing);
+    }
 
     public void FinishTutorialAndStartGame()
     {
         if(debug) Debug.Log("Tutorial button pressed!");
-        GameState.Instance.FinishTutorial();
+        // TODO: Handle tutorial completion logic here
+        // Then change state when ready
+        GameManager.Instance.ChangeState(GameManager.GameStates.Playing);
     }
 
-    public void RestartAfterDeath() => GameState.Instance.StartGameplay(fromDeath: true);
-    public void GoToMenu() => GameState.Instance.ChangeState(GameState.GameStates.MainMenu);
-    public void ResumeGame() => GameState.Instance.ChangeState(GameState.GameStates.Playing);
-    public void GoToUpgrade() => GameState.Instance.ChangeState(GameState.GameStates.Upgrade);
-    public void ShowResults() => GameState.Instance.ChangeState(GameState.GameStates.Results);
-    public void ShowOptions() => GameState.Instance.ChangeState(GameState.GameStates.Options);
+    public void RestartAfterDeath() 
+    {
+        // TODO: Handle restart logic here (reset floor, player, etc.)
+        // Then change state when ready
+        GameManager.Instance.ChangeState(GameManager.GameStates.Playing);
+    }
+    
+    public void GoToMenu() => GameManager.Instance.ChangeState(GameManager.GameStates.MainMenu);
+    public void ResumeGame() => GameManager.Instance.ChangeState(GameManager.GameStates.Playing);
+    public void GoToUpgrade() => GameManager.Instance.ChangeState(GameManager.GameStates.Upgrade);
+    public void ShowResults() => GameManager.Instance.ChangeState(GameManager.GameStates.Results);
+    public void ShowOptions() => GameManager.Instance.ChangeState(GameManager.GameStates.Options);
     public void ShowCredits() => creditsUI.SetActive(true);
     public void CloseCredits() => creditsUI.SetActive(false);
     public void QuitGame() => Application.Quit();
-    public void GoToMainMenuFromWin() =>GameState.Instance.ChangeState(GameState.GameStates.MainMenu);
+    public void GoToMainMenuFromWin() => GameManager.Instance.ChangeState(GameManager.GameStates.MainMenu);
 
     #endregion
 }

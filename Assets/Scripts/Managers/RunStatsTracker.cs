@@ -5,14 +5,14 @@ using System;
 public class RunStatsTracker : SingletonBase<RunStatsTracker>
 {
     [Header("Run Statistics")]
-    [SerializeField] private int enemiesKilled = 0;
-    [SerializeField] private int creditsCollected = 0;
-    [SerializeField] private int floorsCleared = 0;
-    [SerializeField] private bool beatBoss = false;
-    [SerializeField] private string unlockedSkill = "";
+    private int enemiesKilled = 0;
+    private int creditsCollected = 0;
+    private int floorsCleared = 0;
+    private bool beatBoss = false;
+    private string unlockedSkill = "";
     
     [Header("Starting Values")]
-    [SerializeField] private int startingCredits = 0;
+    private int startingCredits = 0;
 
     public bool debug = false;
 
@@ -47,21 +47,19 @@ public class RunStatsTracker : SingletonBase<RunStatsTracker>
     protected override void Awake()
     {
         base.Awake();
-        
+    }
+
+    private void OnEnable()
+    {
         // subscribe to game events
         HealthSystem.OnAnyDeath += OnEntityDied;
         
         // subscribe to Event Bus
         GameEvents.OnCreditsChanged += OnCreditsChanged;
         GameEvents.OnFloorCleared += OnFloorClearedInternal;
-        
-        if (CurrencyManager.Instance != null)
-        {
-            startingCredits = CurrencyManager.Instance.Credits;
-        }
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         HealthSystem.OnAnyDeath -= OnEntityDied;
         
@@ -74,7 +72,9 @@ public class RunStatsTracker : SingletonBase<RunStatsTracker>
     {
         // record starting credits
         if (CurrencyManager.Instance != null)
+        {
             startingCredits = CurrencyManager.Instance.Credits;
+        }
     }
 
     // resets all run stats (called at start of new run)

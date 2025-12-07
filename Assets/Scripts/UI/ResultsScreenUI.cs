@@ -140,8 +140,8 @@ public class ResultsScreenUI : MonoBehaviour
     private void OnContinueClicked()
     {
         // continue to next floor or upgrade shop
-        if (GameState.Instance != null)
-            GameState.Instance.ChangeState(GameState.GameStates.Upgrade);
+        if (GameManager.Instance != null)
+            GameManager.Instance.ChangeState(GameManager.GameStates.Upgrade);
         else
             gameObject.SetActive(false);
     }

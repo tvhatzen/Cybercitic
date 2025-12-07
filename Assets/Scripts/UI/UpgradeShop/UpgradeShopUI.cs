@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
-using static GameState;
+using static GameManager;
 
 namespace Cybercitic.UI
 {
@@ -370,9 +370,9 @@ namespace Cybercitic.UI
                 FloorManager.Instance.ResetToFloor1();
             }
 
-            if (GameState.Instance != null)
+            if (GameManager.Instance != null)
             {
-                GameState.Instance.ChangeState(GameStates.Playing);
+                GameManager.Instance.ChangeState(GameStates.Playing);
             }
             else
             {

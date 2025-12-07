@@ -168,10 +168,10 @@ public class PlayerDeathCamera : MonoBehaviour
         GameEvents.OnGameStateChanged -= OnGameStateChanged;
     }
     
-    private void OnGameStateChanged(GameState.GameStates newState)
+    private void OnGameStateChanged(GameManager.GameStates newState)
     {
         // Hide vignette when leaving the Results screen
-        if (newState != GameState.GameStates.Results && vignetteSprite != null)
+        if (newState != GameManager.GameStates.Results && vignetteSprite != null)
         {
             HideVignette();
         }
@@ -326,13 +326,13 @@ public class PlayerDeathCamera : MonoBehaviour
         }
         
         // Now trigger the game state change after effect completes
-        if (GameState.Instance != null)
+        if (GameManager.Instance != null)
         {
-            GameState.Instance.OnPlayerDeath();
+            GameManager.Instance.OnPlayerDeath();
         }
         else
         {
-            if (debug) Debug.LogError("[PlayerDeathCamera] GameState.Instance is null!");
+            if (debug) Debug.LogError("[PlayerDeathCamera] GameManager.Instance is null!");
         }
         
         isHandlingDeathTransition = false;

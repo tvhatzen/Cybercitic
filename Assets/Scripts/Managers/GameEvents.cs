@@ -81,7 +81,7 @@ public class GameEvents : SingletonBase<GameEvents>
     public static event Action OnGamePaused;
     public static event Action OnGameResumed;
     public static event Action OnGameEnded;
-    public static event Action<GameState.GameStates> OnGameStateChanged;
+    public static event Action<GameManager.GameStates> OnGameStateChanged;
 
     // Tier System
     public static event Action<int> OnTierChanged;
@@ -288,7 +288,7 @@ public class GameEvents : SingletonBase<GameEvents>
         if(debug) Debug.Log("GameEvents: Game ended");
     }
 
-    public static void GameStateChanged(GameState.GameStates newState)
+    public static void GameStateChanged(GameManager.GameStates newState)
     {
         OnGameStateChanged?.Invoke(newState);
         if(debug) Debug.Log($"GameEvents: Game state changed to - {newState}");

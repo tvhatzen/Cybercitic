@@ -15,13 +15,18 @@ public class EnemyTierVisual : MonoBehaviour
     [Tooltip("Tier text format")]
     [SerializeField] private string tierTextFormat = "T{0}";
 
-    public Sprite baseSprite;
-    public Sprite tier1Sprite;
-    public Sprite tier2Sprite;
-    public Sprite tier3Sprite;
+    [SerializeField] private Sprite baseSprite;
+    [SerializeField] private Sprite tier1Sprite;
+    [SerializeField] private Sprite tier2Sprite;
+    [SerializeField] private Sprite tier3Sprite;
 
-    private EnemyStatScaler scaler;
-    private SpriteRenderer spriteRenderer;
+    [Header("Component References")]
+    [Tooltip("Drag and drop the SpriteRenderer component here")]
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    
+    [Tooltip("Drag and drop the EnemyStatScaler component here (optional)")]
+    [SerializeField] private EnemyStatScaler scaler;
+
     private int currentTier = 1;
     private int floorsPerTier = 5; // Tier increases every 5 floors (after boss floors)
 
@@ -29,17 +34,6 @@ public class EnemyTierVisual : MonoBehaviour
 
     [Header("DEBUG")]
     public bool debug = false;
-
-    private void Awake()
-    {
-        scaler = GetComponent<EnemyStatScaler>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        
-        if (spriteRenderer == null)
-        {
-            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        }
-    }
 
     private void Start()
     {
@@ -66,28 +60,27 @@ public class EnemyTierVisual : MonoBehaviour
     // Calculate tier based on current floor (every 5 floors = new tier)
     private void CalculateTierFromFloor()
     {
-        if (FloorManager.Instance != null)
-        {
-            int currentFloor = FloorManager.Instance.CurrentFloor;
-            // Tier formula: tier = ceil(floor / 5)
-            // Floors 1-5 = Tier 1, Floors 6-10 = Tier 2, Floors 11-15 = Tier 3
-            currentTier = Mathf.CeilToInt(currentFloor / (float)floorsPerTier);
-            
-            // Ensure minimum tier of 1
-            if (currentTier < 1) currentTier = 1;
-            
-            if (debug)
-            {
-                Debug.Log($"[EnemyTierVisual] Floor {currentFloor} = Tier {currentTier}");
-            }
-        }
-        else
+        if (FloorManager.Instance == null)
         {
             // Fallback to TierManager if FloorManager not available
             if (TierManager.Instance != null)
             {
                 currentTier = TierManager.Instance.CurrentTier;
             }
+            return;
+        }
+
+        int currentFloor = FloorManager.Instance.CurrentFloor;
+        // Tier formula: tier = ceil(floor / 5)
+        // Floors 1-5 = Tier 1, Floors 6-10 = Tier 2, Floors 11-15 = Tier 3
+        currentTier = Mathf.CeilToInt(currentFloor / (float)floorsPerTier);
+        
+        // Ensure minimum tier of 1
+        if (currentTier < 1) currentTier = 1;
+        
+        if (debug)
+        {
+            Debug.Log($"[EnemyTierVisual] Floor {currentFloor} = Tier {currentTier}");
         }
     }
 
